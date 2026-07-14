@@ -3,3 +3,14 @@ age_verification:
     legal_disclaimer: "this site complies with EU Digital Services Act (DSA) regulations and Spanish minor protection laws (LOPIVI). by entering, you declare under your own responsibility that you are of legal age."
     message: "this site contains content intended for adults. by proceeding, you confirm that you are 18 years of age or older."
     title: "adult audience"
+
+homepage:
+    intro: "you are in the blog of pendoncete.org, a space conceived to provide ideas and amusement to your lechery existence. have fun!"
+    seo:
+        description: "explore Pendoncete's digital ecosystem: innovative tools and spicy chronicles built from flesh and lechery. Join the community and start your own annales today."
+        h1: "homepage"
+        keywords: "Pendoncete, blog.pendoncete.org, blog"
+        page_name: "pendoncete.org blog"
+    title: "blog homepage"
+    welcome_user: "welcome back, %username%!"
+    welcome_visitor: "welcome!"

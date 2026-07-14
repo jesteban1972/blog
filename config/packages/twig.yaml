@@ -12,4 +12,3 @@ twig:
         app_cookie_domain: '%env(resolve:JWT_COOKIE_DOMAIN)%'
         app_auth_base_url: '%env(resolve:AUTH_BASE_URL)%'
         app_cdn: '%env(CDN)%'
-

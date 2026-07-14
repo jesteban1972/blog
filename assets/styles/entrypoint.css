@@ -1,0 +1,31 @@
+/** file ~/Sites/blog/assets/styles/entrypoint.css */
+
+/*
+    this file is the entrypoint which orchestrates all the other stylesheets.
+    it is the only one referred in importmap.php.
+*/
+
+@import url('colors.css');
+@import url('layout.css');
+@import url('header.css');
+@import url('sidebar.css');
+@import url('footer.css');
+
+@import url('index.css');
+
+@import url('utilities.css');
+@import url('components.css');
+@import url('pages.css');
+@import url('age-verification.css');
+
+:root {
+    /**
+     * the variables --header-sticky-offset-mobile and --header-sticky-offset-desktop set how much of the header
+     * scrolls away before the navbar sticks. adjustment:
+     * - increase values if you see branding text leaking when scrolled.
+     * - decrease values if the sticky navbar disappears too early.
+     * - use rems (pixels / 16) to ensure stability across high-DPI and zoomed screens.
+     */
+    --header-sticky-offset-mobile: 4.4rem;
+    --header-sticky-offset-desktop: 5rem;
+}

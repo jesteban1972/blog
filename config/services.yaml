@@ -59,6 +59,9 @@ services:
             $authBaseUrl: '%env(AUTH_BASE_URL)%'
             $appSecret: '%env(APP_SECRET)%'
 
+    App\Controller\ErrorController:
+        public: true
+
     App\Service\JwtDecoderService:
         arguments:
             $publicKeyPath: '%env(resolve:JWT_PUBLIC_KEY)%'

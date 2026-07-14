@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-// file ~/Sites/annales/src/Entity/User.php
+// file ~/Sites/blog/src/Entity/User.php
 
 namespace App\Entity;
 
@@ -33,27 +33,6 @@ class User implements UserInterface
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
-
-    /**
-     * PERSISTED CLUSTER I: annales-specific fields
-     */
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $birthdate = null;
-
-    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
-    private ?int $defaultGenre = null;
-
-    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-    private ?string $description1 = null;
-
-    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-    private ?string $description2 = null;
-
-    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-    private ?string $description3 = null;
-
-    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-    private ?string $description4 = null;
 
 
     /**
@@ -91,38 +70,10 @@ class User implements UserInterface
 
     private bool $isConsented = false;
 
-    /**
-     * RELATIONSHIPS: Locally anchored to the integer ID.
-     */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Locus::class, orphanRemoval: true)]
-    private Collection $loca;
-
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Praxis::class, orphanRemoval: true)]
-    private Collection $practica;
-
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Amor::class, orphanRemoval: true)]
-    private Collection $amores;
-
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Copulatio::class, orphanRemoval: true)]
-    private Collection $copulationes;
-
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Kind::class, orphanRemoval: true)]
-    private Collection $kinds;
-
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Country::class, orphanRemoval: true)]
-    private Collection $countries;
-
     public function __construct()
     {
         $this->createdAt = new \DateTime();
         $this->updatedAt = new \DateTime();
-
-        $this->loca = new ArrayCollection();
-        $this->practica = new ArrayCollection();
-        $this->amores = new ArrayCollection();
-        $this->copulationes = new ArrayCollection();
-        $this->kinds = new ArrayCollection();
-        $this->countries = new ArrayCollection();
     }
 
     // --- Identity Methods ---
@@ -235,24 +186,6 @@ class User implements UserInterface
 
     // --- Persisted Local Fields accessors ---
 
-    public function getBirthdate(): ?\DateTimeInterface { return $this->birthdate; }
-    public function setBirthdate(?\DateTimeInterface $birthdate): self { $this->birthdate = $birthdate; return $this; }
-
-    public function getDefaultGenre(): ?int { return $this->defaultGenre; }
-    public function setDefaultGenre(?int $defaultGenre): self { $this->defaultGenre = $defaultGenre; return $this; }
-
-    public function getDescription1(): ?string { return $this->description1; }
-    public function setDescription1(?string $description1): self { $this->description1 = $description1; return $this; }
-
-    public function getDescription2(): ?string { return $this->description2; }
-    public function setDescription2(?string $description2): self { $this->description2 = $description2; return $this; }
-
-    public function getDescription3(): ?string { return $this->description3; }
-    public function setDescription3(?string $description3): self { $this->description3 = $description3; return $this; }
-
-    public function getDescription4(): ?string { return $this->description4; }
-    public function setDescription4(?string $description4): self { $this->description4 = $description4; return $this; }
-
     public function getResultsPerPage(): ?int { return $this->resultsPerPage; }
     public function setResultsPerPage(?int $resultsPerPage): self { $this->resultsPerPage = $resultsPerPage; return $this; }
 
@@ -275,38 +208,6 @@ class User implements UserInterface
     {
         $this->updatedAt = new \DateTime();
     }
-
-    // --- Relationship Accessors ---
-
-    /** @return Collection<int, Locus> */
-    public function getLoca(): Collection { return $this->loca; }
-    public function addLoca(Locus $loca): self { if (!$this->loca->contains($loca)) { $this->loca[] = $loca; $loca->setUser($this); } return $this; }
-    public function removeLoca(Locus $loca): self { if ($this->loca->removeElement($loca)) { if ($loca->getUser() === $this) $loca->setUser(null); } return $this; }
-
-    /** @return Collection<int, Praxis> */
-    public function getPractica(): Collection { return $this->practica; }
-    public function addPractica(Praxis $practica): self { if (!$this->practica->contains($practica)) { $this->practica[] = $practica; $practica->setUser($this); } return $this; }
-    public function removePractica(Praxis $practica): self { if ($this->practica->removeElement($practica)) { if ($practica->getUser() === $this) $practica->setUser(null); } return $this; }
-
-    /** @return Collection<int, Amor> */
-    public function getAmores(): Collection { return $this->amores; }
-    public function addAmor(Amor $amor): self { if (!$this->amores->contains($amor)) { $this->amores[] = $amor; $amor->setUser($this); } return $this; }
-    public function removeAmor(Amor $amor): self { if ($this->amores->removeElement($amor)) { if ($amor->getUser() === $this) $amor->setUser(null); } return $this; }
-
-    /** @return Collection<int, Copulatio> */
-    public function getCopulationes(): Collection { return $this->copulationes; }
-    public function addCopulatio(Copulatio $copulatio): self { if (!$this->copulationes->contains($copulatio)) { $this->copulationes[] = $copulatio; $copulatio->setUser($this); } return $this; }
-    public function removeCopulatio(Copulatio $copulatio): self { if ($this->copulationes->removeElement($copulatio)) { if ($copulatio->getUser() === $this) $copulatio->setUser(null); } return $this; }
-
-    /** @return Collection<int, Kind> */
-    public function getKinds(): Collection { return $this->kinds; }
-    public function addKind(Kind $kind): self { if (!$this->kinds->contains($kind)) { $this->kinds[] = $kind; $kind->setUser($this); } return $this; }
-    public function removeKind(Kind $kind): self { if ($this->kinds->removeElement($kind)) { if ($kind->getUser() === $this) $kind->setUser(null); } return $this; }
-
-    /** @return Collection<int, Country> */
-    public function getCountries(): Collection { return $this->countries; }
-    public function addCountry(Country $country): self { if (!$this->countries->contains($country)) { $this->countries[] = $country; $country->setUser($this); } return $this; }
-    public function removeCountry(Country $country): self { if ($this->countries->removeElement($country)) { if ($country->getUser() === $this) $country->setUser(null); } return $this; }
 
     #[\Deprecated]
     public function eraseCredentials(): void

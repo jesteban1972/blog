@@ -1,5 +1,4 @@
 <?php
-// file ~/Sites/blog/importmap.php
 
 /**
  * Returns the importmap for this application.
@@ -25,6 +24,10 @@ return [
         'path' => './assets/scripts/age-verification.js',
         'entrypoint' => true,
     ],
+    'entrypoint_css' => [
+        'path' => 'styles/entrypoint.css',
+        'type' => 'css',
+    ],
     '@hotwired/stimulus' => [
         'version' => '3.2.2',
     ],
@@ -33,5 +36,22 @@ return [
     ],
     '@hotwired/turbo' => [
         'version' => '8.0.23',
+    ],
+    '@fortawesome/fontawesome-free' => [
+        'version' => '7.1.0',
+    ],
+    '@fortawesome/fontawesome-free/css/all.min.css' => [
+        'version' => '7.1.0',
+        'type' => 'css',
+    ],
+    'bootstrap' => [
+        'version' => '5.3.8',
+    ],
+    'bootstrap/dist/css/bootstrap.min.css' => [
+        'version' => '5.3.8',
+        'type' => 'css',
+    ],
+    '@popperjs/core' => [
+        'version' => '2.11.8',
     ],
 ];

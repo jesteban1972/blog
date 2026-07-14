@@ -1,0 +1,26 @@
+/** file ~/Sites/blog/assets/styles/colors.css */
+
+:root {
+    --purple-purple: #A32CC4;
+    --purple-mauve: #7A4988;
+    --purple-violet: #710193;
+    --purple-boysenberry: #630436;
+    --purple-lavender: #E39FF6;
+    --purple-plum: #601A35;
+    --purple-magenta: #A1045A;
+    --purple-lilac: #B65FCF;
+    --purple-grape: #663046;
+    --purple-periwinkle: #BE93D4;
+    --purple-sangria: #4D0F28;
+    --purple-eggplant: #311432;
+    --purple-jam: #67032F;
+    --purple-iris: #9867C5;
+    --purple-heather: #9E7BB5;
+    --purple-amethyst: #A45EE5;
+    --purple-rasin: #290916;
+    --purple-orchid: #AF69EF;
+    --purple-mulberry: #4C0121;
+    --purple-wine: #2C041C;
+
+    --beige: #f5f5dc;
+}
