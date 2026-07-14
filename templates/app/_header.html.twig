@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col d-flex justify-content-center align-items-center py-3">
                 <a href="{{ path('app_home') }}" class="app-name-link">
-                    <span class="app-name">{{ app_domain }}</span>
+                    <span class="app-name">{{ app_name ~ '.' ~ app_domain }}</span>
                 </a>
             </div>
         </div>
@@ -17,17 +17,24 @@
         <div class="nav nav-pills flex-row flex-nowrap overflow-auto py-2">
             {% set currentRoute = app.request.attributes.get('_route') %}
 
-            <a class="nav-link text-center {{ currentRoute == 'app_annales' ? 'active' : '' }}" href="">
-                {{ 'header.annales' | trans }}
+            {# post #}
+            <a class="nav-link text-center {{ currentRoute == 'app_posts' ? 'active' : '' }}" href="">
+                {{ 'header.posts' | trans }}
             </a>
-            <a class="nav-link text-center {{ currentRoute == 'app_blog' ? 'active' : '' }}" href="">
-                {{ 'header.blog' | trans }}
+
+            {# categories #}
+            <a class="nav-link text-center {{ currentRoute == 'app_categories' ? 'active' : '' }}" href="">
+                {{ 'header.categories' | trans }}
             </a>
-            <a class="nav-link text-center {{ currentRoute == 'app_about' ? 'active' : '' }}" href="">
-                {{ 'header.about' | trans }}
+
+            {# search #}
+            <a class="nav-link text-center {{ currentRoute == 'app_search' ? 'active' : '' }}" href="">
+                {{ 'header.search' | trans }}
             </a>
-            <a class="nav-link text-center {{ currentRoute == 'app_contact' ? 'active' : '' }}" href="">
-                {{ 'header.contact' | trans }}
+
+            {# new entry #}
+            <a class="nav-link text-center {{ currentRoute == 'app_new_entry' ? 'active' : '' }}" href="">
+                {{ 'header.new_entry' | trans }}
             </a>
         </div>
     </div>

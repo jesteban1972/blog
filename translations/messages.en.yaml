@@ -18,6 +18,12 @@ footer:
     privacy_policy: "privacy policy"
     terms_and_conditions: "terms & conditions"
 
+header:
+    categories: "categories"
+    new_entry: "new entry"
+    posts: "posts"
+    search: "search"
+
 homepage:
     intro: "you are in the blog of pendoncete.org, a space conceived to provide ideas and amusement to your lechery existence. have fun!"
     seo:
@@ -30,11 +36,12 @@ homepage:
     welcome_visitor: "welcome!"
 
 sidebar:
-    close_sidebar: "close sidebar"
+    #close_sidebar: "close sidebar"
     create_account: "create account"
     homepage: "home"
     info: "info"
     log_in: "log in"
     log_out: "log out"
     not_logged_in: "you are not logged in"
+    pendoncete_org: "pendoncete.org >"
     ux_language: "UX language"
