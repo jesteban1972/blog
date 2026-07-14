@@ -1,0 +1,26 @@
+{# file ~/Sites/blog/templates/app/_footer.html.twig #}
+
+<div class="copyright-strip">
+    <p>© {{ "now"|date("Y") }} pendoncete.org</p>{# TODO: use var app_domain #}
+</div>
+
+<div class="subfooter-strip">
+    <div class="subfooter-container">
+
+        {% set current_route = app.request.attributes.get('_route') %}
+        {% set callback_url = current_route ? url(current_route, app.request.attributes.get('_route_params')) : url('app_home') %}
+
+
+        <div class="subfooter-links">
+            {#            <a href="{{ path('app_membership', {'callback_url': callback_url}) }}">{{ 'footer.membership_and_features' | trans }}</a>#}
+{#            <a href="{{ path('app_credits') }}">{{ 'credits.title' | trans }}</a>#}
+        </div>
+
+        <div class="legal-links">
+            <a href="{{ app_auth_base_url }}/legal?framed=false&callback_url={{ callback_url|url_encode }}">{{ 'footer.legal_notice' | trans }}</a>
+            <a href="{{ app_auth_base_url }}/terms?framed=false&callback_url={{ callback_url|url_encode }}">{{ 'footer.terms_and_conditions' | trans }}</a>
+            <a href="{{ app_auth_base_url }}/privacy?framed=false&callback_url={{ callback_url|url_encode }}">{{ 'footer.privacy_policy' | trans }}</a>
+            <a href="{{ app_auth_base_url }}/cookie?framed=false&callback_url={{ callback_url|url_encode }}">{{ 'footer.cookie_policy' | trans }}</a>
+        </div>
+    </div>
+</div>

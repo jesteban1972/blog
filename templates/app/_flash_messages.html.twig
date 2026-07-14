@@ -1,0 +1,23 @@
+{# file ~/Sites/blog/templates/app/_flash_messages.html.twig #}
+
+<div class="flash-messages-container">
+    {% for label, messages in app.flashes %}
+        {# Map 'error' to 'danger' for Bootstrap compatibility #}
+        {% set alertClass = (label == 'error' or label == 'danger') ? 'danger' : 'success' %}
+
+        {# Optional: map 'info' or 'warning' if you use them in your controllers #}
+        {% if label == 'warning' %}{% set alertClass = 'warning' %}{% endif %}
+        {% if label == 'info' %}{% set alertClass = 'info' %}{% endif %}
+
+        {% for message in messages %}
+            <div class="alert alert-{{ alertClass }} alert-dismissible fade show shadow-sm" role="alert">
+                <div class="d-flex align-items-center">
+                    {# Icon feedback based on type #}
+                    <i class="fa-solid {{ alertClass == 'danger' ? 'fa-circle-xmark' : 'fa-circle-check' }} me-2"></i>
+                    <div>{{ message | raw }}</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>

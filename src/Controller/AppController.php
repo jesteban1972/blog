@@ -2,14 +2,17 @@
 
 namespace App\Controller;
 
+use App\Service\CookieService;
+use App\Service\JwtDecoderService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Routing\Attribute\Route;
+
 
 #[Route('/')]
-
 class AppController extends AbstractController
 {
     public function __construct(
@@ -20,4 +23,13 @@ class AppController extends AbstractController
         private string $callbackUrl,
         private string $appSecret,
     ) {}
+
+    #[Route('/', name: 'app_home')]
+    public function index(): Response
+    {
+        // force the lazy firewall to hydrate the user:
+        $user = $this->getUser();
+
+        return $this->render('app/index.html.twig');
+    }
 }

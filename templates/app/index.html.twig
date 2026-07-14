@@ -1,0 +1,46 @@
+{# file ~/Sites/blog/templates/app/index.html.twig #}
+
+{% extends 'app/base.html.twig' %}
+
+{# title override #}
+{% block title %}{{ 'homepage.title' | trans }} | {{ parent() }}{% endblock %}
+
+{# description override #}
+{% block description %}{{ 'homepage.seo.description' | trans }}{% endblock %}
+
+{# keywords override #}
+{% block keywords %}{{ 'homepage.seo.keywords' | trans }}{% endblock %}
+
+{# JSON-LD page name override #}
+{% block page_name %}{{ 'homepage.seo.page_name' | trans }}{% endblock %}
+
+{# JSON-LD page description override #}
+{% block page_description %}{{ 'homepage.seo.description' | trans }}{% endblock %}
+
+{% block main %}
+
+    <h1 class="cartouche-header">{{ 'homepage.seo.h1' | trans }}</h1>
+
+    {% include 'app/_flash_messages.html.twig' %}
+
+{#    <section class="homepage-welcome">#}
+{#        {{ include('_welcome_message.html.twig') }}#}
+{#    </section>#}
+
+    <section class="homepage-grid">
+
+        <div class="pendoncete-card">
+{#            <a href="{{ path('app_annales') }}" class="pendoncete-card-link"></a>#}
+            <h2>{{ 'annales.title' | trans | raw }}</h2>
+            <p>{{ 'annales.index_description' | trans | raw }}</p>
+        </div>
+
+{#        <div class="pendoncete-card">#}
+{#            <a href="{{ path('app_about') }}" class="pendoncete-card-link"></a>#}
+{#            <h2>{{ 'about.title' | trans }}</h2>#}
+{#            <p>{{ 'about.index_description' | trans | raw }}</p>#}
+{#        </div>#}
+
+    </section>
+
+{% endblock %}

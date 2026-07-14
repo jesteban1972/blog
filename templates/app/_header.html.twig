@@ -1,0 +1,45 @@
+{# file ~/Sites/blog/templates/app/_header.html.twig #}
+
+<section class="header-branding">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col d-flex justify-content-center align-items-center py-3">
+                <a href="{{ path('app_home') }}" class="app-name-link">
+                    <span class="app-name">{{ app_domain }}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<nav class="header-navbar">
+    <div id="header-links" class="container-fluid">
+        <div class="nav nav-pills flex-row flex-nowrap overflow-auto py-2">
+            {% set currentRoute = app.request.attributes.get('_route') %}
+
+{#            <a class="nav-link text-center {{ currentRoute == 'app_annales' ? 'active' : '' }}" href="{{ path('app_annales') }}">#}
+{#                {{ 'header.annales' | trans }}#}
+{#            </a>#}
+{#            <a class="nav-link text-center {{ currentRoute == 'app_blog' ? 'active' : '' }}" href="{{ path('app_blog') }}">#}
+{#                {{ 'header.blog' | trans }}#}
+{#            </a>#}
+{#            <a class="nav-link text-center {{ currentRoute == 'app_about' ? 'active' : '' }}" href="{{ path('app_about') }}">#}
+{#                {{ 'header.about' | trans }}#}
+{#            </a>#}
+{#            <a class="nav-link text-center {{ currentRoute == 'app_contact' ? 'active' : '' }}" href="{{ path('app_contact') }}">#}
+{#                {{ 'header.contact' | trans }}#}
+{#            </a>#}
+        </div>
+    </div>
+
+    <div class="mobile-hamburger-bar">
+        <button
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#aside-mobile"
+            aria-label="Open navigation menu"
+        >
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
+</nav>

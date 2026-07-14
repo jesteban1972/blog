@@ -1,6 +1,15 @@
-twig:
-    file_name_pattern: '*.twig'
+# file ~/Sites/blog/config/packages/twig.yaml
 
-when@test:
-    twig:
-        strict_variables: true
+twig:
+
+    form_themes: ['bootstrap_5_layout.html.twig']
+    file_name_pattern: '*.twig'
+    strict_variables: true
+    debug: true
+    globals:
+        app_name: 'blog'
+        app_domain: 'pendoncete.org'
+        app_cookie_domain: '%env(resolve:JWT_COOKIE_DOMAIN)%'
+        app_auth_base_url: '%env(resolve:AUTH_BASE_URL)%'
+        app_cdn: '%env(CDN)%'
+

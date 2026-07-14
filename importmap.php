@@ -1,4 +1,5 @@
 <?php
+// file ~/Sites/blog/importmap.php
 
 /**
  * Returns the importmap for this application.
@@ -14,6 +15,14 @@
 return [
     'app' => [
         'path' => './assets/app.js',
+        'entrypoint' => true,
+    ],
+    'language-bar' => [
+        'path' => './assets/scripts/language-bar.js',
+        'entrypoint' => true,
+    ],
+    'age-verification' => [
+        'path' => './assets/scripts/age-verification.js',
         'entrypoint' => true,
     ],
     '@hotwired/stimulus' => [

@@ -1,0 +1,5 @@
+age_verification:
+    exit: "exit"
+    legal_disclaimer: "this site complies with EU Digital Services Act (DSA) regulations and Spanish minor protection laws (LOPIVI). by entering, you declare under your own responsibility that you are of legal age."
+    message: "this site contains content intended for adults. by proceeding, you confirm that you are 18 years of age or older."
+    title: "adult audience"

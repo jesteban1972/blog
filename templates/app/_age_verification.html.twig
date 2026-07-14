@@ -1,0 +1,26 @@
+{# file ~/Sites/blog/templates/app/_age_verification.html.twig #}
+
+<div id="age-verification-overlay" style="display: none;">
+
+    <div class="age-verification-box">
+
+        <span class="age-verification-domain">{{ app_domain }}</span>
+
+        <div class="age-verification-language-bar">
+            {% include 'app/_language_bar.html.twig' %}
+        </div>
+
+        <h2>{{ 'age_verification.title' | trans }}</h2>
+        <p>{{ 'age_verification.message' | trans }}</p>
+
+        <div class="age-verification-buttons">
+            <button id="age-verification-btn">{{ 'global_labels.forms.proceed' | trans }}</button>
+            <a href="https://google.com" class="age-verification-exit-link">{{ 'age_verification.exit' | trans }}</a>
+        </div>
+
+        <div class="age-verification-legal-disclaimer">
+            {{ 'age_verification.legal_disclaimer' | trans }}
+        </div>
+
+    </div>
+</div>
