@@ -1,0 +1,28 @@
+# file ~/Sites/blog/docker-compose.yml
+# Docker conf file for blog app
+
+name: blog
+
+services:
+  php:
+    container_name: blog-php
+    build:
+      context: ./docker
+      dockerfile: Dockerfile
+      args:
+        HOST_UID: ${HOST_UID:-1000}
+        HOST_GID: ${HOST_GID:-1000}
+    volumes:
+      - .:/var/www/html
+    networks:
+      - db_pendoncete_net    # For MariaDB connection
+      - apps_pendoncete_net  # For Gateway and Auth-Mailer communication
+    environment:
+      APP_ENV: ${APP_ENV:-dev}
+      TZ: Europe/Madrid
+
+networks:
+  db_pendoncete_net:
+    external: true
+  apps_pendoncete_net:
+    external: true
