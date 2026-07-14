@@ -1,15 +1,50 @@
-# see https://symfony.com/doc/current/reference/configuration/framework.html
+# file ~/Sites/blog/config/packages/framework.yaml
+
 framework:
+
+    # security secret (often required by Symfony for CSRF, etc.)
     secret: '%env(APP_SECRET)%'
 
-    # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    csrf_protection: true
 
-    #esi: true
-    #fragments: true
+    trusted_proxies: '%env(TRUSTED_PROXIES)%'
 
-when@test:
-    framework:
-        test: true
-        session:
-            storage_factory_id: session.storage.factory.mock_file
+    trusted_hosts: '%env(TRUSTED_HOSTS)%'
+
+    # trust the headers sent by your Gateway
+    trusted_headers:
+        - 'x-forwarded-for'
+        - 'x-forwarded-proto'
+        - 'x-forwarded-host'
+        - 'x-forwarded-port'
+
+    # session settings
+    session:
+        name: BLOG_SESS
+        handler_id: null
+        cookie_secure: true
+        cookie_samesite: lax
+        cookie_path: /
+        storage_factory_id: session.storage.factory.native
+        cookie_domain: '%env(JWT_COOKIE_DOMAIN)%'
+        cookie_lifetime: 86400 # 24 hours
+        gc_maxlifetime: 86400
+
+    # error controller
+    error_controller: 'App\Controller\ErrorController::showException'
+
+    # validation translations
+    validation:
+        translation_domain: messages
+
+    # assets in the external CDN
+    assets:
+        packages:
+            cdn:
+                base_urls: [ '%env(CDN)%' ]
+                # this adds ?v=XXX to every asset URL automatically:
+                #version: 'v1.0.1'
+                #version_format: '%%s?version=%%s'
+
+    # SEO indexing:
+    disallow_search_engine_index: false

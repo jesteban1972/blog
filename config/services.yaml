@@ -1,23 +1,82 @@
-# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+# file ~/Sites/blog/config/services.yaml
 
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-# See also https://symfony.com/doc/current/service_container/import.html
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    env(TZ): 'Europe/Madrid'
+    app.annales_base_url: '%env(ANNALES_BASE_URL)%'
+    app.auth_base_url: '%env(AUTH_BASE_URL)%'
+    app.google_maps_api_key: '%env(GOOGLE_MAPS_API_KEY)%'
+    app.google_geocoding_api_key: '%env(GOOGLE_GEOCODING_API_KEY)%'
+    app.google_translation_api_key: '%env(GOOGLE_TRANSLATION_API_KEY)%'
+    app.cdn: '%env(CDN)%'
 
 services:
-    # default configuration for services in *this* file
+
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $mainLogger: '@monolog.logger.main'
+            $ssoLogger: '@monolog.logger.sso'
+            $errorLogger: '@monolog.logger.error'
+            $toolsLogger: '@monolog.logger.tools'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
+        exclude:
+            - '../src/{DependencyInjection,Entity,Tests,Kernel.php}'
+
+    #    App\OpenApi\JwtDecorator:
+    #        decorates: 'api_platform.openapi.factory'
+    #        arguments: [ '@.inner' ]
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Monolog\ToolsLineFormatter:
+        class: Monolog\Formatter\LineFormatter
+        arguments:
+            - "[%%datetime%%] %%channel%%.%%level_name%%: %%message%% %%context%% %%extra%%\n"
+            - 'Y-m-d H:i:s'
+            - true   # allow inline line breaks in messages
+            - true   # include stack traces if available
+
+    App\Controller\AppController:
+        arguments:
+            $authBaseUrl: '%env(AUTH_BASE_URL)%'
+            $callbackUrl: '%env(APP_CALLBACK_URL)%'
+            $appSecret: '%env(APP_SECRET)%'
+
+    App\Controller\LoginController:
+        arguments:
+            $authBaseUrl: '%env(AUTH_BASE_URL)%'
+            $callbackUrl: '%env(APP_CALLBACK_URL)%'
+            $appSecret: '%env(APP_SECRET)%'
+
+    App\Controller\LogoutController:
+        arguments:
+            $authBaseUrl: '%env(AUTH_BASE_URL)%'
+            $appSecret: '%env(APP_SECRET)%'
+
+    App\Service\JwtDecoderService:
+        arguments:
+            $publicKeyPath: '%env(resolve:JWT_PUBLIC_KEY)%'
+
+    App\Service\CookieService:
+        arguments:
+            $cookieDomain: '%env(JWT_COOKIE_DOMAIN)%'
+
+    App\Security\AuthBridgeAuthenticator:
+        arguments:
+            $cookieDomain: '%env(JWT_COOKIE_DOMAIN)%'
+            # immuneRoutes: we allow these routes to proceed regardless of user status, to prevent redirection loops
+            $immuneRoutes:
+                - 'app_logout'
+                - 'app_logout_local'
+                - 'app_login'
+                - 'app_login_callback'
+                - 'app_info'                # If you want public info pages to stay immune
+            $authIntrospectUrl: 'http://auth-php/introspect'
+            $authRefreshUrl: 'http://auth-php/refresh'
+            $authPublicUrl: '%env(resolve:AUTH_BASE_URL)%'
