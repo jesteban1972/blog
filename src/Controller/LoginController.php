@@ -69,7 +69,7 @@ class LoginController extends AbstractController
         ////////////////////////////////////////////////////////////////////////
         /// render template
 
-        return $this->render('app/login.html.twig', [
+        return $this->render('app/auth_login.html.twig', [
             'authUrl' => $authUrl,
             'redirectUri' => $redirectUri,
             'sig' => $sig,

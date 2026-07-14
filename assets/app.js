@@ -13,16 +13,16 @@ import 'bootstrap';
 // import FontAwesome:
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
+// import Stimulus:
 import './stimulus_bootstrap.js';
 
-// import Stimulus:
-import { app } from 'bootstrap_app'; // TODO: my IDE grays out this line
+//import { app } from 'bootstrap_app'; // TODO: my IDE grays out this line
 
 /*
  * this file will be included onto the page via the importmap() Twig function,
  * which should already be in your base.html.twig.
  */
-import './styles/app.css';
+//import './styles/app.css';
 
 // event listener to handle the tab logout broadcast (i.e. the logout propagation through different tabs):
 window.addEventListener('storage', (ev) => {

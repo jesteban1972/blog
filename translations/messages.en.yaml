@@ -4,13 +4,37 @@ age_verification:
     message: "this site contains content intended for adults. by proceeding, you confirm that you are 18 years of age or older."
     title: "adult audience"
 
+error_messages:
+    base: "oops! something went sideways in our logic. we’re currently trying to negotiate a peace treaty with the server :)"
+    db: "oops! our DB has decided to take an unscheduled coffee break. it should be back once it's finished its espresso :)"
+    401: "oops! our server has a bad case of amnesia and has forgotten who you are. let's head to the login page to refresh its memory :)"
+    403: "oops! it looks like you’ve wandered into the restricted archives. even explorers need a secret handshake for this one, and we haven't taught it to everyone yet :)"
+    404: "oops! it seems the page you are looking for has vanished into the digital void. even our search party can't find it :)"
+    500: "oops! something inside our engine room just went 'clunk'. our digital mechanics are on it :)"
+
+footer:
+    cookie_policy: "cookie policy"
+    legal_notice: "legal notice"
+    privacy_policy: "privacy policy"
+    terms_and_conditions: "terms & conditions"
+
 homepage:
     intro: "you are in the blog of pendoncete.org, a space conceived to provide ideas and amusement to your lechery existence. have fun!"
     seo:
         description: "explore Pendoncete's digital ecosystem: innovative tools and spicy chronicles built from flesh and lechery. Join the community and start your own annales today."
-        h1: "homepage"
+        h1: "blog homepage"
         keywords: "Pendoncete, blog.pendoncete.org, blog"
         page_name: "pendoncete.org blog"
     title: "blog homepage"
     welcome_user: "welcome back, %username%!"
     welcome_visitor: "welcome!"
+
+sidebar:
+    close_sidebar: "close sidebar"
+    create_account: "create account"
+    homepage: "home"
+    info: "info"
+    log_in: "log in"
+    log_out: "log out"
+    not_logged_in: "you are not logged in"
+    ux_language: "UX language"

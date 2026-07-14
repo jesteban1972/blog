@@ -1,0 +1,62 @@
+/** file ~/Sites/blog/assets/styles/footer.css */
+
+/*
+ * unified footer stylesheet for the pendoncete.org ecosystem.
+ */
+
+footer {
+    width: 100%;
+}
+
+.copyright-strip {
+    background-color: var(--purple-jam);
+    color: var(--purple-periwinkle);
+    padding: 20px 0;
+    text-align: center;
+}
+
+.copyright-strip p {
+    margin: 0;
+}
+
+.subfooter-strip {
+    background-color: var(--purple-periwinkle);
+    padding: 10px 40px;
+}
+
+/* master container to allow for split-link layouts */
+.subfooter-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+/* left-aligned links */
+.subfooter-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+}
+
+/* right-aligned links */
+.legal-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.subfooter-links a,
+.legal-links a {
+    color: var(--purple-jam);
+    text-decoration: none;
+    font-size: 0.75rem;
+    text-transform: lowercase;
+}
+
+.subfooter-links a:hover,
+.legal-links a:hover {
+    color: var(--purple-violet);
+    text-decoration: underline;
+}

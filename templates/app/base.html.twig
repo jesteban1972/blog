@@ -34,84 +34,84 @@
 
 <body>
 
-{% include 'app/_age_verification.html.twig' %}
+    {% include 'app/_age_verification.html.twig' %}
 
-<header>
-    {% include 'app/_header.html.twig' %}
-</header>
+    <header>
+        {% include 'app/_header.html.twig' %}
+    </header>
 
-<!-- Bootstrap 5 responsive design -->
-<div class="main-wrapper">
+    <!-- Bootstrap 5 responsive design -->
+    <div class="main-wrapper">
 
-    {# main contents #}
-    <main>
-        {% block main %}{% endblock %}
-    </main>
+        {# main contents #}
+        <main>
+            {% block main %}{% endblock %}
+        </main>
 
-    <aside>
-        {% block aside %}
-{#            {% include '_aside.html.twig' %}#}
-        {% endblock %}
-    </aside>
-
-</div>
-
-<!-- mobile sidebar offcanvas -->
-<div class="offcanvas offcanvas-start" tabindex="-1" id="aside-mobile">
-
-    <div class="offcanvas-header">
-        <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="offcanvas"
-            aria-label="Close"
-            title="{{ 'sidebar.close_sidebar' | trans }}"
-        >
-        </button>
-    </div>
-
-    <div class="offcanvas-body">
-
-        {# sidebar #}
-{#        {% include '_aside.html.twig' %}#}
+        <aside>
+            {% block aside %}
+                {% include 'app/_aside.html.twig' %}
+            {% endblock %}
+        </aside>
 
     </div>
 
-</div>
+    <!-- mobile sidebar offcanvas -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="aside-mobile">
 
-<footer>
-    {% include 'app/_footer.html.twig' %}
-</footer>
+        <div class="offcanvas-header">
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"
+                title="{{ 'sidebar.close_sidebar' | trans }}"
+            >
+            </button>
+        </div>
 
-{% block javascripts %}
-    {{ importmap((['app', 'language-bar', 'age-verification'])) }}
+        <div class="offcanvas-body">
 
-    <!-- SEO script(s) -->
-    {% block seo_script %}
-        <script type="application/ld+json">
-            {
-                  "@context": "https://schema.org",
-                  "@type": "WebPage",
-                  "name": "{% block page_name %}{{ app_domain }}{% endblock %}",
-                        "description": "{% block page_description %}{{ app_domain }}{% endblock %}",
-                        "author": {
-                          "@type": "Person",
-                          "name": "Pendoncete"
-                        },
-                        "publisher": {
-                            "@type": "Organization",
-                            "name": "blog.pendoncete.org",
-                            "url": "https://blog.pendoncete.org",
-                            "logo": {
-                                "@type": "ImageObject",
-                                "url": "{{ asset('images/artwork/chameleon.png', 'cdn') }}"
+            {# sidebar #}
+            {% include 'app/_aside.html.twig' %}
+
+        </div>
+
+    </div>
+
+    <footer>
+        {% include 'app/_footer.html.twig' %}
+    </footer>
+
+    {% block javascripts %}
+        {{ importmap((['app', 'language-bar', 'age-verification'])) }}
+
+        <!-- SEO script(s) -->
+        {% block seo_script %}
+            <script type="application/ld+json">
+                {
+                      "@context": "https://schema.org",
+                      "@type": "WebPage",
+                      "name": "{% block page_name %}{{ app_domain }}{% endblock %}",
+                            "description": "{% block page_description %}{{ app_domain }}{% endblock %}",
+                            "author": {
+                              "@type": "Person",
+                              "name": "Pendoncete"
+                            },
+                            "publisher": {
+                                "@type": "Organization",
+                                "name": "blog.pendoncete.org",
+                                "url": "https://blog.pendoncete.org",
+                                "logo": {
+                                    "@type": "ImageObject",
+                                    "url": "{{ asset('images/artwork/chameleon.png', 'cdn') }}"
+                                }
                             }
-                        }
-                  }
-        </script>
+                      }
+            </script>
+        {% endblock %}
+
     {% endblock %}
 
-{% endblock %}
-
-</body>
+    </body>
 </html>

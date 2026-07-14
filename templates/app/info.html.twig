@@ -1,0 +1,37 @@
+{# file ~/Sites/blog/templates/app/info #}
+
+{% extends 'app/base.html.twig' %}
+
+{# title override #}
+{% block title %}{{ 'info.title' | trans }} | {{ parent() }}{% endblock %}
+
+{# description override #}
+{% block description %}{{ 'info.seo.description' | trans }}{% endblock %}
+
+{# keywords override #}
+{% block keywords %}{{ 'info.seo.keywords' | trans }}{% endblock %}
+
+{# JSON-LD page name override #}
+{% block page_name %}{{ 'info.seo.page_name' | trans }}{% endblock %}
+
+{# JSON-LD page description override #}
+{% block page_description %}{{ 'info.seo.description' | trans }}{% endblock %}
+
+{% block main %}
+    <h1 class="cartouche-header">{{ 'info.seo.h1' | trans }}</h1>
+
+    <div class="info-text">
+        {{ 'info.text' | trans | raw }}
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{{ path('app_home') }}" class="text-decoration-none small text-secondary">
+            <i class="bi bi-arrow-left me-1"></i>{{ 'contact.back_to_home' | trans }}
+        </a>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/info.css') }}">
+{% endblock %}

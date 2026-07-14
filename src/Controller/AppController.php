@@ -32,4 +32,30 @@ class AppController extends AbstractController
 
         return $this->render('app/index.html.twig');
     }
+
+    #[Route('/info', name: 'app_info')]
+    public function info(): Response
+    {
+        return $this->render('app/info.html.twig');
+    }
+
+    #[Route('/signup', name: 'app_signup', methods: ['GET', 'POST'])]
+    public function signup(): Response
+    {
+        ////////////////////////////////////////////////////////////////////////
+        /// generate signature to send to auth server
+
+        $authUrl = $this->authBaseUrl . '/signup';
+        $redirectUri = $this->callbackUrl;
+        $sig = hash_hmac('sha256', $redirectUri, $this->appSecret);
+
+        ////////////////////////////////////////////////////////////////////////
+        /// render template
+
+        return $this->render('auth_signup.html.twig', [
+            'authUrl' => $authUrl,
+            'redirectUri' => $redirectUri,
+            'sig' => $sig,
+        ]);
+    }
 }

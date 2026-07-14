@@ -1,0 +1,76 @@
+{# file ~/Sites/blog/templates/app/_aside.html.twig #}
+
+<div id="sidebar">
+
+    <div id="sidebar-user">
+
+        {# language bar #}
+        <div class="sidebar-language-header custom-sidebar-divider pb-3 mb-3">
+            {# Changed to row, justify-content-between and align-items-baseline #}
+            <div class="d-flex flex-row align-items-baseline justify-content-between">
+                <span class="small text-muted me-2">{{ 'sidebar.ux_language' | trans }}</span>
+                <div class="flex-grow-1">
+                    {% include 'app/_language_bar.html.twig' %}
+                </div>
+            </div>
+        </div>
+
+        {% if app.user %} {# logged in view #}
+
+            {% set current_route = app.request.attributes.get('_route') ?: 'app_home' %}
+            {% set current_params = app.request.attributes.get('_route_params') ?: {} %}
+            {% set callback_url = url(current_route, current_params) %}
+
+            <div class="user-info">
+
+                <p class="user-greeting text-center">
+                    <a href="{{ app_auth_base_url }}/user-info?callback_url={{ callback_url|url_encode }}"
+                       style="text-decoration: none; color: inherit;">
+                        <i class="fa-regular fa-circle-user fa-sm me-2"></i>{{ app.user.getUsername() }}
+                    </a>
+                </p>
+
+                <p class="actions">
+                    <a href="{{ path('app_logout') }}" class="btn btn-sm btn-outline-secondary w-100">
+                        {{ 'sidebar.log_out' | trans }}
+                    </a>
+                </p>
+
+            </div>
+
+        {% else %} {# logged out view #}
+
+            <div class="auth-options">
+
+                <a
+                    href="{{ path(app.request.attributes.get('_route') == 'app_home' ? 'app_info' : 'app_home') }}"
+                    class="btn btn-outline-primary w-100 mb-2"
+                >
+                    {% if app.request.attributes.get('_route') == 'app_home' %}
+                        <i class="fa-solid fa-circle-info fa-sm me-1"></i> {{ 'sidebar.info' | trans }}
+                    {% else %}
+                        <i class="fa-solid fa-house-chimney fa-sm me-1"></i> {{ 'sidebar.homepage' | trans }}
+                    {% endif %}
+                </a>
+
+                <p class="text-muted text-center mb-2">{{ 'sidebar.not_logged_in' | trans }}</p>
+
+                <a
+                    href="{{ path('app_login') }}"
+                    class="btn btn-primary w-100 mb-2"
+                >
+                    {{ 'sidebar.log_in' | trans }}
+                </a>
+
+                <a
+                    href="{{ path('app_signup') }}"
+                    class="btn btn-outline-primary w-100"
+                >
+                    {{ 'sidebar.create_account' | trans }}
+                </a>
+
+            </div>
+        {% endif %}
+
+    </div>
+</div>

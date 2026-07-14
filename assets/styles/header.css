@@ -1,0 +1,145 @@
+/** file ~/Sites/blog/assets/styles/header.css */
+
+/**
+ * custom header stylesheet.
+ */
+
+header {
+    background: var(--purple-jam);
+    color: var(--purple-periwinkle);
+    position: sticky;
+    z-index: 1030;
+    margin-bottom: 0;
+    padding-bottom: 0.8rem;
+    top: calc(var(--header-sticky-offset-mobile) * -1) !important;
+}
+
+@media (min-width: 768px) {
+    header {
+        top: calc(var(--header-sticky-offset-desktop) * -1) !important;
+    }
+}
+
+/* --- Branding Section --- */
+
+.app-name-link {
+    text-decoration: none;
+    display: inline-block;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.header-branding .app-name {
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
+    font-weight: bold;
+    color: var(--purple-periwinkle);
+    transition: color 0.2s ease;
+}
+
+/* Branding Interaction States (Desktop Hover & Mobile Touch) */
+.app-name-link:hover .app-name,
+.app-name-link:active .app-name {
+    color: var(--purple-lavender);
+}
+
+.app-name-link:hover {
+    opacity: 0.9;
+}
+
+.app-name-link:active {
+    transform: scale(0.96); /* Tactile "press" feedback for mobile */
+}
+
+/* --- Navbar Section --- */
+
+.header-navbar {
+    background-color: var(--purple-jam);
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+/* --- Navigation Pills --- */
+
+#header-links .nav-pills {
+    background-color: var(--purple-wine);
+    padding: 5px;
+    border-radius: 50px;
+    border: 1px solid var(--purple-mauve);
+
+    /* Mobile-First: Swipe Logic */
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    /* Centered Island Logic */
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+#header-links .nav-pills::-webkit-scrollbar {
+    display: none;
+}
+
+#header-links .nav-link {
+    color: var(--purple-periwinkle);
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border-radius: 50px;
+    margin: 0 2px;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    padding: 0.4rem 1.2rem;
+
+    /* Prevent links from stretching unevenly */
+    flex: 0 0 auto !important;
+}
+
+#header-links .nav-link:hover {
+    background-color: var(--purple-lavender);
+    color: var(--purple-violet);
+    transform: translateY(-1px);
+}
+
+#header-links .nav-link.active {
+    background-color: var(--purple-lilac) !important;
+    color: white !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Hamburger Container --- */
+
+.mobile-hamburger-bar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.5rem 1rem;
+}
+
+.mobile-hamburger-bar button {
+    background: var(--purple-wine);
+    color: var(--purple-periwinkle);
+    border: 1px solid var(--purple-mauve);
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* --- Desktop Refinements --- */
+
+@media (min-width: 768px) {
+    .mobile-hamburger-bar {
+        display: none !important;
+    }
+
+    #header-links .nav-link {
+        font-size: 1rem;
+        padding: 0.5rem 1.5rem;
+    }
+
+    #header-links .nav-pills {
+        overflow: visible;
+        justify-content: center;
+    }
+}

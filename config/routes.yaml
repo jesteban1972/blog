@@ -1,11 +1,50 @@
-# yaml-language-server: $schema=../vendor/symfony/routing/Loader/schema/routing.schema.json
+# file ~/Sites/blog/config/routes.yaml
 
-# This file is the entry point to configure the routes of your app.
-# Methods with the #[Route] attribute are automatically imported.
-# See also https://symfony.com/doc/current/routing.html
+# --- SECTION 1: INFRASTRUCTURE (Absolute Root) ---
+# these routes MUST NOT have a locale prefix to keep SSO signatures valid.
 
-# To list all registered routes, run the following command:
-#   bin/console debug:router
+app_sitemap:
+    path: /sitemap.xml
+    controller: App\Controller\AppController::sitemap
+    defaults: { _format: xml }
 
-controllers:
-    resource: routing.controllers
+# SSO handshake (keep these at the absolute root)
+app_login:
+    path: /login
+    controller: App\Controller\LoginController::login
+    methods: [GET, POST]
+
+app_login_callback:
+    path: /login/callback
+    controller: App\Controller\LoginController::callback
+
+app_logout:
+    path: /logout
+    controller: App\Controller\LogoutController::logout
+
+app_logout_local:
+    path: /logout_local
+    controller: App\Controller\LogoutController::logoutLocal
+
+app_logged_out:
+    path: /logged_out
+    controller: App\Controller\LogoutController::loggedOut
+
+# --- SECTION 2: LOCALIZED CONTENT ---
+# this imports everything else and wraps it in /{_locale}
+app_localized:
+    resource: ../src/Controller/
+    type: attribute
+    prefix: '/{_locale}'
+    requirements:
+        _locale: en|es|el
+    defaults:
+        _locale: en
+
+# --- SECTION 3: FALLBACK ---
+# handles the bare "https://pendoncete.org/"
+app_root:
+    path: /
+    controller: App\Controller\AppController::index
+    defaults:
+        _locale: en

@@ -1,0 +1,144 @@
+/** file ~/Sites/blog/assets/styles/sidebar.css */
+
+/** general {{ */
+#sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: var(--purple-periwinkle);
+    border-right: 1px solid var(--purple-iris);
+}
+/** }} general */
+
+/** user info {{ */
+#sidebar-user {
+    background-color: var(--purple-eggplant);
+    color: var(--beige);
+    padding: 1.2rem;
+    border-radius: 12px;
+    z-index: 10;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.user-greeting {
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: var(--purple-periwinkle);
+    margin-bottom: 0.8rem;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* External Link styles */
+#sidebar-user a.external-link {
+    color: var(--purple-periwinkle);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.02rem;
+    transition: color 0.2s ease-in-out;
+}
+
+#sidebar-user a.external-link:hover,
+#sidebar-user a.external-link:active,
+#sidebar-user a.external-link:visited {
+    text-decoration: none;
+    color: var(--purple-lavender);
+}
+
+/* Button Overrides */
+#sidebar-user .btn-outline-secondary {
+    border-color: var(--purple-mauve);
+    color: var(--purple-lavender);
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+#sidebar-user .btn-outline-secondary:hover {
+    background-color: var(--purple-boysenberry);
+    border-color: var(--purple-magenta);
+    color: var(--beige);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Primary Button (The "Log In" gem - Discreet Version) */
+#sidebar-user .btn-primary {
+    background-color: var(--purple-jam);
+    border-color: var(--purple-sangria);
+    color: var(--beige);
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+#sidebar-user .btn-primary:hover {
+    background-color: var(--purple-magenta);
+    border-color: var(--purple-lilac);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(161, 4, 90, 0.3);
+}
+
+/* Outline Primary (The "Information" & "Create Account" silk) */
+#sidebar-user .btn-outline-primary {
+    border-color: var(--purple-iris);
+    color: var(--purple-lavender);
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+#sidebar-user .btn-outline-primary:hover {
+    background-color: var(--purple-iris);
+    border-color: var(--purple-amethyst);
+    color: var(--beige);
+}
+
+/* Small text tweaks for the "Not logged in" line */
+#sidebar-user .text-muted {
+    color: var(--purple-periwinkle) !important;
+    opacity: 0.7;
+    font-size: 0.75rem;
+    letter-spacing: 0.05rem;
+}
+/** }} user info */
+
+/** language dropdown {{ */
+.custom-sidebar-divider {
+    border-bottom: 1px solid #785383;
+}
+.sidebar-language-header .text-muted {
+    font-size: 0.8rem;
+    white-space: nowrap;
+    color: var(--purple-periwinkle) !important;
+    opacity: 0.8;
+}
+.sidebar-language-header .btn-secondary.dropdown-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(49, 20, 50, 0.4);
+    border: 1px solid #785383;
+    padding: 0.3rem 0.6rem;
+    color: var(--purple-lavender);
+}
+#ux-language {
+    flex-grow: 1;
+    text-align: left;
+    font-size: 0.85rem;
+}
+.sidebar-language-header .dropdown-menu {
+    background-color: #311432;
+    border: 1px solid #785383;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+}
+.sidebar-language-header .dropdown-item {
+    color: var(--purple-periwinkle);
+    font-size: 0.85rem;
+    text-align: center;
+}
+.sidebar-language-header .dropdown-item:hover {
+    background-color: var(--purple-mauve);
+    color: var(--beige);
+}
+/** }} language dropdown */

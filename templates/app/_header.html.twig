@@ -17,18 +17,18 @@
         <div class="nav nav-pills flex-row flex-nowrap overflow-auto py-2">
             {% set currentRoute = app.request.attributes.get('_route') %}
 
-{#            <a class="nav-link text-center {{ currentRoute == 'app_annales' ? 'active' : '' }}" href="{{ path('app_annales') }}">#}
-{#                {{ 'header.annales' | trans }}#}
-{#            </a>#}
-{#            <a class="nav-link text-center {{ currentRoute == 'app_blog' ? 'active' : '' }}" href="{{ path('app_blog') }}">#}
-{#                {{ 'header.blog' | trans }}#}
-{#            </a>#}
-{#            <a class="nav-link text-center {{ currentRoute == 'app_about' ? 'active' : '' }}" href="{{ path('app_about') }}">#}
-{#                {{ 'header.about' | trans }}#}
-{#            </a>#}
-{#            <a class="nav-link text-center {{ currentRoute == 'app_contact' ? 'active' : '' }}" href="{{ path('app_contact') }}">#}
-{#                {{ 'header.contact' | trans }}#}
-{#            </a>#}
+            <a class="nav-link text-center {{ currentRoute == 'app_annales' ? 'active' : '' }}" href="">
+                {{ 'header.annales' | trans }}
+            </a>
+            <a class="nav-link text-center {{ currentRoute == 'app_blog' ? 'active' : '' }}" href="">
+                {{ 'header.blog' | trans }}
+            </a>
+            <a class="nav-link text-center {{ currentRoute == 'app_about' ? 'active' : '' }}" href="">
+                {{ 'header.about' | trans }}
+            </a>
+            <a class="nav-link text-center {{ currentRoute == 'app_contact' ? 'active' : '' }}" href="">
+                {{ 'header.contact' | trans }}
+            </a>
         </div>
     </div>
 
