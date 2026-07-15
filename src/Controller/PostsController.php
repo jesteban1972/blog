@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Doctrine\DBAL\Connection;
+use App\Repository\CommunityCommentsRepository;
+use App\Repository\PostsRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,12 +20,14 @@ use Symfony\Component\Routing\Attribute\Route;
 class PostsController extends AbstractController
 {
     /**
-     * @param Connection $connection dbal connection to run raw queries against our blog schema.
+     * @param PostsRepository $postsRepository repository managing post entities.
+     * @param CommunityCommentsRepository $commentsRepository repository managing comments.
      * @param LoggerInterface $mainLogger standard logger.
      */
     public function __construct(
-        private Connection      $connection,
-        private LoggerInterface $mainLogger,
+        private PostsRepository             $postsRepository,
+        private CommunityCommentsRepository $commentsRepository,
+        private LoggerInterface             $mainLogger,
     ) {}
 
     /**
@@ -36,22 +39,20 @@ class PostsController extends AbstractController
         $locale = $request->getLocale();
 
         ////////////////////////////////////////////////////////////////////////
-        /// fetch active posts for the current locale with category metadata
+        /// fetch active posts for the current locale using the paginator configuration
 
-        $posts = $this->connection->fetchAllAssociative(
-            'SELECT p.*, c.name AS category_name, c.slug AS category_slug
-             FROM posts p
-             LEFT JOIN categories c ON p.category_id = c.id
-             WHERE p.locale = :locale
-             ORDER BY p.created_at DESC',
-            ['locale' => $locale]
+        $paginationData = $this->postsRepository->getPostsPaginated(
+            currentPage: 1,
+            resultsPerPage: 25,
+            sortOrder: 'DESC',
+            locale: $locale
         );
 
         ////////////////////////////////////////////////////////////////////////
         /// render list layout
 
         return $this->render('posts/posts.html.twig', [
-            'posts' => $posts,
+            'posts' => $paginationData['paginator'],
             'locale' => $locale,
         ]);
     }
@@ -60,41 +61,28 @@ class PostsController extends AbstractController
      * shows a single post based on its unique slug, along with its comment tree.
      */
     #[Route('/{slug}', name: 'app_post', methods: ['GET'])]
-    public function show(string $slug, Request $request): Response
+    public function post(string $slug, Request $request): Response
     {
         ////////////////////////////////////////////////////////////////////////
-        /// 1. query the post
+        /// 1. fetch post entity metadata matching target slug
 
-        $post = $this->connection->fetchAssociative(
-            'SELECT p.*, c.name AS category_name, c.slug AS category_slug
-             FROM posts p
-             LEFT JOIN categories c ON p.category_id = c.id
-             WHERE p.slug = :slug',
-            ['slug' => $slug]
-        );
+        $post = $this->postsRepository->findOneBySlugWithCategory($slug);
 
         if (!$post) {
             throw $this->createNotFoundException('the requested post does not exist.');
         }
 
         ////////////////////////////////////////////////////////////////////////
-        /// 2. fetch comments related to this post
+        /// 2. fetch community comment objects to allow proxy auto-initialization
 
-        $rawComments = $this->connection->fetchAllAssociative(
-            'SELECT co.*, u.prefer_markdown
-             FROM comments co
-             LEFT JOIN users u ON co.user_id = u.id
-             WHERE co.post_id = :post_id
-             ORDER BY co.created_at ASC',
-            ['post_id' => $post['id']]
-        );
+        $comments = $this->commentsRepository->findCommentsByPostId((int) $post->getId());
 
         ////////////////////////////////////////////////////////////////////////
-        /// 3. build chronological or threaded comment layout representation
+        /// 3. render layout
 
         return $this->render('posts/post.html.twig', [
             'post' => $post,
-            'comments' => $rawComments,
+            'comments' => $comments,
         ]);
     }
 }

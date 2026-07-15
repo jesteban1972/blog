@@ -11,11 +11,6 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Post>
- *
- * @method Post|null find($id, $lockMode = null, $lockVersion = null)
- * @method Post|null findOneBy(array $criteria, array $orderBy = null)
- * @method Post[]    findAll()
- * @method Post[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class PostsRepository extends ServiceEntityRepository
 {
@@ -92,5 +87,19 @@ class PostsRepository extends ServiceEntityRepository
             ->setMaxResults($limit); // limit
 
         return $paginator;
+    }
+
+    /**
+     * fetches a single post by its slug along with its category metadata.
+     */
+    public function findOneBySlugWithCategory(string $slug): ?Post
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.category', 'c')
+            ->addSelect('c')
+            ->andWhere('p.slug = :slug')
+            ->setParameter('slug', $slug)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

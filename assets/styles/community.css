@@ -1,0 +1,243 @@
+/** file ~/Sites/blog/assets/styles/community.css */
+
+/********************************************************************************
+ * widget container & positioning
+ */
+
+.community-widget-anchor {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: -20px; /* centers the 40px height of the trigger/box on the border */
+    z-index: 100;
+}
+
+.community-widgets {
+    display: flex;
+    /* align to the top so the circle stays at the -20px mark */
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.community-box {
+    background-color: var(--purple-orchid);
+    padding: 10px 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    height: auto !important;
+    width: auto;
+    min-width: 180px;
+    max-width: 260px;
+    border: solid thin var(--beige);
+    transition: all 0.3s ease;
+    /* * align-items: flex-start puts the box's top at the circle's top.
+     * no extra margin needed if you want them flush at the top.
+     */
+}
+
+.community-box p,
+.community-box div {
+    margin-bottom: 0 !important;
+}
+
+.community-muted {
+    color: var(--purple-eggplant) !important;
+    font-size: 0.75rem;
+    opacity: 0.85;
+    margin-top: 4px !important;
+}
+
+/********************************************************************************
+ * typography & widget content
+ */
+
+.community-box-title {
+    color: var(--purple-violet);
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    margin-bottom: 2px;
+}
+
+.community-box-message {
+    color: var(--beige);
+    font-size: 0.85rem;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+
+.community-box-message:empty {
+    display: none;
+}
+
+/********************************************************************************
+ * comment trigger button & modal
+ */
+
+.community-comment-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.community-comment-btn {
+    background-color: var(--purple-orchid);
+    color: var(--purple-violet);
+    border: solid thin var(--beige);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.community-comment-btn:hover {
+    transform: scale(1.1) rotate(-10deg);
+    background-color: var(--purple-violet);
+    color: var(--purple-orchid);
+    border-color: var(--purple-orchid);
+}
+
+#comment-modal {
+    z-index: 1070 !important;
+}
+
+/********************************************************************************
+ * community section (violet container)
+ */
+
+.community-section {
+    background-color: var(--purple-orchid);
+    border: solid thin var(--beige);
+    border-radius: 8px;
+    padding: 1.5rem 0;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.community-section-title {
+    color: var(--beige) !important;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    /* * match this to the padding of .box-1st-order.
+     * if it's still not enough, try 2rem
+     */
+    padding-left: 1.25rem;
+}
+
+.community-comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    /* align the list container with the title */
+    padding: 0 1.25rem;
+}
+
+.community-comment-box {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border-bottom: 1px solid rgba(245, 245, 220, 0.1) !important;
+    padding-bottom: 1rem !important;
+    margin-bottom: 0.5rem;
+}
+
+.community-comment-box:last-child {
+    border-bottom: none !important;
+    margin-bottom: 0;
+    padding-bottom: 0 !important;
+}
+
+.community-comment-meta p {
+    color: var(--purple-eggplant) !important;
+    font-size: 0.85rem;
+    margin-bottom: 4px !important;
+}
+
+.community-comment-meta p strong {
+    /* keep the username slightly distinct if you like, or same as above */
+    color: var(--purple-eggplant) !important;
+}
+
+.community-comment-text {
+    /* indent the actual message to the right of the meta line */
+    padding-left: 1rem;
+}
+
+.community-comment-text p {
+    color: var(--beige) !important;
+    font-size: 1rem;
+    line-height: 1.4;
+    /* prevent double spacing at the bottom of a comment */
+    margin-bottom: 0 !important;
+}
+
+/********************************************************************************
+ * star rating component
+ */
+
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 3px;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    font-size: 1.1rem;
+    color: rgba(75, 0, 130, 0.2);
+    cursor: pointer;
+}
+
+.star-rating input:checked + label,
+.star-rating input:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating label.is-average {
+    color: #ffca28 !important;
+}
+
+.star-rating input:disabled + label {
+    cursor: default !important;
+    pointer-events: none;
+}
+
+.rating-stats {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+/********************************************************************************
+ * effects & animations
+ */
+
+.community-box-highlight {
+    border: none !important;
+    background-image:
+        linear-gradient(90deg, var(--purple-violet) 50%, transparent 50%),
+        linear-gradient(90deg, var(--purple-violet) 50%, transparent 50%),
+        linear-gradient(0deg, var(--purple-violet) 50%, transparent 50%),
+        linear-gradient(0deg, var(--purple-violet) 50%, transparent 50%);
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+    background-size: 15px 2px, 15px 2px, 2px 15px, 2px 15px;
+    background-position: 0 0, 0 100%, 0 0, 100% 0;
+    animation: marching-ants 0.8s infinite linear;
+}
+
+@keyframes marching-ants {
+    to {
+        background-position: 15px 0, -15px 100%, 0 -15px, 100% 15px;
+    }
+}

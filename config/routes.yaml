@@ -30,12 +30,19 @@ app_logged_out:
     path: /logged_out
     controller: App\Controller\LogoutController::loggedOut
 
+# admin dashboard layout loader (bypasses the localized prefix constraint)
+app_admin:
+    resource: ../src/Controller/AdminController.php
+    type: attribute
+
 # --- SECTION 2: LOCALIZED CONTENT ---
 # this imports everything else and wraps it in /{_locale}
 app_localized:
     resource: ../src/Controller/
     type: attribute
     prefix: '/{_locale}'
+    exclude:
+        - '../src/Controller/AdminController.php' # <-- excludes it from getting prefixed
     requirements:
         _locale: en|es|el
     defaults:

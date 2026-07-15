@@ -57,7 +57,7 @@ class Post
     /**
      * PERSISTED CLUSTER: relationships
      */
-    #[ORM\OneToMany(mappedBy: 'post', targetEntity: Comment::class, cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'post', targetEntity: CommunityComment::class, cascade: ['remove'])]
     private Collection $comments;
 
     public function __construct()
@@ -161,14 +161,14 @@ class Post
     }
 
     /**
-     * @return Collection<int, Comment>
+     * @return Collection<int, CommunityComment>
      */
     public function getComments(): Collection
     {
         return $this->comments;
     }
 
-    public function addComment(Comment $comment): self
+    public function addComment(CommunityComment $comment): self
     {
         if (!$this->comments->contains($comment)) {
             $this->comments->add($comment);
@@ -178,7 +178,7 @@ class Post
         return $this;
     }
 
-    public function removeComment(Comment $comment): self
+    public function removeComment(CommunityComment $comment): self
     {
         if ($this->comments->removeElement($comment)) {
             if ($comment->getPost() === $this) {

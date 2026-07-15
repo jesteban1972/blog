@@ -53,4 +53,22 @@ class CategoriesRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * fetches only categories that have at least one active post
+     * in the specified locale, preventing empty filters.
+     *
+     * @return Category[]
+     */
+    public function findActiveCategoriesByLocale(string $locale): array
+    {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.posts', 'p')
+            ->andWhere('p.locale = :locale')
+            ->setParameter('locale', $locale)
+            ->groupBy('c.id')
+            ->orderBy('c.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

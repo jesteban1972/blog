@@ -46,7 +46,7 @@ security:
         - { path: '^/([a-z]{2})?/?$', roles: PUBLIC_ACCESS }
 
         # admin area:
-        - { path: '^/([a-z]{2})?/?admin', roles: ROLE_ADMIN }
+        - { path: '^/admin', roles: ROLE_ADMIN }
 
         # THE ULTIMATE GATEKEEPER
         # all other pages require a valid sso-authenticated session user:

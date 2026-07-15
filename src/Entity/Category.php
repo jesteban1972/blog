@@ -19,9 +19,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Category
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    #[ORM\Column(type: Types::INTEGER, options: ['unsigned' => true])]
-    private ?int $id = null;
+    #[ORM\Column(type: 'string', length: 10)]
+    private ?string $id = null;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
     private ?string $name = null;
@@ -35,14 +34,29 @@ class Category
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Post::class)]
     private Collection $posts;
 
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
+    #[ORM\JoinColumn(name: 'parent_code', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?self $parent = null;
+
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
+    private Collection $children;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+        $this->children = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
+    }
+
+    public function setId(string $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getName(): ?string
@@ -90,6 +104,47 @@ class Category
         if ($this->posts->removeElement($post)) {
             if ($post->getCategory() === $this) {
                 $post->setCategory(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?self $parent): self
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getChildren(): Collection
+    {
+        return $this->children;
+    }
+
+    public function addChild(self $child): self
+    {
+        if (!$this->children->contains($child)) {
+            $this->children->add($child);
+            $child->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChild(self $child): self
+    {
+        if ($this->children->removeElement($child)) {
+            if ($child->getParent() === $this) {
+                $child->setParent(null);
             }
         }
 

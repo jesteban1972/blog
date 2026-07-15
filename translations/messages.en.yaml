@@ -43,6 +43,11 @@ homepage:
     welcome_user: "welcome back, %username%!"
     welcome_visitor: "welcome!"
 
+post:
+    community:
+        comments:
+            commented_on: "<strong>%username%</strong> commented on %date% at %time%:"
+
 sidebar:
     #close_sidebar: "close sidebar"
     create_account: "create account"

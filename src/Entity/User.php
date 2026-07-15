@@ -67,7 +67,7 @@ class User implements UserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Post::class, cascade: ['remove'])]
     private Collection $posts;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class, cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: CommunityComment::class, cascade: ['remove'])]
     private Collection $comments;
 
 
@@ -269,14 +269,14 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection<int, Comment>
+     * @return Collection<int, CommunityComment>
      */
     public function getComments(): Collection
     {
         return $this->comments;
     }
 
-    public function addComment(Comment $comment): self
+    public function addComment(CommunityComment $comment): self
     {
         if (!$this->comments->contains($comment)) {
             $this->comments->add($comment);
@@ -286,7 +286,7 @@ class User implements UserInterface
         return $this;
     }
 
-    public function removeComment(Comment $comment): self
+    public function removeComment(CommunityComment $comment): self
     {
         if ($this->comments->removeElement($comment)) {
             if ($comment->getUser() === $this) {

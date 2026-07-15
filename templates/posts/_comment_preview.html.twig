@@ -1,0 +1,18 @@
+{# file ~/Sites/blog/templates/posts/_comment_preview.html.twig #}
+
+<article class="community-comment-box">
+    <div class="community-comment-meta">
+        <p>
+            {{ 'post.community.comments.commented_on' | trans({
+                '%username%': comment.authUser.username|default('anonymous'),
+                '%date%': comment.createdAt|date('d/m/Y'),
+                '%time%': comment.createdAt|date('H:i')
+            })|raw }}
+        </p>
+    </div>
+    <div class="community-comment-text">
+        <p>
+            {{ comment.content|nl2br }}.
+        </p>
+    </div>
+</article>

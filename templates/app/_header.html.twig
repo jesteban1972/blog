@@ -33,9 +33,11 @@
             </a>
 
             {# new entry #}
-            <a class="nav-link text-center {{ currentRoute == 'app_new_entry' ? 'active' : '' }}" href="">
-                {{ 'header.new_entry' | trans }}
-            </a>
+            {% if is_granted('ROLE_ADMIN') %}
+                <a class="nav-link text-center {{ currentRoute == 'app_new_entry' ? 'active' : '' }}" href="">
+                    {{ 'header.new_entry' | trans }}
+                </a>
+            {% endif %}
         </div>
     </div>
 
