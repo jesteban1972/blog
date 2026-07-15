@@ -36,11 +36,11 @@ security:
         - { path: ^/(_wdt|_profiler), roles: PUBLIC_ACCESS }
         - { path: ^/sitemap\.xml$, roles: PUBLIC_ACCESS }
 
-        # SSO handshake infrastructure paths:
+        # sso handshake infrastructure paths:
         - { path: '^/([a-z]{2})?/?(signup|login|login/callback|logout|logout_local|logged_out|log-jump)', roles: PUBLIC_ACCESS }
 
-        # public content routes specific to your blog app (add any custom ones here):
-        - { path: '^/([a-z]{2})?/?(info|annales|blog|about|contact|credits)', roles: PUBLIC_ACCESS }
+        # public content routes specific to your blog app:
+        - { path: '^/([a-z]{2})?/?(info|annales|blog|posts|about|contact|credits)', roles: PUBLIC_ACCESS }
 
         # homepage (locale proof):
         - { path: '^/([a-z]{2})?/?$', roles: PUBLIC_ACCESS }
@@ -49,5 +49,5 @@ security:
         - { path: '^/([a-z]{2})?/?admin', roles: ROLE_ADMIN }
 
         # THE ULTIMATE GATEKEEPER
-        # all other pages require a valid SSO-authenticated session user:
+        # all other pages require a valid sso-authenticated session user:
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
