@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * the 'shadow entity' representing a locally persisted user identity. architecturally, this entity stores only
- * local-specific metadata (annales specific fields, preferences, timestamps). identity validation and volatile
+ * local-specific metadata (blog specific fields, preferences, timestamps). identity validation and volatile
  * attributes (email, roles) are delegated to the Authorization Center and are hydrated into this object in-memory by
  * the SessionUserProvider during the 'Frankenstein' merger.
  */
@@ -36,18 +36,21 @@ class User implements UserInterface
 
 
     /**
-     * PERSISTED CLUSTER II: UI preferences
+     * PERSISTED CLUSTER I: UI preferences
      */
-    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $resultsPerPage = 25;
 
-    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $listsOrder = 1;
 
-    /**
-     * PERSISTED CLUSTER III: lifecycle & auditing
-     */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
+    private bool $preferMarkdown = true;
 
+
+    /**
+     * PERSISTED CLUSTER II: lifecycle & auditing
+     */
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $lastLogin = null;
 
@@ -59,21 +62,36 @@ class User implements UserInterface
 
 
     /**
-     * these volatile properties are NOT persisted in pendoncete.users table. they are populated in memory from the
-     * SessionUser data.
+     * PERSISTED CLUSTER III: relationships
+     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Post::class, cascade: ['remove'])]
+    private Collection $posts;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class, cascade: ['remove'])]
+    private Collection $comments;
+
+
+    /**
+     * these volatile properties are NOT persisted in the local users table. they are populated in memory
+     * from the session/auth database data.
      */
     private ?string $username = null;
     private ?string $email = null;
+    private ?string $displayName = null;
+    private ?string $bio = null;
     private array $roles = [];
 
     private string $uxLanguage = 'en';
 
     private bool $isConsented = false;
 
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
         $this->updatedAt = new \DateTime();
+        $this->posts = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     // --- Identity Methods ---
@@ -98,19 +116,13 @@ class User implements UserInterface
         return (string) ($this->email ?? $this->id);
     }
 
-    // --- Shadow Properties (Non-Persisted) ---
+    // --- Shadow Properties (Non-Persisted / Hydrated from Auth DB) ---
 
-    /**
-     * this method is the non-persisted setter for the username claim.
-     */
     public function getUsername(): ?string
     {
         return $this->username;
     }
 
-    /**
-     * this method is the non-persisted setter for the email claim.
-     */
     public function setUsername(?string $username): self
     {
         $this->username = $username;
@@ -126,6 +138,28 @@ class User implements UserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
+        return $this;
+    }
+
+    public function getDisplayName(): ?string
+    {
+        return $this->displayName;
+    }
+
+    public function setDisplayName(?string $displayName): self
+    {
+        $this->displayName = $displayName;
+        return $this;
+    }
+
+    public function getBio(): ?string
+    {
+        return $this->bio;
+    }
+
+    public function setBio(?string $bio): self
+    {
+        $this->bio = $bio;
         return $this;
     }
 
@@ -173,7 +207,6 @@ class User implements UserInterface
      */
     public function isConsented(): bool
     {
-        // simply point it to the getter we verified earlier
         return $this->getIsConsented();
     }
 
@@ -192,6 +225,9 @@ class User implements UserInterface
     public function getListsOrder(): ?int { return $this->listsOrder; }
     public function setListsOrder(?int $listsOrder): self { $this->listsOrder = $listsOrder; return $this; }
 
+    public function preferMarkdown(): bool { return $this->preferMarkdown; }
+    public function setPreferMarkdown(bool $preferMarkdown): self { $this->preferMarkdown = $preferMarkdown; return $this; }
+
     public function getLastLogin(): ?\DateTimeInterface { return $this->lastLogin; }
     public function setLastLogin(?\DateTimeInterface $lastLogin): static { $this->lastLogin = $lastLogin; return $this; }
 
@@ -200,6 +236,66 @@ class User implements UserInterface
 
     public function getUpdatedAt(): \DateTimeInterface { return $this->updatedAt; }
     public function setUpdatedAt(\DateTimeInterface $updatedAt): static { $this->updatedAt = $updatedAt; return $this; }
+
+    // --- Relationship Accessors ---
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(Post $post): self
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts->add($post);
+            $post->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Post $post): self
+    {
+        if ($this->posts->removeElement($post)) {
+            if ($post->getUser() === $this) {
+                $post->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            if ($comment->getUser() === $this) {
+                $comment->setUser(null);
+            }
+        }
+
+        return $this;
+    }
 
     // --- Lifecycle Callbacks ---
 
@@ -217,6 +313,6 @@ class User implements UserInterface
 
     public function __toString(): string
     {
-        return (string) ($this->email ?? $this->username ?? $this->id);
+        return (string) ($this->displayName ?? $this->username ?? $this->email ?? $this->id);
     }
 }

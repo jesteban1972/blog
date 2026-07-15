@@ -1,0 +1,13 @@
+# file ~/Sites/blog/translations/messages.es.yaml
+# translations for Spanish
+# preferred quotation style: comillas castellanas («...»)
+
+global_labels:
+    forms:
+        proceed: "proceder"
+
+age_verification:
+    exit: "salir"
+    legal_disclaimer: "este sitio cumple con la normativa de protección de menores (Ley Orgánica 8/2021) y el Reglamento de Servicios Digitales (DSA) de la UE. al acceder, declaras bajo tu responsabilidad ser mayor de edad."
+    message: "este sitio contiene contenido dirigido a adultos. al continuar, confirmas que eres mayor de 18 años."
+    title: "público adulto"

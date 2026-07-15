@@ -1,3 +1,11 @@
+# file ~/Sites/blog/translations/messages.en.yaml
+# translations for English (fallbacks)
+# preferred quotation style: smart quotes with curly "66-99" style. (“...”)
+
+global_labels:
+    forms:
+        proceed: "proceed"
+
 age_verification:
     exit: "exit"
     legal_disclaimer: "this site complies with EU Digital Services Act (DSA) regulations and Spanish minor protection laws (LOPIVI). by entering, you declare under your own responsibility that you are of legal age."
@@ -31,7 +39,7 @@ homepage:
         h1: "blog homepage"
         keywords: "Pendoncete, blog.pendoncete.org, blog"
         page_name: "pendoncete.org blog"
-    title: "blog homepage"
+    title: "pendoncete.org blog"
     welcome_user: "welcome back, %username%!"
     welcome_visitor: "welcome!"
 

@@ -42,9 +42,10 @@ app_localized:
         _locale: en
 
 # --- SECTION 3: FALLBACK ---
-# handles the bare "https://pendoncete.org/"
+# handles the bare root path by redirecting to the default localized home
 app_root:
     path: /
-    controller: App\Controller\AppController::index
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::redirectAction
     defaults:
-        _locale: en
+        route: app_home
+        permanent: false

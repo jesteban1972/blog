@@ -30,6 +30,8 @@ class AppController extends AbstractController
         // force the lazy firewall to hydrate the user:
         $user = $this->getUser();
 
+        //dd($user);
+
         return $this->render('app/index.html.twig');
     }
 

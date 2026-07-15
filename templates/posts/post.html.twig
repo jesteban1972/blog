@@ -1,0 +1,74 @@
+{# file ~/Sites/blog/templates/posts/post.html.twig #}
+
+{% extends 'app/base.html.twig' %}
+
+{% block title %}
+    {{ post.title }}
+{% endblock %}
+
+{% block main %}
+    <div class="post-detail-container">
+        {# -------------------------------------------------------------
+     # main article content
+     # ------------------------------------------------------------- #}
+        <article class="blog-post">
+            <header class="post-header">
+                <h1 class="post-title">{{ post.title }}</h1>
+                <div class="post-metadata">
+                <span class="post-date">
+                    {{ post.created_at|date('y-m-d h:i') }}
+                </span>
+                    {% if post.category_name %}
+                        <span class="metadata-separator">•</span>
+                        <span class="post-category">
+                        <a href="#" class="category-link">
+                            {{ post.category_name }}
+                        </a>
+                    </span>
+                    {% endif %}
+                </div>
+            </header>
+
+            <hr class="section-divider" />
+
+            <section class="post-body">
+                {# post content is stored as markdown #}
+                {{ post.content|nl2br }}
+            </section>
+        </article>
+
+        <hr class="section-divider" />
+
+        {# -------------------------------------------------------------
+     # comments section
+     # ------------------------------------------------------------- #}
+        <section class="post-comments-section">
+            <h3 class="comments-title">
+                {{ 'comments'|trans }} ({{ comments|length }})
+            </h3>
+
+            {% if comments is not empty %}
+                <div class="comments-list">
+                    {% for comment in comments %}
+                        <div class="comment-card {% if comment.parent_id %}comment-reply{% endif %}">
+                            <header class="comment-meta">
+                                <span class="comment-author">user #{{ comment.user_id }}</span>
+                                <span class="metadata-separator">•</span>
+                                <span class="comment-date">
+                                {{ comment.created_at|date('y-m-d h:i') }}
+                            </span>
+                            </header>
+                            <div class="comment-content">
+                                <p>{{ comment.content|nl2br }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="no-comments-fallback">
+                    {{ 'no comments yet. be the first to leave a comment!'|trans }}
+                </p>
+            {% endif %}
+        </section>
+    </div>
+{% endblock %}

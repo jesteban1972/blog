@@ -1,0 +1,57 @@
+{# file ~/Sites/blog/templates/app/logout_local.html.twig #}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <script>
+
+        /**
+         * SSO Local Logout Handler: this script manages local state cleanup. it is designed to be "silent" when
+         * loaded inside an iframe by the Authorization Center, but active when hit directly by a user.
+         */
+
+        (function() {
+
+            ////////////////////////////////////////////////////////////////////////////////
+            /// 1. broadcast logout event to all tabs of the same origin.
+
+            /**
+             * this ensures that, if you have more than one tab of pendoncete open, they all log out.
+             */
+
+            try {
+
+                console.log('setting SSO localStorage broadcast'); // never triggers!
+                localStorage.setItem('pendoncete_logout', Date.now());
+
+            } catch (e) {
+                console.warn('SSO localStorage broadcast failed', e);
+            }
+
+
+            ////////////////////////////////////////////////////////////////////////////////
+            /// 2. conditional redirect
+
+            /**
+             * we ONLY trigger a redirect if this page is the MAIN window.
+             * if window.self !== window.top, we are in an iframe (SSO Cascade) and MUST stay silent
+             * to let the Authorization Center handle the final navigation.
+             */
+
+            if (window.self === window.top) {
+                setTimeout(function () {
+                    window.location.href = "{{ redirectUri|e('js') }}";
+                }, 150);
+            } else {
+                console.log('SSO local cleanup complete, staying silent in iframe context.');
+            }
+        })();
+
+    </script>
+</head>
+<body>
+{# no visible content needed; the JS handles the transition #}
+</body>
+</html>

@@ -24,15 +24,15 @@
     {% include 'app/_flash_messages.html.twig' %}
 
     <section class="homepage-welcome">
-        {{ include('app/_welcome_message.html.twig') }}
+        {% include 'app/_welcome_message.html.twig' %}
     </section>
 
     <section class="homepage-grid">
 
         <div class="pendoncete-card">
 {#            <a href="{{ path('app_annales') }}" class="pendoncete-card-link"></a>#}
-            <h2>{{ 'annales.title' | trans | raw }}</h2>
-            <p>{{ 'annales.index_description' | trans | raw }}</p>
+            <h2>{{ 'homepage.title' | trans | raw }}</h2>
+            <p>{{ 'homepage.intro' | trans | raw }}</p>
         </div>
 
 {#        <div class="pendoncete-card">#}

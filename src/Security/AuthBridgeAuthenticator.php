@@ -49,6 +49,11 @@ class AuthBridgeAuthenticator extends AbstractAuthenticator
     private string $authHost;
 
     /**
+     * TODO: add suitable comment
+     */
+    private string $centralBaseUrl;
+
+    /**
      * @param EntityManagerInterface $entityManager
      * @param HttpClientInterface $httpClient for server-to-server introspection and refresh calls.
      * @param TokenStorageInterface $tokenStorage to clear the security token during authentication failure.
@@ -70,6 +75,10 @@ class AuthBridgeAuthenticator extends AbstractAuthenticator
         string $authPublicUrl,
     ) {
         $this->authHost = (string) parse_url($authPublicUrl, PHP_URL_HOST);
+
+        // build the central app base URL (e.g., https://pendoncete.localhost)
+        // by stripping the leading dot from your cookieDomain (e.g. '.pendoncete.localhost')
+        $this->centralBaseUrl = 'https://' . ltrim($this->cookieDomain, '.');
     }
 
     /**
@@ -86,7 +95,6 @@ class AuthBridgeAuthenticator extends AbstractAuthenticator
             return false;
         }
 
-        // 3. otherwise, proceed if we have the cookies to log them in
         return $request->cookies->has('pendoncete_jwt')
             || $request->cookies->has('pendoncete_refresh')
             || $request->getSession()->has('user'); // TODO: add cookie pendoncete_ux_language?
@@ -100,7 +108,7 @@ class AuthBridgeAuthenticator extends AbstractAuthenticator
      * @return SelfValidatingPassport
      * @throws AuthenticationException
      */
-    public function authenticate_back(Request $request): SelfValidatingPassport
+    public function authenticate(Request $request): SelfValidatingPassport
     {
         $session = $request->getSession();
         $sessionData = $session->get('user');
@@ -217,94 +225,6 @@ class AuthBridgeAuthenticator extends AbstractAuthenticator
 
         return new SelfValidatingPassport(new UserBadge($identifier));
     }
-    public function authenticate(Request $request): SelfValidatingPassport
-    {
-        $session = $request->getSession();
-        $sessionData = $session->get('user');
-
-        // Capture the current browser state
-        $jwt = $request->cookies->get('pendoncete_jwt');
-        $refreshToken = $request->cookies->get('pendoncete_refresh');
-
-        // 1. Primary Introspection
-        $userData = $jwt ? $this->doIntrospect($jwt) : null;
-
-        ////////////////////////////////////////////////////////////////////////
-        /// 2. SILENT REFRESH HANDOVER
-        /// If the JWT is dead/missing but we have a refresh token, we MUST
-        /// renovate the credentials before finalizing the passport.
-
-        if (!$userData && $refreshToken) {
-            $this->ssoLogger->info('JWT expired or missing, attempting silent refresh', [
-                'ip' => $request->getClientIp()
-            ]);
-
-            $refreshResult = $this->doRefresh($refreshToken);
-
-            if ($refreshResult) {
-                $userData = $refreshResult['user'];
-
-                // Store new raw headers to drop them into browser in onAuthenticationSuccess
-                $request->attributes->set('_sso_new_cookies', $refreshResult['cookies']);
-
-                // Update the session immediately so Part 3 has the latest data
-                $session->set('user', $userData);
-                $sessionData = $userData;
-            }
-        }
-
-        ////////////////////////////////////////////////////////////////////////
-        /// 3. FINAL VALIDATION (Preserving your exact logic)
-
-        // A. Handling of session data (either pre-existing or just refreshed)
-        if ($sessionData) {
-
-            // If we have fresh data from a successful refresh/introspection, sync it
-            if ($userData) {
-                $session->set('user', $userData);
-                $sessionData = $userData;
-            }
-
-            // --- Start of your original identifier extraction logic ---
-            if ($sessionData instanceof SessionUser) {
-                $identifier = (string)$sessionData->getId();
-            } elseif (is_array($sessionData)) {
-                $identifier = (string) ($sessionData['id'] ?? $sessionData['sub'] ?? $sessionData['userId'] ?? '');
-            } else {
-                $this->ssoLogger->error('invalid session user type', ['type' => get_debug_type($sessionData)]);
-                throw new AuthenticationException('invalid session user type.');
-            }
-
-            if (empty($identifier)) {
-                $this->ssoLogger->error('invalid empty identifier given');
-                throw new AuthenticationException('session user identifier is missing.');
-            }
-            // --- End of your original identifier extraction logic ---
-
-            return new SelfValidatingPassport(new UserBadge($identifier));
-        }
-
-        // B. Fallback: Handling cases where no session exists but JWT/Refresh worked
-        if ($userData) {
-            $identifier = (string)($userData['id'] ?? $userData['sub'] ?? $userData['userId'] ?? '');
-
-            if (empty($identifier)) {
-                throw new AuthenticationException('invalid SSO response structure.');
-            }
-
-            $session->set('user', $userData);
-            return new SelfValidatingPassport(new UserBadge($identifier));
-        }
-
-        ////////////////////////////////////////////////////////////////////////
-        /// 4. AUTHENTICATION FAILURE
-
-        $this->ssoLogger->warning('authentication failed (no valid JWT or refresh token)', [
-            'ip' => $request->getClientIp()
-        ]);
-
-        throw new AuthenticationException('SSO session expired.');
-    }
 
     /**
      * internal helper for JWT introspection against the Auth Center.
@@ -383,16 +303,6 @@ class AuthBridgeAuthenticator extends AbstractAuthenticator
         return null;
     }
 
-    /**
-     * this method orchestrates the post-authentication behavior. it handles silent refresh cookie-dropping and
-     * redirects unpromoted users (i.e. users not having persisted the required fields) to the Wizard. it now also
-     * persists the 'last_login' timestamp for persistent entities.
-     *
-     * @param Request $request
-     * @param mixed $token the security token.
-     * @param string $firewallName
-     * @return Response|null
-     */
     public function onAuthenticationSuccess(Request $request, $token, string $firewallName): ?Response
     {
         /** @var User|SessionUser $user */
@@ -402,40 +312,6 @@ class AuthBridgeAuthenticator extends AbstractAuthenticator
         $route = $request->attributes->get('_route');
         $newCookies = $request->attributes->get('_sso_new_cookies');
         $userData = $session->get('user');
-
-        // capture is_showroom status:
-        if ($request->attributes->get('mode') === 'showroom') {
-            $session->set('is_showroom', true);
-        }
-
-
-        ////////////////////////////////////////////////////////////////////////////////
-        /// 0. JIT provisioning (Shadow Profile Creation)
-
-        /**
-         * if the user is authenticated via SSO but missing from our local anchor table,
-         * we create the row now to satisfy foreign key constraints for ratings/comments.
-         */
-
-        /*if (!$user instanceof User) {
-
-            $this->ssoLogger->info('provisioning local anchor for ecosystem user.', [
-                'id' => $user->getId()
-            ]);
-
-            $localUser = new User();
-
-            // use the unique identifier from the SSO/SessionUser
-            $localUser->setId($user->getId());
-
-            $this->entityManager->persist($localUser);
-            $this->entityManager->flush();
-
-            // upgrade the token to the persistent entity:
-            $token->setUser($localUser);
-            $user = $localUser;
-        }*/
-
 
         ////////////////////////////////////////////////////////////////////////////////
         /// 1. update last login for persistent entities
@@ -475,7 +351,7 @@ class AuthBridgeAuthenticator extends AbstractAuthenticator
             $this->entityManager->flush();
         }
 
-        // prepare the cookie for broadcasting to the entire domain:
+        // prepare the cookie for broadcasting to the entire .pendoncete.org domain:
         $languageCookie = Cookie::create(
             name: 'pendoncete_ux_language',
             value: $targetLocale,
@@ -487,21 +363,19 @@ class AuthBridgeAuthenticator extends AbstractAuthenticator
             sameSite: Cookie::SAMESITE_LAX
         );
 
-
         ////////////////////////////////////////////////////////////////////////////////
         /// 3. map the JWT claim isConsented to the volatile entity property
 
-        /**
-         * the isConsented claim is the criterion to redirect the user to the UserCompletionWizard. if the user has not
-         * yet agreed the privacy policy, it is necessary he/she does it before starting using the site.
-         */
+        if ($user instanceof User && isset($userData['isConsented'])) {
 
-        // Use null-coalesce (??) to provide a default value and avoid the warning
-        if ($user instanceof User) {
-            $isConsentedValue = $userData['isConsented'] ?? false;
-            $user->setIsConsented((bool)$isConsentedValue);
+            // olim: $user->setIsConsented((bool)$userData['isConsented']);
+
+            // ONLY update if the local DB thinks they haven't consented.
+            // Never let the JWT "un-consent" a user who is already verified locally.
+            if (!$user->isConsented() && (bool)$userData['isConsented'] === true) {
+                $user->setIsConsented(true);
+            }
         }
-
 
         ////////////////////////////////////////////////////////////////////////////////
         /// 4. handle response generation (silent refresh and cookie seeding)
@@ -532,7 +406,6 @@ class AuthBridgeAuthenticator extends AbstractAuthenticator
             return $response;
         }
 
-
         ////////////////////////////////////////////////////////////////////////////////
         // 5. immunity check to avoid redirection loops
 
@@ -544,96 +417,28 @@ class AuthBridgeAuthenticator extends AbstractAuthenticator
             return null;
         }
 
-
         ////////////////////////////////////////////////////////////////////////////////
-        /// 6. showroom bypass (Contextual Immunity)
+        /// 6. gatekeeper for mandatory promotion & validation
 
         /**
-         * if the user is in Showroom mode, we allow them to proceed without forcing
-         * profile completion. this is vital for users arriving from pendoncete.org
-         * who just want to browse the public records.
+         * in the blog app, we do not enforce local DB promotion or consent checks.
+         * if the user is authenticated via the global SSO, they are allowed access.
          */
+        if ($route === 'app_login_callback' || $route === 'app_login') {
 
-        // 1. Capture the intent from the URL or the session
-        $isHittingShowroom = $request->attributes->get('mode') === 'showroom'
-            || $request->query->get('mode') === 'showroom';
+            // try to find where they were going before being kicked to login
+            $targetPath = $this->getTargetPath($request->getSession(), $firewallName);
+            $url = $targetPath ?: $this->urlGenerator->generate('app_home');
 
-        $isStickyShowroom = $session->get('is_showroom', false);
+            $response = new RedirectResponse($url);
 
-        // 2. Identify if this is a "restricted" user (ROLE_USER but not SUPPORTER/ADMIN)
-        $hasPrivilegedAccess = in_array('ROLE_SUPPORTER', $user->getRoles())
-            || in_array('ROLE_ADMIN', $user->getRoles());
-
-        // 3. APPLY IMMUNITY
-        if (($isHittingShowroom || $isStickyShowroom) && !in_array('ROLE_ADMIN', $user->getRoles())) {
-
-            if ($isHittingShowroom) {
-                $session->set('is_showroom', true);
-            }
-
-            $this->ssoLogger->info('Showroom immunity granted to ' . $user->getUserIdentifier());
-
-            return null;
-        }
-
-
-        ////////////////////////////////////////////////////////////////////////////////
-        /// 7. gatekeeper for mandatory promotion & validation
-
-        /**
-         * as all applications within the pendoncete.org ecosystem require a local persistent identity, we strictly
-         * enforce the promotion to an App\Entity\User and the validation of the privacy consent.
-         */
-
-        // A. check for Promotion: is the user a persistent entity in the local DB?
-        $isPromoted = $user instanceof User;
-
-        // B. check for consent: has this persistent user accepted the terms?
-        $hasConsented = $isPromoted && $user->isConsented();
-
-        // check for support status:
-        $isSupporter = in_array('ROLE_SUPPORTER', $user->getRoles());
-
-        // if both conditions are met, proceed to the requested resource:
-        if ($isPromoted && (!$isSupporter || $hasConsented)) {
-
-            // if we are on a "callback" or "login" route, we must redirect to a clean URL:
-            if ($route === 'app_login_callback' || $route === 'app_login') {
-
-                // try to find where they were going before they were kicked to login
-                $targetPath = $this->getTargetPath($request->getSession(), $firewallName);
-                $url = $targetPath ?: $this->urlGenerator->generate('app_home');
-
-                $response = new RedirectResponse($url);
-
-                // ensure the language state is stamped into the browser before redirecting:
-                $response->headers->setCookie($languageCookie);
-
-                return $response;
-            }
-
-            // for all other routes, simply allow the request to proceed:
-            return null;
-        }
-
-
-        ////////////////////////////////////////////////////////////////////////////////
-        /// 8. escort to profile completion wizard (only for supporters who haven't finished their profile)
-
-        if ($isSupporter && !$hasConsented) {
-            $this->ssoLogger->info('supporter setup incomplete; escorting to wizard.', [
-                'id' => $user->getUserIdentifier()
-            ]);
-
-            $redirectUrl = $this->urlGenerator->generate('app_profile_completion');
-            $response = new RedirectResponse($redirectUrl);
-
-            // ensure the language state survives the redirection:
+            // ensure the language state is stamped into the browser before redirecting:
             $response->headers->setCookie($languageCookie);
 
             return $response;
         }
 
+        // allow the request to proceed normally to any blog page
         return null;
     }
 

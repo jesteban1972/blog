@@ -1,39 +1,53 @@
-security:
-    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
-    password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+# file ~/Sites/blog/config/packages/security.yaml
+# blog app security configuration for JWT SSO Bridge
 
-    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+security:
+
+    # providers block defines how users are loaded
     providers:
-        users_in_memory: { memory: null }
+        # we use the custom user provider standardized across the domain:
+        session_user_provider:
+            id: App\Security\SessionUserProvider
 
     firewalls:
+        # dev firewall for Symfony profiler and static assets:
         dev:
-            # Ensure dev tools and static assets are always allowed
-            pattern: ^/(_profiler|_wdt|assets|build)/
+            pattern: ^/(_wdt|_profiler|configurator|assets)/
             security: false
+
         main:
             lazy: true
-            provider: users_in_memory
 
-            # Activate different ways to authenticate:
-            # https://symfony.com/doc/current/security.html#the-firewall
+            # use the custom SSO session provider defined above:
+            provider: session_user_provider
 
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+            # wire up the custom authenticator:
+            custom_authenticator:
+                - App\Security\AuthBridgeAuthenticator
 
-    # Note: Only the *first* matching rule is applied
+            # ensure the firewall is stateful so the session persists locally
+            stateless: false
+
+            entry_point: null
+
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        # technical/infrastructure public access:
+        - { path: ^/assets, roles: PUBLIC_ACCESS }
+        - { path: ^/(_wdt|_profiler), roles: PUBLIC_ACCESS }
+        - { path: ^/sitemap\.xml$, roles: PUBLIC_ACCESS }
 
-when@test:
-    security:
-        password_hashers:
-            # Password hashers are resource-intensive by design to ensure security.
-            # In tests, it's safe to reduce their cost to improve performance.
-            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
-                algorithm: auto
-                cost: 4 # Lowest possible value for bcrypt
-                time_cost: 3 # Lowest possible value for argon
-                memory_cost: 10 # Lowest possible value for argon
+        # SSO handshake infrastructure paths:
+        - { path: '^/([a-z]{2})?/?(signup|login|login/callback|logout|logout_local|logged_out|log-jump)', roles: PUBLIC_ACCESS }
+
+        # public content routes specific to your blog app (add any custom ones here):
+        - { path: '^/([a-z]{2})?/?(info|annales|blog|about|contact|credits)', roles: PUBLIC_ACCESS }
+
+        # homepage (locale proof):
+        - { path: '^/([a-z]{2})?/?$', roles: PUBLIC_ACCESS }
+
+        # admin area:
+        - { path: '^/([a-z]{2})?/?admin', roles: ROLE_ADMIN }
+
+        # THE ULTIMATE GATEKEEPER
+        # all other pages require a valid SSO-authenticated session user:
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }

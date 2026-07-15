@@ -3,7 +3,7 @@
 {% if app.request.attributes.get('show_welcome') %}
     <div class="welcome-message">
         {% if app.user %}
-            <h2>{{ 'homepage.welcome_user' | trans({'%username%': app.user.getUsername}) | raw }}</h2>
+            <h2>{{ 'homepage.welcome_user' | trans({'%username%': app.user.username}) | raw }}</h2>
         {% else %}
             <h2>{{ 'homepage.welcome_visitor' | trans | raw }}</h2>
         {% endif %}

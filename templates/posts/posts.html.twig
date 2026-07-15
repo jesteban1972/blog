@@ -1,0 +1,69 @@
+{# file ~/Sites/blog/templates/posts/posts.html.twig #}
+
+{% extends 'app/base.html.twig' %}
+
+{% block title %}
+    {{ 'blog posts'|trans }}
+{% endblock %}
+
+{% block main %}
+    <div class="posts-container">
+        <header class="posts-header">
+            <h1 class="page-title">{{ 'blog posts'|trans }}</h1>
+            <p class="locale-indicator">
+                {{ 'showing posts in'|trans }}: <strong>{{ locale }}</strong>
+            </p>
+        </header>
+
+        <hr class="section-divider" />
+
+        {# -------------------------------------------------------------
+     # posts feed list loop
+     # ------------------------------------------------------------- #}
+        {% if posts is not empty %}
+            <div class="posts-grid">
+                {% for post in posts %}
+                    <article class="post-card">
+                        <header class="post-card-header">
+                            <h2 class="post-card-title">
+                                <a href="{{ path('app_post', { 'slug': post.slug }) }}">
+                                    {{ post.title }}
+                                </a>
+                            </h2>
+                            <div class="post-metadata">
+                            <span class="post-date">
+                                {{ post.created_at|date('y-m-d h:i') }}
+                            </span>
+                                {% if post.category_name %}
+                                    <span class="metadata-separator">•</span>
+                                    <span class="post-category">
+                                    <a href="#" class="category-link">
+                                        {{ post.category_name }}
+                                    </a>
+                                </span>
+                                {% endif %}
+                            </div>
+                        </header>
+
+                        <section class="post-card-excerpt">
+                            {# if post content is markdown, we can render a snippet cleanly #}
+                            <p>
+                                {{ post.content|slice(0, 280) }}...
+                            </p>
+                        </section>
+
+                        <footer class="post-card-footer">
+                            <a href="{{ path('app_post', { 'slug': post.slug }) }}" class="read-more-btn">
+                                {{ 'read more'|trans }} &rarr;
+                            </a>
+                        </footer>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <section class="empty-posts-state">
+                <p>{{ 'no posts found in this language yet.'|trans }}</p>
+            </section>
+        {% endif %}
+    </div>
+{% endblock %}

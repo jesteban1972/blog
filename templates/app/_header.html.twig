@@ -18,7 +18,7 @@
             {% set currentRoute = app.request.attributes.get('_route') %}
 
             {# post #}
-            <a class="nav-link text-center {{ currentRoute == 'app_posts' ? 'active' : '' }}" href="">
+            <a class="nav-link text-center {{ currentRoute == 'app_posts' ? 'active' : '' }}" href="{{ path('app_posts') }}">
                 {{ 'header.posts' | trans }}
             </a>
 

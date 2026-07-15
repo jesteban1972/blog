@@ -9,7 +9,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -84,6 +83,16 @@ class LogoutController extends AbstractController
 
 
         ////////////////////////////////////////////////////////////////////////
+        /// PRE-EMPTIVE local cleanup to prevent authenticator interception
+
+        if ($request->hasSession()) {
+            $request->getSession()->remove('user');
+            $request->getSession()->invalidate();
+        }
+        $this->tokenStorage->setToken(null);
+
+
+        ////////////////////////////////////////////////////////////////////////
         /// redirect to authLogoutUrl
 
         return $this->redirect($authLogoutUrl);
@@ -153,7 +162,7 @@ class LogoutController extends AbstractController
          */
 
         $redirectUri = $this->generateUrl('app_logged_out', [], 0);
-        $response = $this->render('app/logout.html.twig', [
+        $response = $this->render('app/logout_local.html.twig', [
             'redirectUri' => $redirectUri,
         ]);
 

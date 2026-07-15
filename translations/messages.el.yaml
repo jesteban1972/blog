@@ -1,0 +1,13 @@
+# file ~/Sites/blog/translations/messages.el.yaml
+# translations for Greek
+# preferred quotation style: εἰσαγωγικὰ («...»)
+
+global_labels:
+    forms:
+        proceed: "συνέχεια"
+
+age_verification:
+    exit: "ἔξοδος"
+    legal_disclaimer: "ὁ παρὼν ἰστότοπος συμμορφώνεται μὲ τοὺς κανονισμοὺς προστασίας ἀνηλίκων τῆς ΕΕ (DSA) καὶ τὴν ἰσπανικὴ νομοθεσία (LOPIVI). εἰσερχόμενος, δηλώνεις ὑπεύθυνα ὅτι εἶσαι ἐνήλικας."
+    message: "αὐτός ὁ ἰστότοπος περιέχει περιεχόμενο ποὺ ἀπευθύνεται σὲ ἐνήλικες. συνεχίζοντας, ἐπιβεβαιώνεις ὅτι εἶσαι 18 ἐτῶν καὶ ἄνω."
+    title: "κοινὸ ἐνηλίκων"

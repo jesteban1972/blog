@@ -16,6 +16,8 @@ return [
         'path' => './assets/app.js',
         'entrypoint' => true,
     ],
+
+    // own scripts:
     'language-bar' => [
         'path' => './assets/scripts/language-bar.js',
         'entrypoint' => true,
@@ -24,10 +26,14 @@ return [
         'path' => './assets/scripts/age-verification.js',
         'entrypoint' => true,
     ],
+
+    // own stylesheets:
     'entrypoint_css' => [
         'path' => 'styles/entrypoint.css',
         'type' => 'css',
     ],
+
+    // 3rd party packages:
     '@hotwired/stimulus' => [
         'version' => '3.2.2',
     ],

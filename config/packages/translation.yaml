@@ -1,5 +1,8 @@
+# file ~/Sites/blog/config/packages/translation.yaml
+
 framework:
     default_locale: en
+    enabled_locales: ['en', 'el', 'ar', 'de', 'es', 'fr', 'it']
     translator:
         default_path: '%kernel.project_dir%/translations'
-        providers:
+        fallbacks: ['en']
