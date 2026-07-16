@@ -1,0 +1,176 @@
+/** file ~/Sites/blog/assets/styles/previews.css */
+
+/*
+ * this stylesheet defines rules for the preview views (Posts);
+ * note that, contrarily to annales app, there is NOT a set of specific classes .locked-preview-*.
+*/
+
+/* ==============================================================================
+ * 1. BASE CARD LAYOUT
+ * ============================================================================== */
+
+.preview-card {
+    position: relative;
+    background-color: var(--purple-lavender);
+    border: solid thin black;
+    border-radius: 10px;
+    margin: 1rem 0;
+    padding: 0.6rem 0.8rem 4px 0.8rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.preview-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+    gap: 10px;
+}
+
+.preview-title {
+    font-weight: bold;
+    font-size: 1rem;
+    color: var(--purple-boysenberry);
+    line-height: 1.1;
+    margin: 0;
+    flex: 1;
+    min-width: 200px;
+}
+
+.preview-header:not(:has(.rating-small-cartouche)) .preview-title {
+    padding-left: 1rem;
+}
+
+.preview-title a {
+    color: inherit !important;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.preview-body {
+    padding-left: 1rem;
+    line-height: 1.4;
+    color: var(--purple-eggplant);
+    margin-bottom: 0.1rem;
+}
+
+.preview-footer {
+    padding-left: 1rem;
+    margin-top: 0.2rem;
+}
+
+/* ==============================================================================
+ * 2. IMAGE & RATING CARTOUCHE
+ * ============================================================================== */
+
+.rating-small-cartouche {
+    display: flex;
+    align-items: center;
+    margin-left: 0;
+    margin-right: 0.8rem;
+    flex-shrink: 0;
+}
+
+.preview-header-icons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.preview-image {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Neutralize the global .entity-image margins for the list view */
+.preview-image .entity-image {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    display: inline-block;
+}
+
+.preview-image img {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    border-radius: 4px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2)) !important;
+}
+
+/* ==============================================================================
+ * 3. MINIMALIST METRICS FLOATING GADGET (Flags & Category Indicators)
+ * ============================================================================== */
+
+.preview-metrics {
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 6px;
+    background-color: var(--beige);
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.preview-metrics:hover {
+    background-color: #e2e2cc; /* A clean, slightly darkened gray-beige shade */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.preview-metrics-tl,
+.preview-metrics-tq {
+    display: flex;
+    align-items: center;
+    font-size: 0.7rem;
+}
+
+.preview-metrics-tq {
+    color: var(--purple-violet);
+}
+
+/* Native 4:3 ratio scaling constraints for flag shapes */
+.preview-metrics .fi {
+    display: inline-block;
+    width: 1.33333333em;
+    height: 1em;
+    line-height: 1em;
+    vertical-align: middle;
+    border-radius: 1px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* ==============================================================================
+ * 4. RESPONSIVE LAYOUTS
+ * ============================================================================== */
+
+@media (max-width: 576px) {
+    .preview-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .preview-header-icons {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .preview-title {
+        width: 100%;
+        padding-left: 0 !important;
+        margin-top: 4px;
+    }
+}

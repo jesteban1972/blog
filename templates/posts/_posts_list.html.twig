@@ -1,0 +1,11 @@
+{# file ~/Sites/blog/templates/posts/_posts_list.html.twig #}
+
+<div id="posts-list">
+    {% for post in posts %}
+        <article>
+            {{ render(controller('App\\Controller\\PostsController::preview', { 'id': post.id })) }}
+        </article>
+    {% else %}
+        <p class="text-muted">no posts found.</p>
+    {% endfor %}
+</div>

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Post;
 use App\Repository\CommunityCommentsRepository;
 use App\Repository\PostsRepository;
+use App\Service\KalimaService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,6 +56,20 @@ class PostsController extends AbstractController
         return $this->render('posts/posts.html.twig', [
             'posts' => $paginationData['paginator'],
             'locale' => $locale,
+        ]);
+    }
+
+    #[Route('/{id}/preview', name: 'app_post_preview', methods: ['GET'])]
+    public function preview(Post $post, KalimaService $kalimaService): Response
+    {
+        return $this->render('posts/post_preview.html.twig', [
+            'id' => $post->getId(),
+            'title' => $post->getTitle(),
+            'slug' => $post->getSlug(),
+            'date' => $post->getCreatedAt()->format('d/m/Y'),
+            'excerpt' => $kalimaService->fetchExcerpt($post),
+            'locale' => $post->getLocale(),
+            'category' => $post->getCategory(),
         ]);
     }
 

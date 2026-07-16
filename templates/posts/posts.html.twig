@@ -3,7 +3,7 @@
 {% extends 'app/base.html.twig' %}
 
 {% block title %}
-    {{ 'blog posts'|trans }}
+    {{ 'blog posts' | trans }}
 {% endblock %}
 
 {% block main %}
@@ -17,48 +17,10 @@
 
         <hr class="section-divider" />
 
-        {# -------------------------------------------------------------
-     # posts feed list loop
-     # ------------------------------------------------------------- #}
+        {# posts feed #}
         {% if posts is not empty %}
             <div class="posts-grid">
-                {% for post in posts %}
-                    <article class="post-card">
-                        <header class="post-card-header">
-                            <h2 class="post-card-title">
-                                <a href="{{ path('app_post', { 'slug': post.slug }) }}">
-                                    {{ post.title }}
-                                </a>
-                            </h2>
-                            <div class="post-metadata">
-                            <span class="post-date">
-                                {{ post.createdAt|date('y-m-d H:i') }}
-                            </span>
-                                {% if post.category %}
-                                    <span class="metadata-separator">•</span>
-                                    <span class="post-category">
-                                    <a href="#" class="category-link">
-                                        {{ post.category.name }}
-                                    </a>
-                                </span>
-                                {% endif %}
-                            </div>
-                        </header>
-
-                        <section class="post-card-excerpt">
-                            {# if post content is markdown, we can render a snippet cleanly #}
-                            <p>
-                                {{ post.content|slice(0, 280) }}...
-                            </p>
-                        </section>
-
-                        <footer class="post-card-footer">
-                            <a href="{{ path('app_post', { 'slug': post.slug }) }}" class="read-more-btn">
-                                {{ 'read more'|trans }} &rarr;
-                            </a>
-                        </footer>
-                    </article>
-                {% endfor %}
+                {{ include('posts/_posts_list.html.twig', {'posts': posts}) }}
             </div>
         {% else %}
             <section class="empty-posts-state">

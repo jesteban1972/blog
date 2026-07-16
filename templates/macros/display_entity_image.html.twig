@@ -1,0 +1,32 @@
+{# file ~/Sites/blog/templates/macros/display_entity_image.html.twig #}
+
+{% macro display_entity_image(entity, size) %}
+
+    {% set entity_config = {
+        'post': 1
+    } %}
+    {% set max_count = entity_config[entity] %}
+    {% set random_number = random(1, max_count) %}
+    {% set padded_number = "%02d" | format(random_number) %}
+
+    {% set entity_map = {
+        'post': 'post'
+    } %}
+
+    {% set size_map = {
+        'small':  'small',
+        'medium': 'medium',
+        'large':  'large'
+    } %}
+
+    {% set image_name = entity_map[entity] ~ padded_number ~ '-' ~ size_map[size] ~ '.png' %}
+
+    <div class="entity-image">
+
+        <img
+            src="{{ asset('images/artwork/' ~ entity ~ '/' ~ image_name, 'cdn') }}"
+            alt="({{ entity }} illustration)"
+            loading="lazy"
+        >
+    </div>
+{% endmacro %}

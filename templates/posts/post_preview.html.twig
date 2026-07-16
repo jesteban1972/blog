@@ -1,0 +1,69 @@
+{# file ~/Sites/blog/templates/posts/post_preview.html.twig #}
+
+{% from "macros/display_entity_image.html.twig" import display_entity_image %}
+
+<div class="preview-card">
+    <div class="preview-header">
+
+        <div class="preview-header-icons">
+            <div class="preview-image">
+                {{ display_entity_image('post', 'small') }}
+            </div>
+
+            <div class="rating-small-cartouche">
+                {# static representation or ratings wrapper if you choose to implement reviews #}
+                <div class="stars-container">
+                    <i class="fas fa-star star-review-icon-mini"></i>
+                    <i class="fas fa-star star-review-icon-mini"></i>
+                    <i class="far fa-star star-review-icon-mini"></i>
+                    <i class="far fa-star star-review-icon-mini"></i>
+                    <i class="far fa-star star-review-icon-mini"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-title">
+            <a href="{{ path('app_post', { 'slug': slug, '_locale': locale }) }}">{{ title }}</a>
+        </div>
+
+        <div class="preview-metrics">
+            {% if locale %}
+                <div class="preview-metrics-tl">
+                    {% if locale == 'es' %}
+                        <span class="fi fi-es" title="Español">&nbsp;</span>
+                    {% elseif locale == 'el' %}
+                        <span class="fi fi-gr" title="Ἑλληνικά">&nbsp;</span>
+                    {% else %}
+                        <span class="fi fi-gb" title="English">&nbsp;</span>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% if category %}
+                <div class="preview-metrics-tq" title="{{ category.name }}">
+                    <span class="registrum-icon">{{ category.id | slice(0, 2) }}</span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="preview-body">
+        <b>WHEN</b> {{ date }}
+
+        {% if category %}
+            <b>CATEGORY</b> {{ category.name }}
+        {% endif %}
+
+        <b>WHAT</b> {{ excerpt | raw }}
+        <input
+            type="button"
+            value="see more..."
+            onclick="window.location.href='{{ path('app_post', { 'slug': slug, '_locale': locale }) }}'"
+            class="btn-see-more"
+        >
+    </div>
+
+    <div class="preview-footer">
+        {# future metadata hooks #}
+    </div>
+</div>
