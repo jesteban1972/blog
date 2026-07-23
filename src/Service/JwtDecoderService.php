@@ -2,6 +2,11 @@
 declare(strict_types=1);
 // file ~/Sites/blog/src/Service/JwtDecoderService.php
 
+/**
+ * this is the consolidated, universal blueprint file that can be dropped verbatim
+ * into every client application.
+ */
+
 namespace App\Service;
 
 use Firebase\JWT\JWT;
@@ -9,7 +14,7 @@ use Firebase\JWT\Key;
 use Psr\Log\LoggerInterface;
 
 /**
- * this is the JWT Decoder Service for the client application 'annales'. it is critical for the Single Sign-On (SSO)
+ * this is the JWT Decoder Service for the client application. it is critical for the Single Sign-On (SSO)
  * security model: it is the responsible for reading the access token ('pendoncete_jwt') issued by the central 'auth'
  * application:
  *    i) it verifies the token's authenticity using the **SSO server's public key (RS256 algorithm)** * read from

@@ -2,6 +2,11 @@
 declare(strict_types=1);
 // file ~/Sites/blog/src/Controller/LogoutController.php
 
+/**
+ * this is the consolidated, universal blueprint file that can be dropped verbatim
+ * into every client application.
+ */
+
 namespace App\Controller;
 
 use App\Service\CookieService;
@@ -9,6 +14,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -48,7 +54,7 @@ class LogoutController extends AbstractController
      * @return Response a RedirectResponse to the Authorization Center logout endpoint.
      */
     // NOTE: route explicitly defined in config/routes.yaml to ensure it bypasses locale prefixes.
-    // #[Route('~/logout', name: 'app_logout', methods: ['GET'])]
+    // #[Route('/logout', name: 'app_logout', methods: ['GET'])]
     public function logout(Request $request): Response
     {
         $clientIp = $request->getClientIp();
@@ -112,7 +118,7 @@ class LogoutController extends AbstractController
      * @return Response a 204 No Content (for iframes) or a rendered template (for direct hits).
      */
     // NOTE: route explicitly defined in config/routes.yaml to ensure it bypasses locale prefixes.
-    // #[Route('~/logout_local', name: 'app_logout_local', methods: ['GET'])]
+    // #[Route('/logout_local', name: 'app_logout_local', methods: ['GET'])]
     public function logoutLocal(Request $request): Response
     {
         $clientIp = $request->getClientIp();
@@ -202,7 +208,7 @@ class LogoutController extends AbstractController
      * @return Response a RedirectResponse to the application's home page.
      */
     // NOTE: route explicitly defined in config/routes.yaml to ensure it bypasses locale prefixes.
-    // #[Route('~/logged_out', name: 'app_logged_out')]
+    // #[Route('/logged_out', name: 'app_logged_out')]
     public function loggedOut(): Response
     {
         return $this->redirectToRoute('app_home');

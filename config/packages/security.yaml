@@ -37,7 +37,7 @@ security:
         - { path: ^/sitemap\.xml$, roles: PUBLIC_ACCESS }
 
         # sso handshake infrastructure paths:
-        - { path: '^/([a-z]{2})?/?(signup|login|login/callback|logout|logout_local|logged_out|log-jump)', roles: PUBLIC_ACCESS }
+        - { path: '^/([a-z]{2})?/?(signup|login|login/callback|logout|logout_local|logged_out|log-jump|profile/completion)', roles: PUBLIC_ACCESS }
 
         # public content routes specific to your blog app:
         - { path: '^/([a-z]{2})?/?(info|annales|blog|posts|about|contact|credits)', roles: PUBLIC_ACCESS }

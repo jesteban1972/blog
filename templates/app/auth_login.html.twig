@@ -4,12 +4,31 @@
 
 {% block title %}redirecting...{% endblock %}
 
+{% block head %}
+    {{ parent() }}
+
+    {#
+        turbo is Symfony's default JavaScript framework for handling fast, single-page-app-style page transitions
+        without full browser reloads. while not used yet by blog app, it is a good idea to keep it
+        for future usages.
+    #}
+
+    {# this tells turbo to completely disable itself on this specific page #}
+    <meta name="turbo-visit-control" content="reload">
+{% endblock %}
+
 {% block header %}
     <h1>blog.pendoncete.org</h1>
 {% endblock %}
 
 {% block main %}
-    <form id="auth-login-form" action="{{ authUrl }}" method="post">
+    {# data-turbo="false" guarantees the auto-submit post is a native browser post #}
+    <form
+        id="auth-login-form"
+        action="{{ authUrl }}"
+        method="post"
+        data-turbo="false"
+    >
         <input type="hidden" name="redirect_uri" value="{{ redirectUri }}">
         <input type="hidden" name="sig" value="{{ sig }}">
 
@@ -21,12 +40,22 @@
 
 {% block javascripts %}
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        const submitAuthForm = () => {
             const form = document.getElementById('auth-login-form');
             if (form) {
                 form.submit();
             }
-        });
+        };
+
+        // run immediately if document is already parsed, or wait for DOMContentLoaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', submitAuthForm);
+        } else {
+            submitAuthForm();
+        }
+
+        // backup listener for turbo page visits
+        document.addEventListener('turbo:load', submitAuthForm);
     </script>
 {% endblock %}
 

@@ -2,6 +2,11 @@
 declare(strict_types=1);
 // file ~/Sites/blog/src/Service/CookieService.php
 
+/**
+ * this is the consolidated, universal blueprint file that can be dropped verbatim
+ * into every client application.
+ */
+
 namespace App\Service;
 
 use Symfony\Component\HttpFoundation\Cookie;

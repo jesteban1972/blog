@@ -75,6 +75,7 @@ services:
             $cookieDomain: '%env(JWT_COOKIE_DOMAIN)%'
             # immuneRoutes: we allow these routes to proceed regardless of user status, to prevent redirection loops
             $immuneRoutes:
+                - 'app_profile_completion'
                 - 'app_logout'
                 - 'app_logout_local'
                 - 'app_login'
@@ -83,3 +84,10 @@ services:
             $authIntrospectUrl: 'http://auth-php/introspect'
             $authRefreshUrl: 'http://auth-php/refresh'
             $authPublicUrl: '%env(resolve:AUTH_BASE_URL)%'
+
+#    App\Twig\Components\ProfileCompletionWizard:
+#        arguments:
+#            $authBaseUrl: '%env(resolve:AUTH_BASE_URL)%'
+#            $authApiUrl: '%env(resolve:AUTH_API_URL)%'
+#            $authPublicUrl: '%env(resolve:AUTH_BASE_URL)%'
+#        tags: [ twig.component ]

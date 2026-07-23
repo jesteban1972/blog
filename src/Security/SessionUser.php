@@ -2,45 +2,48 @@
 declare(strict_types=1);
 // file ~/Sites/blog/src/Security/SessionUser.php
 
+/**
+ * this is the consolidated, universal blueprint file that can be dropped verbatim
+ * into every client application.
+ */
+
 namespace App\Security;
 
+use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * this class is a stateless Data Transfer Object (DTO) representing the user's identity during the SSO session. it
  * serves as the local security identity for users authenticated via the global SSO server. by implementing
- * UserInterface, it allows the application to integrate external identities into the Symfony Security component without
- * requiring a local database record. it acts as the precursor to the 'App\Entity\User' during the promotion lifecycle.
+ * UserInterface and EquatableInterface, it allows the application to integrate external identities into the Symfony Security
+ * component without requiring a local database record. it acts as the precursor to 'App\Entity\User' during promotion.
  */
-class SessionUser implements UserInterface
+class SessionUser implements UserInterface, EquatableInterface
 {
     private ?int $id;
     private ?string $username;
     private ?string $email;
     private array $roles;
-
     private string $uxLanguage = 'en';
-
     private bool $isConsented = false;
 
     /**
-     * this constructor hydrates the DTO using the claims array sourced from the local Symfony session. it maps the
-     * validated identity data (id, username, email) provided by the Authorization Center. if roles are missing from the
-     * SSO claims, they default to 'ROLE_PENDONCETE_USER' to ensure basic access.
+     * hydrates the DTO using the claims array sourced from the local Symfony session.
      *
-     * @param array $data the SSO claims containing 'userId', 'username', 'email', 'roles' and 'uxLanguage'.
+     * @param array $data the SSO claims containing 'id', 'username', 'email', 'roles', 'uxLanguage', 'isConsented'.
+     * @param string $defaultRole fallback role specific to the client application (e.g., 'ROLE_USER').
      */
-    public function __construct(array $data)
+    public function __construct(array $data, string $defaultRole = 'ROLE_USER')
     {
-        $this->id = $data['id'] ?? null;
+        $this->id = isset($data['id']) ? (int) $data['id'] : null;
         $this->username = $data['username'] ?? null;
         $this->email = $data['email'] ?? null;
 
-        // if server provided roles use them, otherwise *default to* your app role:
-        $this->roles = !empty($data['roles']) ? $data['roles'] : ['ROLE_USER'];
+        // use claims roles if available; otherwise fall back to application default
+        $this->roles = !empty($data['roles']) ? $data['roles'] : [$defaultRole];
 
         $this->uxLanguage = $data['uxLanguage'] ?? 'en';
-        $this->isConsented = $data['isConsented'];
+        $this->isConsented = (bool) ($data['isConsented'] ?? false);
     }
 
     public function getId(): ?int
@@ -73,14 +76,6 @@ class SessionUser implements UserInterface
         return $this->isConsented;
     }
 
-    /**
-     * methods getPassword(), getSalt(), eraseCredentials()
-     * these methods are part of the Symfony\Component\Security\Core\User\UserInterface contract and are intentionally
-     * empty or return null. this signifies that the SessionUser is a *stateless* identity wrapper and does not store or
-     * handle any local credentials (passwords or salt), delegating all credential management to the external 'auth'
-     * server.
-     */
-
     public function getPassword(): ?string
     {
         return null;
@@ -93,22 +88,14 @@ class SessionUser implements UserInterface
 
     public function eraseCredentials(): void
     {
-        // nothing to erase
+        // stateless object; no local credentials stored
     }
 
-    /**
-     * this method, required by Symfony 5.3+, returns the primary identifier used by the Symfony Security system. it is
-     * consistent with your SSO setup, the user's email is used as the canonical user identifier.
-     */
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
 
-    /**
-     * this method exports the DTO properties back into an array for session persistence. this allows the
-     * SessionUserProvider to re-instantiate the object on subsequent requests using the same claim structure.
-     */
     public function toArray(): array
     {
         return [
@@ -121,23 +108,13 @@ class SessionUser implements UserInterface
         ];
     }
 
-    /**
-     * this method determines if the current DTO is logically equivalent to the provided user. if the provided user is
-     * an instance of App\Entity\User, this returns false, triggering the security token to switch from this DTO to the
-     * persistent entity.
-     *
-     * @inheritdoc this method is called internally by Symfony's security listeners to detect changes between the
-     *   session-stored user and the refreshed user.
-     */
     public function isEqualTo(UserInterface $user): bool
     {
-        // if we are comparing a SessionUser with a persistent User (or vice versa),
-        // they are NOT equal, which triggers the 'promotion' refresh.
         if (!$user instanceof self) {
             return false;
         }
 
         return $this->getUserIdentifier() === $user->getUserIdentifier()
-            && $this->isConsented() === $user->isConsented(); // the users are no longer equal if the consent status changed in the SSO session
+            && $this->isConsented() === $user->isConsented();
     }
 }
