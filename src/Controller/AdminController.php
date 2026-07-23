@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Post;
-use App\Entity\Category;
 use App\Entity\User;
+use App\Form\PostType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,56 +26,42 @@ class AdminController extends AbstractController
     #[Route('/', name: 'app_admin_home', methods: ['GET'])]
     public function index(): Response
     {
-        // placeholder for listing existing posts or display logs
-        return $this->render('admin/dashboard.html.twig');
+        $post = new Post();
+        $form = $this->createForm(PostType::class, $post);
+
+        return $this->render('admin/dashboard.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     #[Route('/post/new', name: 'app_admin_post_new', methods: ['POST'])]
     public function createPost(Request $request): Response
     {
-        // 1. retrieve parameter variables from the submission payload
-        $title = $request->request->get('title');
-        $content = $request->request->get('content');
-        $categoryId = $request->request->get('category_id');
-        $locale = $request->request->get('locale', 'en');
-
-        if (empty($title) || empty($content) || empty($categoryId)) {
-            $this->addFlash('error', 'missing required entry parameters fields.');
-            return $this->redirectToRoute('app_admin_home');
-        }
-
-        // 2. resolve references to prevent mapping mismatches
-        $category = $this->entityManager->getRepository(Category::class)->find($categoryId);
-        if (!$category) {
-            $this->addFlash('error', sprintf('selected category code "%s" does not exist.', $categoryId));
-            return $this->redirectToRoute('app_admin_home');
-        }
-
-        // 3. fetch the currently authenticated shadow user entity instance
-        /** @var User|null $currentUser */
-        $currentUser = $this->getUser();
-        if (!$currentUser) {
-            throw $this->createAccessDeniedException('no valid user session detected.');
-        }
-
-        // 4. construct the new post entry row
-        $slugger = new AsciiSlugger();
-        $slugText = strtolower($slugger->slug($title)->toString());
-
         $post = new Post();
-        $post->setTitle($title);
-        $post->setSlug($slugText);
-        $post->setContent($content);
-        $post->setLocale($locale);
-        $post->setCategory($category);
-        $post->setUser($currentUser);
+        $form = $this->createForm(PostType::class, $post);
+        $form->handleRequest($request);
 
-        // 5. execute database operations cleanly
-        $this->entityManager->persist($post);
-        $this->entityManager->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var User|null $currentUser */
+            $currentUser = $this->getUser();
+            if (!$currentUser) {
+                throw $this->createAccessDeniedException('no valid user session detected.');
+            }
 
-        $this->addFlash('success', sprintf('new post "%s" published smoothly.', $title));
+            $slugger = new AsciiSlugger();
+            $post->setSlug(strtolower($slugger->slug($post->getTitle())->toString()));
+            $post->setUser($currentUser);
 
-        return $this->redirectToRoute('app_admin_home');
+            $this->entityManager->persist($post);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', sprintf('new post "%s" published smoothly.', $post->getTitle()));
+
+            return $this->redirectToRoute('app_admin_home', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('admin/dashboard.html.twig', [
+            'form' => $form->createView(),
+        ], new Response(null, Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

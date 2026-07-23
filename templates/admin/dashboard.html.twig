@@ -1,3 +1,228 @@
 {# file ~/Sites/blog/templates/admin/dashboard.html.twig #}
 
-<p>(tmp)</p>
+{% extends 'app/base.html.twig' %}
+
+{% block title %}
+    {{ 'admin dashboard'|trans }}
+{% endblock %}
+
+{% block main %}
+    <div class="admin-dashboard-container">
+        <header class="dashboard-header">
+            <h1 class="page-title">{{ 'admin dashboard'|trans }}</h1>
+        </header>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash-alert flash-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <section class="dashboard-overview">
+            <p class="text-muted">{{ 'manage your blog publications and system metadata.'|trans }}</p>
+        </section>
+
+        <!-- floating action button -->
+        <button type="button" class="fab-btn" id="openPostModalBtn" title="{{ 'publish new post'|trans }}">
+            +
+        </button>
+
+        <!-- new post modal overlay -->
+        <div class="modal-overlay" id="postModalOverlay" style="display: none;">
+            <div class="modal-card">
+                <header class="modal-header">
+                    <h2>{{ 'new publication'|trans }}</h2>
+                    <button type="button" class="modal-close-btn" id="closePostModalBtn">&times;</button>
+                </header>
+
+                {{ form_start(form, {
+                    'action': path('app_admin_post_new'),
+                    'attr': {'class': 'admin-post-form', 'data-turbo': 'false'}
+                }) }}
+
+                <div class="form-group">
+                    {{ form_label(form.title) }}
+                    {{ form_widget(form.title) }}
+                    {{ form_errors(form.title) }}
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form_label(form.category) }}
+                        {{ form_widget(form.category) }}
+                        {{ form_errors(form.category) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.language) }}
+                        {{ form_widget(form.language) }}
+                        {{ form_errors(form.language) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.diffusio) }}
+                        {{ form_widget(form.diffusio) }}
+                        {{ form_errors(form.diffusio) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.content) }}
+                    {{ form_widget(form.content) }}
+                    {{ form_errors(form.content) }}
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" id="cancelPostModalBtn">{{ 'cancel'|trans }}</button>
+                    <button type="submit" class="btn-submit">{{ 'publish'|trans }}</button>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .admin-dashboard-container {
+            position: relative;
+            min-height: 70vh;
+            padding: 1rem;
+        }
+
+        .flash-alert {
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+        .flash-success { background-color: #d4edda; color: #155724; }
+        .flash-error { background-color: #f8d7da; color: #721c24; }
+
+        .fab-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            background-color: #0056b3;
+            color: #fff;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .fab-btn:hover {
+            background-color: #003d80;
+            transform: scale(1.08);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1050;
+        }
+        .modal-card {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+            font-size: 0.85rem;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .btn-submit {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('postModalOverlay');
+            const openBtn = document.getElementById('openPostModalBtn');
+            const closeBtn = document.getElementById('closePostModalBtn');
+            const cancelBtn = document.getElementById('cancelPostModalBtn');
+
+            if (openBtn && modal) {
+                const openModal = () => modal.style.display = 'flex';
+                const closeModal = () => modal.style.display = 'none';
+
+                openBtn.addEventListener('click', openModal);
+                if (closeBtn) closeBtn.addEventListener('click', closeModal);
+                if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal();
+                });
+            }
+        });
+    </script>
+{% endblock %}
