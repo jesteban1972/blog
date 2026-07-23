@@ -5,6 +5,7 @@
 global_labels:
     forms:
         proceed: "proceed"
+    actiones: "actions"
 
 age_verification:
     exit: "exit"
@@ -44,9 +45,11 @@ homepage:
     welcome_visitor: "welcome!"
 
 post:
+    category: "category"
     community:
         comments:
             commented_on: "<strong>%username%</strong> commented on %date% at %time%:"
+    tempus: "posted on %date% at %time%."
 
 sidebar:
     #close_sidebar: "close sidebar"

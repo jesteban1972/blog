@@ -247,6 +247,143 @@ main section {
     }
 }
 
+/********************************************************************************
+ * entity detail specific sections (apply for post)
+ */
+
+/* main post content container {{ */
+.box-1st-order {
+    background-color: var(--purple-boysenberry);
+    border: 4px solid beige;
+    border-radius: 10px;
+    padding: 1.5rem;
+    color: beige;
+    margin-bottom: 2rem;
+}
+
+.box-1st-order h2 {
+    color: beige;
+}
+
+.box-1st-order p {
+    color: beige;
+}
+/* }} main post content container */
+
+/* alia section {{ */
+.entity-alia {
+    margin-top: 20px;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 10px 0;
+    color: var(--purple-boysenberry);
+}
+
+.entity-alia p {
+    color: var(--purple-boysenberry);
+}
+
+.entity-alia h2 {
+    font-size: 30px;
+    font-weight: bold;
+    color: var(--purple-boysenberry);
+}
+
+.entity-alia a {
+    color: inherit;
+}
+
+.entity-alia a:visited {
+    color: inherit;
+}
+
+/* }} alia section */
+
+/* actions section {{ */
+.entity-actions {
+    margin-top: 20px;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 1.5rem 0;
+    color: var(--purple-boysenberry);
+}
+
+.entity-actions h2 {
+    color: var(--purple-boysenberry);
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.entity-actions p {
+    color: var(--purple-boysenberry);
+}
+
+.entity-actions a {
+    color: var(--purple-boysenberry);
+}
+
+.entity-actions a:visited {
+    color: var(--purple-boysenberry);
+}
+
+.entity-actions nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.entity-actions .nav-link {
+    color: var(--purple-boysenberry);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.entity-actions .nav-link:hover {
+    opacity: 0.8;
+    color: var(--purple-boysenberry);
+}
+
+.entity-actions .nav-link.text-danger {
+    color: var(--danger-text) !important;
+}
+
+.entity-actions .nav-link i {
+    display: inline-block;
+    flex-shrink: 0;
+    margin-right: 0.6rem;
+    font-style: normal;
+}
+
+@media (min-width: 576px) {
+    .entity-actions nav {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 0;
+    }
+
+    .entity-actions .nav-link {
+        flex: 1 1 auto;
+        text-align: center;
+    }
+}
+
+/* }} actions section */
+
 
 /********************************************************************************
  * global flash messages

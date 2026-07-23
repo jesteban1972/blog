@@ -59,25 +59,28 @@
 {% endblock %}
 
 {% block alia %} {# generalities / metadata #}
-    <h2>{{ 'post.generalia' | trans }}</h2>
-    <p>
-        <b>{{ 'post.tempus' | trans }}:</b>
-        {{ post.createdAt | date('d/m/Y H:i') }}
-    </p>
+    {% if post.createdAt is defined and post.createdAt %}
+        <p>
+            {{ 'post.tempus' | trans({
+                    '%date%': post.createdAt | date('d/m/Y'),
+                    '%time%': post.createdAt | date('H:i')
+            }) }}
+        </p>
+    {% endif %}
 
     {% if post.category is defined and post.category %}
-        <p>
-            <b>{{ 'post.category' | trans }}:</b>
-            {{ post.category.name }}
-        </p>
+        <div class="d-flex align-items-baseline gap-2 mb-2">
+            <b class="me-1">{{ 'post.category' | trans }}:</b>
+            <span>{{ post.category.name }}</span>
+        </div>
     {% endif %}
 {% endblock %}
 
 {% block main_contents %}
     <div class="box-1st-order">
-        <div class="d-flex justify-content-between align-items-baseline mb-3">
-            <h2>{{ 'post.content' | trans }}</h2>
-        </div>
+{#        <div class="d-flex justify-content-between align-items-baseline mb-3">#}
+{#            <h2>{{ 'post.content' | trans }}</h2>#}
+{#        </div>#}
 
         <div class="description-container">
             {{ post.content | nl2br }}
