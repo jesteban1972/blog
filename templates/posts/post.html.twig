@@ -1,56 +1,153 @@
 {# file ~/Sites/blog/templates/posts/post.html.twig #}
 
+{% set entity = 'post' %}
+
+{# prepare the excerpt for meta tags #}
+{% set excerpt_raw = post.content | striptags %}
+{% set max_desc_length = 155 %}
+{% set excerpt_safe = excerpt_raw | u.truncate(max_desc_length, '...', false) %}
+
 {% extends 'app/base.html.twig' %}
 
-{% block title %}
-    {{ post.title }}
-{% endblock %}
+{# title override #}
+{% block title -%}
+    {{ post.title | u.truncate(36, '...', false) }} | {{ parent() }}
+{%- endblock %}
 
-{% block main %}
-    <div class="post-detail-container">
+{# description override #}
+{% block description -%}
+    {{ excerpt_safe }}
+{%- endblock %}
 
-        {# main article content #}
-        <article class="blog-post">
-            <header class="post-header">
-                <h1 class="post-title">{{ post.title }}</h1>
-                <div class="post-metadata">
-                    <span class="post-date">
-                        {{ post.createdAt|date('Y-m-d H:i') }}
-                    </span>
-                    {% if post.category is defined and post.category %}
-                        <span class="metadata-separator">•</span>
-                        <span class="post-category">
-                            <a href="#" class="category-link">
-                                {{ post.category.name }}
-                            </a>
-                        </span>
-                    {% endif %}
-                </div>
-            </header>
+{% block header %}
 
-            <hr class="section-divider" />
+    {# 1. main cartouche header #}
+    <h1 class="cartouche-header">
+        {{ 'post.seo.h1' | trans({'%title%': post.title}) }}
+    </h1>
 
-            <section class="post-body">
-                {{ post.content|nl2br }}
-            </section>
-        </article>
+    {# 2. post title #}
+    <h2>{{ post.title }}</h2>
 
-        <hr class="section-divider" />
+    {# 3. preview metrics badge #}
+    <div class="preview-metrics detail-page-badge">
+        {% if post.language is defined and post.language %}
+            <div class="preview-metrics-tl">
+                {% if post.language == 'es' %}
+                    <span class="fi fi-es" title="español">&nbsp;</span>
+                {% elseif post.language == 'el' %}
+                    <span class="fi fi-gr" title="ἑλληνικά">&nbsp;</span>
+                {% else %}
+                    <span class="fi fi-gb" title="english">&nbsp;</span>
+                {% endif %}
+            </div>
+        {% endif %}
 
-        {# community comments section #}
-        {% if comments is defined and comments is not empty %}
-            <section id="section-community-comments" class="entity-community-comments">
-                <div class="community-section">
-                    <h2 class="community-section-title">
-                        {{ 'community comments'|trans }}
-                    </h2>
-                    <div class="community-comments-list">
-                        {% for comment in comments %}
-                            {{ include('posts/_comment_preview.html.twig', {'comment': comment}) }}
-                        {% endfor %}
-                    </div>
-                </div>
-            </section>
+        {% if post.diffusio is defined and post.diffusio %}
+            <div class="preview-metrics-tq" title="{{ post.diffusio.label }}">
+                <i class="{{ post.diffusio.iconClass }}"></i>
+            </div>
+        {% endif %}
+
+        {% if post.category is defined and post.category %}
+            <div class="preview-metrics-tq" title="{{ post.category.name }}">
+                <span class="registrum-icon">{{ post.category.id | slice(0, 2) }}</span>
+            </div>
         {% endif %}
     </div>
+
+{% endblock %}
+
+{% block alia %} {# generalities / metadata #}
+    <h2>{{ 'post.generalia' | trans }}</h2>
+    <p>
+        <b>{{ 'post.tempus' | trans }}:</b>
+        {{ post.createdAt | date('d/m/Y H:i') }}
+    </p>
+
+    {% if post.category is defined and post.category %}
+        <p>
+            <b>{{ 'post.category' | trans }}:</b>
+            {{ post.category.name }}
+        </p>
+    {% endif %}
+{% endblock %}
+
+{% block main_contents %}
+    <div class="box-1st-order">
+        <div class="d-flex justify-content-between align-items-baseline mb-3">
+            <h2>{{ 'post.content' | trans }}</h2>
+        </div>
+
+        <div class="description-container">
+            {{ post.content | nl2br }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block community_comments %}
+    {% if comments is defined and comments is not empty %}
+        <div class="community-section">
+            <h2 class="community-section-title">
+                {{ 'community comments' | trans }}
+            </h2>
+            <div class="community-comments-list">
+                {% for comment in comments %}
+                    {{ include('posts/_comment_preview.html.twig', {'comment': comment}) }}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block actions %}
+    {% if is_granted('ROLE_ADMIN') %}
+        <h2>{{ 'global_labels.actiones' | trans }}</h2>
+        <nav>
+            <a href="{{ path('app_posts') }}" class="nav-link">
+                <i class="fas fa-list me-2"></i> {{ 'global_labels.back_to_list' | trans }}
+            </a>
+        </nav>
+    {% endif %}
+{% endblock %}
+
+{% block seo_script %}
+    {# blog post JSON-LD #}
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": "{{ post.title | escape('js') }}",
+            "description": "{{ excerpt_safe | escape('js') }}",
+            "datePublished": "{{ post.createdAt | date('c') }}",
+            "inLanguage": "{{ post.language | default('en') }}",
+            "author": {
+                "@type": "Person",
+                "name": "{{ (post.user ? post.user.username : 'pendoncete') | escape('js') }}"
+            },
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}"
+            }
+        }
+    </script>
+
+    {# breadcrumb JSON-LD #}
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [{
+                "@type": "ListItem",
+                "position": 1,
+                "name": "homepage",
+                "item": "{{ url('app_posts') }}"
+            },{
+                "@type": "ListItem",
+                "position": 2,
+                "name": "{{ post.title | escape('js') }}",
+                "item": "{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}"
+            }]
+        }
+    </script>
 {% endblock %}

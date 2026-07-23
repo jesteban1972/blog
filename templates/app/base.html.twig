@@ -11,7 +11,7 @@
     {# SEO & social meta tags #}
     <title>{% block title %}{{ app_domain }}{% endblock %}</title>
     <meta name="description" content="{% block description %}{{ 'homepage.description' | trans }}{% endblock %}">
-    <meta name="keywords" content="{% block keywords %}Pendoncete, blog.pendoncete.org, annales sex diary{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}Pendoncete, blog.pendoncete.org{% endblock %}">
     <meta name="robots" content="index, follow">
     <meta name="author" content="Pendoncete">
     <link rel="publisher" href="https://blog.pendoncete.org">
@@ -27,91 +27,100 @@
         <link rel="stylesheet" href="{{ asset('vendor/@fortawesome/fontawesome-free/css/all.min.css') }}">
         <link rel="stylesheet" href="{{ asset('styles/entrypoint.css') }}">
     {% endblock %}
-
-    {# TODO: ad networks scripts (e.g. Google AdSense) #}
-    {# place my 'Auto-Ads' script here, once I get approved #}
 </head>
 
 <body>
 
-    {% include 'app/_age_verification.html.twig' %}
+{% include 'app/_age_verification.html.twig' %}
 
-    <header>
-        {% include 'app/_header.html.twig' %}
-    </header>
+<header>
+    {% include 'app/_header.html.twig' %}
+</header>
 
-    <!-- Bootstrap 5 responsive design -->
-    <div class="main-wrapper">
+<div class="main-wrapper">
 
-        {# main contents #}
-        <main>
-            {% block main %}{% endblock %}
-        </main>
+    {# main content area with section-looping engine #}
+    <main id="main-content">
+        {% block main %}
+            {% set sections = sections | default([
+                'header',
+                'alia',
+                'main_contents',
+                'community_comments',
+                'actions'
+            ]) %}
 
-        <aside>
-            {% block aside %}
-                {% include 'app/_aside.html.twig' %}
-            {% endblock %}
-        </aside>
+            {% for section_name in sections %}
+                {% set section_content = block(section_name) %}
+                {% if section_content | trim is not empty %}
+                    {% set section_normalized = section_name | replace({'_': '-'}) %}
+                    {% set section_class = entity is defined ? 'entity-' ~ section_normalized : section_normalized %}
 
-    </div>
-
-    <!-- mobile sidebar offcanvas -->
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="aside-mobile">
-
-        <div class="offcanvas-header">
-            <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="offcanvas"
-                aria-label="Close"
-                title="{{ 'sidebar.close_sidebar' | trans }}"
-            >
-            </button>
-        </div>
-
-        <div class="offcanvas-body">
-
-            {# sidebar #}
-            {% include 'app/_aside.html.twig' %}
-
-        </div>
-
-    </div>
-
-    <footer>
-        {% include 'app/_footer.html.twig' %}
-    </footer>
-
-    {% block javascripts %}
-        {{ importmap((['app', 'language-bar', 'age-verification'])) }}
-
-        <!-- SEO script(s) -->
-        {% block seo_script %}
-            <script type="application/ld+json">
-                {
-                      "@context": "https://schema.org",
-                      "@type": "WebPage",
-                      "name": "{% block page_name %}{{ app_domain }}{% endblock %}",
-                            "description": "{% block page_description %}{{ app_domain }}{% endblock %}",
-                            "author": {
-                              "@type": "Person",
-                              "name": "Pendoncete"
-                            },
-                            "publisher": {
-                                "@type": "Organization",
-                                "name": "blog.pendoncete.org",
-                                "url": "https://blog.pendoncete.org",
-                                "logo": {
-                                    "@type": "ImageObject",
-                                    "url": "{{ asset('images/artwork/chameleon.png', 'cdn') }}"
-                                }
-                            }
-                      }
-            </script>
+                    <section id="section-{{ section_normalized }}" class="{{ section_class }}">
+                        {{ section_content | raw }}
+                    </section>
+                {% endif %}
+            {% endfor %}
         {% endblock %}
+    </main>
 
+    <aside>
+        {% block aside %}
+            {% include 'app/_aside.html.twig' %}
+        {% endblock %}
+    </aside>
+
+</div>
+
+<!-- mobile sidebar offcanvas -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="aside-mobile">
+    <div class="offcanvas-header">
+        <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="offcanvas"
+            aria-label="Close"
+            title="{{ 'sidebar.close_sidebar' | trans }}"
+        >
+        </button>
+    </div>
+    <div class="offcanvas-body">
+        {% include 'app/_aside.html.twig' %}
+    </div>
+</div>
+
+<footer>
+    {% include 'app/_footer.html.twig' %}
+</footer>
+
+{% block javascripts %}
+    {{ importmap((['app', 'language-bar', 'age-verification'])) }}
+
+    <!-- SEO script(s) -->
+    {% block seo_script %}
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "WebPage",
+                "name": "{% block page_name %}{{ app_domain }}{% endblock %}",
+                    "description": "{% block page_description %}{{ app_domain }}{% endblock %}",
+                    "author": {
+                        "@type": "Person",
+                        "name": "Pendoncete"
+                    },
+                    "publisher": {
+                        "@type": "Organization",
+                        "name": "blog.pendoncete.org",
+                        "url": "https://blog.pendoncete.org",
+                        "logo": {
+                            "@type": "ImageObject",
+                            "url": "{{ asset('images/artwork/chameleon.png', 'cdn') }}"
+                        }
+                    }
+                }
+        </script>
     {% endblock %}
+{% endblock %}
 
-    </body>
+</body>
 </html>

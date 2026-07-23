@@ -5,16 +5,12 @@
  * note that, contrarily to annales app, there is NOT a set of specific classes .locked-preview-*.
 */
 
-/* ==============================================================================
- * 1. BASE CARD LAYOUT
- * ============================================================================== */
-
 .preview-card {
     position: relative;
     background-color: var(--purple-lavender);
     border: solid thin black;
     border-radius: 10px;
-    margin: 1rem 0;
+    margin: 0.8rem 0;
     padding: 0.6rem 0.8rem 4px 0.8rem;
     display: flex;
     flex-direction: column;
@@ -60,10 +56,29 @@
     margin-top: 0.2rem;
 }
 
-/* ==============================================================================
- * 2. IMAGE & RATING CARTOUCHE
- * ============================================================================== */
+.preview-metric,
+.preview-warning {
+    font-size: 0.85rem;
+    line-height: 1.2;
+}
 
+.preview-metric {
+    font-weight: 600;
+    color: var(--purple-plum);
+}
+
+.preview-warning {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: darkred;
+    color: beige;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+/* image & cartouche {{ */
 .rating-small-cartouche {
     display: flex;
     align-items: center;
@@ -100,61 +115,10 @@
     height: 25px;
     object-fit: contain;
     border-radius: 4px;
+    /* Scale down the shadow for the tiny thumbnail */
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2)) !important;
 }
-
-/* ==============================================================================
- * 3. MINIMALIST METRICS FLOATING GADGET (Flags & Category Indicators)
- * ============================================================================== */
-
-.preview-metrics {
-    position: absolute;
-    top: -8px;
-    right: 20px;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 2px 6px;
-    background-color: var(--beige);
-    border: none;
-    border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-    z-index: 10;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.preview-metrics:hover {
-    background-color: #e2e2cc; /* A clean, slightly darkened gray-beige shade */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.preview-metrics-tl,
-.preview-metrics-tq {
-    display: flex;
-    align-items: center;
-    font-size: 0.7rem;
-}
-
-.preview-metrics-tq {
-    color: var(--purple-violet);
-}
-
-/* Native 4:3 ratio scaling constraints for flag shapes */
-.preview-metrics .fi {
-    display: inline-block;
-    width: 1.33333333em;
-    height: 1em;
-    line-height: 1em;
-    vertical-align: middle;
-    border-radius: 1px;
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-/* ==============================================================================
- * 4. RESPONSIVE LAYOUTS
- * ============================================================================== */
+/* }} image & cartouche */
 
 @media (max-width: 576px) {
     .preview-header {
@@ -173,4 +137,99 @@
         padding-left: 0 !important;
         margin-top: 4px;
     }
+}
+
+/********************************************************************************
+ * preview metrics
+ */
+
+/* Ensure the master card establishes the relative coordinate anchoring system */
+.preview-card {
+    position: relative;
+    background-color: var(--purple-lavender);
+    border: solid thin black;
+    border-radius: 10px;
+    margin: 0.8rem 0;
+    padding: 0.6rem 0.8rem 4px 0.8rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/********************************************************************************
+ * preview metrics minimalist gadget
+ */
+
+.preview-card {
+    position: relative;
+    background-color: var(--purple-lavender);
+    border: solid thin black;
+    border-radius: 10px;
+    margin: 1rem 0;
+    padding: 0.6rem 0.8rem 4px 0.8rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 2. Tiny, neutral borderless floating gadget */
+.preview-metrics {
+    position: absolute;
+    top: -8px;
+    right: 20px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 6px;
+
+    /* Neutral, low-contrast background state */
+    background-color: var(--beige);
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover state: drops back into a muted, slightly deeper gray/taupe overlay */
+.preview-metrics:hover {
+    background-color: #e2e2cc; /* A clean, slightly darkened gray-beige shade */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 3. Micro layout structure */
+.preview-metrics-tl,
+.preview-metrics-tq {
+    display: flex;
+    align-items: center;
+    font-size: 0.7rem;
+}
+
+/* Distinct, dark semantic icon definition */
+.preview-metrics-tq {
+    color: var(--purple-violet);
+}
+
+/* 4. Native 4:3 ratio scaling constraints for flag shapes */
+.preview-metrics .fi {
+    display: inline-block;
+    width: 1.33333333em;
+    height: 1em;
+    line-height: 1em;
+    vertical-align: middle;
+    border-radius: 1px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/********************************************************************************
+ * detail page badge position override
+ */
+
+.entity-header .detail-page-badge {
+    position: absolute;
+    top: 3.5em;
+    right: 0;
+    z-index: 10;
 }

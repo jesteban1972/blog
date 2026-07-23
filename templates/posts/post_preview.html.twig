@@ -27,7 +27,7 @@
 
         <div class="preview-metrics">
             {% if language is defined and language %}
-                <div class="preview-metrics-language">
+                <div class="preview-metrics-tl">
                     {% if language == 'es' %}
                         <span class="fi fi-es" title="español">&nbsp;</span>
                     {% elseif language == 'el' %}
@@ -39,13 +39,13 @@
             {% endif %}
 
             {% if diffusio is defined and diffusio %}
-                <div class="preview-metrics-diffusio">
+                <div class="preview-metrics-tq">
                     <i class="{{ diffusio.iconClass }}" title="{{ diffusio.label }}"></i>
                 </div>
             {% endif %}
 
             {% if category is defined and category %}
-                <div class="preview-metrics-category" title="{{ category.name }}">
+                <div class="preview-metrics-tq" title="{{ category.name }}">
                     <span class="registrum-icon">{{ category.id | slice(0, 2) }}</span>
                 </div>
             {% endif %}
