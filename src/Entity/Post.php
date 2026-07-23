@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\PostDiffusio;
 use App\Repository\PostsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -42,8 +43,11 @@ class Post
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
-    #[ORM\Column(type: Types::STRING, length: 5)]
-    private ?string $locale = null;
+    #[ORM\Column(type: Types::STRING, length: 2, options: ['default' => 'en'])]
+    private string $language = 'en';
+
+    #[ORM\Column(type: Types::INTEGER, nullable: true, enumType: PostDiffusio::class)]
+    private ?PostDiffusio $diffusio = null;
 
     /**
      * PERSISTED CLUSTER: lifecycle & auditing
@@ -127,14 +131,25 @@ class Post
         return $this;
     }
 
-    public function getLocale(): ?string
+    public function getLanguage(): string
     {
-        return $this->locale;
+        return $this->language;
     }
 
-    public function setLocale(string $locale): self
+    public function setLanguage(string $language): self
     {
-        $this->locale = $locale;
+        $this->language = $language;
+        return $this;
+    }
+
+    public function getDiffusio(): ?PostDiffusio
+    {
+        return $this->diffusio;
+    }
+
+    public function setDiffusio(?PostDiffusio $diffusio): self
+    {
+        $this->diffusio = $diffusio;
         return $this;
     }
 

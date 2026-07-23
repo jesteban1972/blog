@@ -10,15 +10,21 @@
     <div class="posts-container">
         <header class="posts-header">
             <h1 class="page-title">{{ 'blog posts'|trans }}</h1>
-            <p class="locale-indicator">
-                {{ 'showing posts in'|trans }}: <strong>{{ locale }}</strong>
-            </p>
+            {% if language is defined and language %}
+                <p class="locale-indicator">
+                    {{ 'showing posts in'|trans }}: <strong>{{ language|upper }}</strong>
+                </p>
+            {% else %}
+                <p class="locale-indicator">
+                    {{ 'showing posts in'|trans }}: <strong>{{ app.request.locale|upper }}</strong>
+                </p>
+            {% endif %}
         </header>
 
         <hr class="section-divider" />
 
         {# posts feed #}
-        {% if posts is not empty %}
+        {% if posts is defined and posts is not empty %}
             <div class="posts-grid">
                 {{ include('posts/_posts_list.html.twig', {'posts': posts}) }}
             </div>

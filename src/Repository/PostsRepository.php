@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Post;
+use App\Enum\PostDiffusio;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
@@ -38,30 +39,36 @@ class PostsRepository extends ServiceEntityRepository
     }
 
     /**
-     * fetches posts with pagination, order, and language filtering.
+     * fetches posts with pagination, order, language, and diffusio level filtering.
      * includes category and user joins to prevent n+1 queries.
      */
     public function getPostsPaginated(
         int $currentPage = 1,
         int $resultsPerPage = 25,
         string $sortOrder = 'DESC',
-        ?string $locale = null,
-        ?int $categoryId = null
+        ?string $language = null,
+        ?PostDiffusio $diffusio = null,
+        ?string $categoryId = null
     ): array {
         $queryBuilder = $this->createQueryBuilder('p')
             ->leftJoin('p.category', 'c')
             ->leftJoin('p.user', 'u')
             ->addSelect('c', 'u');
 
-        if ($sortOrder === 'ASC') {
+        if (strtoupper($sortOrder) === 'ASC') {
             $queryBuilder->orderBy('p.createdAt', 'ASC');
         } else {
             $queryBuilder->orderBy('p.createdAt', 'DESC');
         }
 
-        if ($locale !== null) {
-            $queryBuilder->andWhere('p.locale = :locale')
-                ->setParameter('locale', $locale);
+        if ($language !== null) {
+            $queryBuilder->andWhere('p.language = :language')
+                ->setParameter('language', $language);
+        }
+
+        if ($diffusio !== null) {
+            $queryBuilder->andWhere('p.diffusio = :diffusio')
+                ->setParameter('diffusio', $diffusio);
         }
 
         if ($categoryId !== null) {
@@ -78,7 +85,7 @@ class PostsRepository extends ServiceEntityRepository
         ];
     }
 
-    public function paginate($dql, $page = 1, $limit = 25): Paginator
+    public function paginate($dql, int $page = 1, int $limit = 25): Paginator
     {
         $paginator = new Paginator($dql);
 

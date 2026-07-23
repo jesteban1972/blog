@@ -4,7 +4,7 @@
     <div class="community-comment-meta">
         <p>
             {{ 'post.community.comments.commented_on' | trans({
-                '%username%': comment.authUser.username|default('anonymous'),
+                '%username%': (comment.authUser is defined and comment.authUser) ? comment.authUser.username : 'anonymous',
                 '%date%': comment.createdAt|date('d/m/Y'),
                 '%time%': comment.createdAt|date('H:i')
             })|raw }}
@@ -12,7 +12,7 @@
     </div>
     <div class="community-comment-text">
         <p>
-            {{ comment.content|nl2br }}.
+            {{ comment.content|nl2br }}
         </p>
     </div>
 </article>

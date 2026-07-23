@@ -3,7 +3,16 @@
 <div id="posts-list">
     {% for post in posts %}
         <article>
-            {{ render(controller('App\\Controller\\PostsController::preview', { 'id': post.id })) }}
+            {{ include('posts/post_preview.html.twig', {
+                'id': post.id,
+                'title': post.title,
+                'slug': post.slug,
+                'date': post.createdAt|date('d/m/Y'),
+                'excerpt': post.content|slice(0, 180) ~ '...',
+                'language': post.language,
+                'diffusio': post.diffusio,
+                'category': post.category
+            }) }}
         </article>
     {% else %}
         <p class="text-muted">no posts found.</p>

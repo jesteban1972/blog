@@ -11,7 +11,6 @@
             </div>
 
             <div class="rating-small-cartouche">
-                {# static representation or ratings wrapper if you choose to implement reviews #}
                 <div class="stars-container">
                     <i class="fas fa-star star-review-icon-mini"></i>
                     <i class="fas fa-star star-review-icon-mini"></i>
@@ -23,24 +22,30 @@
         </div>
 
         <div class="preview-title">
-            <a href="{{ path('app_post', { 'slug': slug, '_locale': locale }) }}">{{ title }}</a>
+            <a href="{{ path('app_post', { 'slug': slug }) }}">{{ title }}</a>
         </div>
 
         <div class="preview-metrics">
-            {% if locale %}
-                <div class="preview-metrics-tl">
-                    {% if locale == 'es' %}
-                        <span class="fi fi-es" title="Español">&nbsp;</span>
-                    {% elseif locale == 'el' %}
-                        <span class="fi fi-gr" title="Ἑλληνικά">&nbsp;</span>
+            {% if language is defined and language %}
+                <div class="preview-metrics-language">
+                    {% if language == 'es' %}
+                        <span class="fi fi-es" title="español">&nbsp;</span>
+                    {% elseif language == 'el' %}
+                        <span class="fi fi-gr" title="ἑλληνικά">&nbsp;</span>
                     {% else %}
-                        <span class="fi fi-gb" title="English">&nbsp;</span>
+                        <span class="fi fi-gb" title="english">&nbsp;</span>
                     {% endif %}
                 </div>
             {% endif %}
 
-            {% if category %}
-                <div class="preview-metrics-tq" title="{{ category.name }}">
+            {% if diffusio is defined and diffusio %}
+                <div class="preview-metrics-diffusio">
+                    <i class="{{ diffusio.iconClass }}" title="{{ diffusio.label }}"></i>
+                </div>
+            {% endif %}
+
+            {% if category is defined and category %}
+                <div class="preview-metrics-category" title="{{ category.name }}">
                     <span class="registrum-icon">{{ category.id | slice(0, 2) }}</span>
                 </div>
             {% endif %}
@@ -50,7 +55,7 @@
     <div class="preview-body">
         <b>WHEN</b> {{ date }}
 
-        {% if category %}
+        {% if category is defined and category %}
             <b>CATEGORY</b> {{ category.name }}
         {% endif %}
 
@@ -58,7 +63,7 @@
         <input
             type="button"
             value="see more..."
-            onclick="window.location.href='{{ path('app_post', { 'slug': slug, '_locale': locale }) }}'"
+            onclick="window.location.href='{{ path('app_post', { 'slug': slug }) }}'"
             class="btn-see-more"
         >
     </div>

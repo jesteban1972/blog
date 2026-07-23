@@ -14,16 +14,16 @@
             <header class="post-header">
                 <h1 class="post-title">{{ post.title }}</h1>
                 <div class="post-metadata">
-                <span class="post-date">
-                    {{ post.createdAt|date('y-m-d H:i') }}
-                </span>
-                    {% if post.category?.name %}
+                    <span class="post-date">
+                        {{ post.createdAt|date('Y-m-d H:i') }}
+                    </span>
+                    {% if post.category is defined and post.category %}
                         <span class="metadata-separator">•</span>
                         <span class="post-category">
-                        <a href="#" class="category-link">
-                            {{ post.category.name }}
-                        </a>
-                    </span>
+                            <a href="#" class="category-link">
+                                {{ post.category.name }}
+                            </a>
+                        </span>
                     {% endif %}
                 </div>
             </header>
@@ -38,7 +38,7 @@
         <hr class="section-divider" />
 
         {# community comments section #}
-        {% if comments is not empty %}
+        {% if comments is defined and comments is not empty %}
             <section id="section-community-comments" class="entity-community-comments">
                 <div class="community-section">
                     <h2 class="community-section-title">

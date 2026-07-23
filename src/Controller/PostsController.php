@@ -33,21 +33,21 @@ class PostsController extends AbstractController
     ) {}
 
     /**
-     * lists posts filtered by the active locale.
+     * lists posts filtered by the active language.
      */
     #[Route('/', name: 'app_posts', methods: ['GET'])]
     public function posts(Request $request): Response
     {
-        $locale = $request->getLocale();
+        $language = $request->getLocale(); // e.g. 'en', 'es'
 
         ////////////////////////////////////////////////////////////////////////
-        /// fetch active posts for the current locale using the paginator configuration
+        /// fetch active posts for the current language using the paginator configuration
 
         $paginationData = $this->postsRepository->getPostsPaginated(
             currentPage: 1,
             resultsPerPage: 25,
             sortOrder: 'DESC',
-            locale: $locale
+            language: $language
         );
 
         ////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,8 @@ class PostsController extends AbstractController
 
         return $this->render('posts/posts.html.twig', [
             'posts' => $paginationData['paginator'],
-            'locale' => $locale,
+            'language' => $language,
+            'locale' => $language, // fallback for legacy base context expecting locale
         ]);
     }
 
@@ -68,7 +69,8 @@ class PostsController extends AbstractController
             'slug' => $post->getSlug(),
             'date' => $post->getCreatedAt()->format('d/m/Y'),
             'excerpt' => $kalimaService->fetchExcerpt($post),
-            'locale' => $post->getLocale(),
+            'language' => $post->getLanguage(),
+            'diffusio' => $post->getDiffusio(),
             'category' => $post->getCategory(),
         ]);
     }
@@ -93,12 +95,14 @@ class PostsController extends AbstractController
 
         $comments = $this->commentsRepository->findCommentsByPostId((int) $post->getId());
 
+
         ////////////////////////////////////////////////////////////////////////
         /// 3. render layout
 
         return $this->render('posts/post.html.twig', [
             'post' => $post,
             'comments' => $comments,
+            'language' => $post->getLanguage(),
         ]);
     }
 }
