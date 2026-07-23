@@ -16,7 +16,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity(repositoryClass: PostsRepository::class)]
 #[ORM\Table(name: 'posts')]
-#[ORM\Index(name: 'idx_post_created', columns: ['created_at'])]
+#[ORM\Index(name: 'idx_post_created', fields: ['createdAt'])]
+#[ORM\Index(name: 'idx_post_published', fields: ['publishedAt'])]
 #[ORM\UniqueConstraint(name: 'uniq_post_slug', columns: ['slug'])]
 #[ORM\HasLifecycleCallbacks]
 class Post
@@ -57,6 +58,9 @@ class Post
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private \DateTimeInterface $updatedAt;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $publishedAt = null;
 
     /**
      * PERSISTED CLUSTER: relationships
@@ -173,6 +177,25 @@ class Post
     {
         $this->updatedAt = $updatedAt;
         return $this;
+    }
+
+    public function getPublishedAt(): ?\DateTimeInterface
+    {
+        return $this->publishedAt;
+    }
+
+    public function setPublishedAt(?\DateTimeInterface $publishedAt): self
+    {
+        $this->publishedAt = $publishedAt;
+        return $this;
+    }
+
+    /**
+     * returns true if the post is published and the publication date has passed.
+     */
+    public function isPublished(): bool
+    {
+        return $this->publishedAt !== null && $this->publishedAt <= new \DateTime();
     }
 
     /**

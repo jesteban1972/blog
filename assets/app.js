@@ -16,6 +16,9 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 // import Stimulus:
 import './stimulus_bootstrap.js';
 
+// import flag-icons:
+import 'flag-icons/css/flag-icons.min.css';
+
 //import { app } from 'bootstrap_app'; // TODO: my IDE grays out this line
 
 /*

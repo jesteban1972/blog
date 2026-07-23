@@ -16,8 +16,6 @@ return [
         'path' => './assets/app.js',
         'entrypoint' => true,
     ],
-
-    // own scripts:
     'language-bar' => [
         'path' => './assets/scripts/language-bar.js',
         'entrypoint' => true,
@@ -26,14 +24,10 @@ return [
         'path' => './assets/scripts/age-verification.js',
         'entrypoint' => true,
     ],
-
-    // own stylesheets:
     'entrypoint_css' => [
         'path' => 'styles/entrypoint.css',
         'type' => 'css',
     ],
-
-    // 3rd party packages:
     '@hotwired/stimulus' => [
         'version' => '3.2.2',
     ],
@@ -59,5 +53,12 @@ return [
     ],
     '@popperjs/core' => [
         'version' => '2.11.8',
+    ],
+    'flag-icons' => [
+        'version' => '7.5.0',
+    ],
+    'flag-icons/css/flag-icons.min.css' => [
+        'version' => '7.5.0',
+        'type' => 'css',
     ],
 ];
