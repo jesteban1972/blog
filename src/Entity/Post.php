@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Enum\PostDiffusio;
+use App\Enum\PostStatus;
 use App\Repository\PostsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -188,6 +189,11 @@ class Post
     {
         $this->publishedAt = $publishedAt;
         return $this;
+    }
+
+    public function getStatus(): PostStatus
+    {
+        return PostStatus::fromPost($this);
     }
 
     /**

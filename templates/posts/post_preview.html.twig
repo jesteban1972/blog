@@ -49,6 +49,12 @@
                     <span class="registrum-icon">{{ category.id | slice(0, 2) }}</span>
                 </div>
             {% endif %}
+
+            {% if status is defined and status %}
+                <div class="preview-metrics-tq" title="{{ status.label | trans }}">
+                    <span class="registrum-icon">{{ status.value }}</span>
+                </div>
+            {% endif %}
         </div>
     </div>
 

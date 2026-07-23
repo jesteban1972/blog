@@ -54,6 +54,13 @@
                 <span class="registrum-icon">{{ post.category.id | slice(0, 2) }}</span>
             </div>
         {% endif %}
+
+        {# status metric using virtual enum #}
+        {% if post.status is defined and post.status %}
+            <div class="preview-metrics-tq" title="{{ post.status.label | trans }}">
+                <span class="registrum-icon">{{ post.status.value }}</span>
+            </div>
+        {% endif %}
     </div>
 
 {% endblock %}
