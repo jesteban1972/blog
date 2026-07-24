@@ -3,7 +3,7 @@
 {% macro display_entity_image(entity, size) %}
 
     {% set entity_config = {
-        'post': 1
+        'post': 3
     } %}
     {% set max_count = entity_config[entity] %}
     {% set random_number = random(1, max_count) %}
@@ -13,6 +13,12 @@
         'post': 'post'
     } %}
 
+    {#
+        image sizes:
+        - small ca. 25x25px
+        - medium ca. 150x150px
+        - large ca. 300x300px
+    #}
     {% set size_map = {
         'small':  'small',
         'medium': 'medium',

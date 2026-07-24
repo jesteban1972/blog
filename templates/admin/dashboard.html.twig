@@ -2,208 +2,62 @@
 
 {% extends 'app/base.html.twig' %}
 
-{% block title %}
-    {{ 'admin dashboard'|trans }}
-{% endblock %}
+{% block title %}admin dashboard | blog{% endblock %}
 
 {% block main %}
-    <div class="admin-dashboard-container">
-        <header class="dashboard-header">
-            <h1 class="page-title">{{ 'admin dashboard'|trans }}</h1>
-        </header>
+    <h1 class="cartouche-header">blog admin dashboard</h1>
 
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="flash-alert flash-{{ label }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endfor %}
+    <div class="container">
+        {% include 'app/_flash_messages.html.twig' %}
 
-        <section class="dashboard-overview">
-            <p class="text-muted">{{ 'manage your blog publications and system metadata.'|trans }}</p>
-        </section>
+        <div class="form-wrapper">
+            <header class="form-header d-flex justify-content-between align-items-center">
+                <span class="form-badge">administrative control panel</span>
+            </header>
 
-        <!-- floating action button -->
-        <button type="button" class="fab-btn" id="openPostModalBtn" title="{{ 'publish new post'|trans }}">
-            +
-        </button>
+            <div class="form-body p-4">
 
-        <!-- new post modal overlay -->
-        <div class="modal-overlay" id="postModalOverlay" style="display: none;">
-            <div class="modal-card">
-                <header class="modal-header">
-                    <h2>{{ 'new publication'|trans }}</h2>
-                    <button type="button" class="modal-close-btn" id="closePostModalBtn">&times;</button>
-                </header>
-
-                {{ form_start(form, {
-                    'action': path('app_admin_post_new'),
-                    'attr': {'class': 'admin-post-form', 'data-turbo': 'false'}
-                }) }}
-
-                <div class="form-group">
-                    {{ form_label(form.title) }}
-                    {{ form_widget(form.title) }}
-                    {{ form_errors(form.title) }}
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.category) }}
-                        {{ form_widget(form.category) }}
-                        {{ form_errors(form.category) }}
-                    </div>
-
-                    <div class="form-group">
-                        {{ form_label(form.language) }}
-                        {{ form_widget(form.language) }}
-                        {{ form_errors(form.language) }}
-                    </div>
-
-                    <div class="form-group">
-                        {{ form_label(form.diffusio) }}
-                        {{ form_widget(form.diffusio) }}
-                        {{ form_errors(form.diffusio) }}
+                {# section 1: posts management #}
+                <div class="form-card-highlight mb-4 p-4">
+                    <label class="form-label">posts management</label>
+                    <p class="form-help-text">
+                        <i class="fas fa-info-circle form-help-icon"></i>
+                        create, publish, and manage all your blog posts dynamically.
+                    </p>
+                    <div class="d-flex gap-3 align-items-center flex-wrap mt-4">
+                        <button type="button" class="btn btn-custom-primary" id="openPostModalBtn">
+                            <i class="fas fa-plus me-1"></i> new post
+                        </button>
+                        <a href="{{ path('app_posts') }}" class="btn btn-form-action">
+                            view public blog
+                        </a>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    {{ form_label(form.content) }}
-                    {{ form_widget(form.content) }}
-                    {{ form_errors(form.content) }}
+                {# section 2: system metadata #}
+                <div class="form-prompt-area p-4">
+                    <label class="form-label">system diagnostics & metadata</label>
+                    <div class="d-flex flex-column gap-2">
+                        <p class="form-help-text m-0">
+                            <strong>status:</strong> all blog components, routes, and visibility enums are fully operational.
+                        </p>
+                    </div>
                 </div>
 
-                <div class="modal-actions">
-                    <button type="button" class="btn-cancel" id="cancelPostModalBtn">{{ 'cancel'|trans }}</button>
-                    <button type="submit" class="btn-submit">{{ 'publish'|trans }}</button>
-                </div>
-
-                {{ form_end(form) }}
             </div>
+
+            <footer class="form-footer">
+                {# footer hook #}
+            </footer>
         </div>
     </div>
 
-    <style>
-        .admin-dashboard-container {
-            position: relative;
-            min-height: 70vh;
-            padding: 1rem;
-        }
+    {# post modal window partia #}
+    {% include 'admin/_post_modal.html.twig' %}
+{% endblock %}
 
-        .flash-alert {
-            padding: 0.75rem 1rem;
-            margin-bottom: 1rem;
-            border-radius: 4px;
-        }
-        .flash-success { background-color: #d4edda; color: #155724; }
-        .flash-error { background-color: #f8d7da; color: #721c24; }
-
-        .fab-btn {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 3.5rem;
-            height: 3.5rem;
-            border-radius: 50%;
-            background-color: #0056b3;
-            color: #fff;
-            border: none;
-            font-size: 1.8rem;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: transform 0.2s ease, background-color 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        .fab-btn:hover {
-            background-color: #003d80;
-            transform: scale(1.08);
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1050;
-        }
-        .modal-card {
-            background: #fff;
-            padding: 1.5rem;
-            border-radius: 8px;
-            width: 100%;
-            max-width: 600px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        .modal-close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-            display: flex;
-            flex-direction: column;
-        }
-        .form-group label {
-            font-weight: bold;
-            margin-bottom: 0.25rem;
-            font-size: 0.85rem;
-        }
-        .form-group input, .form-group select, .form-group textarea {
-            padding: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .form-row {
-            display: flex;
-            gap: 1rem;
-        }
-        .form-row .form-group {
-            flex: 1;
-        }
-
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-        .btn-submit {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 0.5rem 1.25rem;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .btn-cancel {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-    </style>
-
+{% block javascripts %}
+    {{ parent() }}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const modal = document.getElementById('postModalOverlay');

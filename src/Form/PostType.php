@@ -23,7 +23,9 @@ class PostType extends AbstractType
         $builder
             ->add('title', TextType::class, [
                 'label' => 'title',
+                'label_attr' => ['class' => 'form-label'],
                 'attr' => [
+                    'class' => 'form-control',
                     'placeholder' => 'post title...',
                 ],
             ])
@@ -32,9 +34,17 @@ class PostType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => '-- select category --',
                 'label' => 'category',
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => [
+                    'class' => 'form-select',
+                ],
             ])
             ->add('language', ChoiceType::class, [
                 'label' => 'language',
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => [
+                    'class' => 'form-select',
+                ],
                 'choices' => [
                     'English' => 'en',
                     'Español' => 'es',
@@ -44,14 +54,20 @@ class PostType extends AbstractType
             ])
             ->add('diffusio', EnumType::class, [
                 'class' => PostDiffusio::class,
-                'label' => 'diffusio level',
+                'label' => 'visibility',
+                'label_attr' => ['class' => 'form-label'],
+                'attr' => [
+                    'class' => 'form-select',
+                ],
                 'placeholder' => '-- none --',
                 'required' => false,
             ])
             ->add('content', TextareaType::class, [
                 'label' => 'content',
+                'label_attr' => ['class' => 'form-label'],
                 'attr' => [
-                    'rows' => 8,
+                    'class' => 'form-control',
+                    'rows' => 6,
                     'placeholder' => 'write post content...',
                 ],
             ]);

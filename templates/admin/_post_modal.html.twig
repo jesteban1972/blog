@@ -1,0 +1,46 @@
+{# file ~/Sites/blog/templates/admin/_post_modal.html.twig #}
+
+<div class="modal-overlay" id="postModalOverlay" style="display: none;">
+    <div class="form-wrapper modal-card">
+        <header class="form-header d-flex justify-content-between align-items-center">
+            <span class="form-badge">new post</span>
+            <button type="button" class="btn-close-modal" id="closePostModalBtn" aria-label="Close">&times;</button>
+        </header>
+
+        <div class="form-body p-4">
+            {{ form_start(form, {
+                'action': path('app_admin_post_new'),
+                'attr': {'class': 'admin-post-form', 'data-turbo': 'false'}
+            }) }}
+
+            <div class="mb-3">
+                {{ form_row(form.title) }}
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    {{ form_row(form.category) }}
+                </div>
+
+                <div class="col-md-4">
+                    {{ form_row(form.language) }}
+                </div>
+
+                <div class="col-md-4">
+                    {{ form_row(form.diffusio) }}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.content) }}
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button type="button" class="btn btn-outline-custom" id="cancelPostModalBtn">cancel</button>
+                <button type="submit" class="btn btn-custom-primary">publish</button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>

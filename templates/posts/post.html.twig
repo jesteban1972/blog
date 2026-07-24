@@ -1,5 +1,7 @@
 {# file ~/Sites/blog/templates/posts/post.html.twig #}
 
+{% from "macros/display_entity_image.html.twig" import display_entity_image %}
+
 {% set entity = 'post' %}
 
 {# prepare the excerpt for meta tags #}
@@ -25,6 +27,9 @@
     <h1 class="cartouche-header">
         {{ 'post.seo.h1' | trans({'%title%': post.title}) }}
     </h1>
+
+    {# image #}
+    <div>{{ display_entity_image(entity, 'medium') }}</div>
 
     {# 2. post title #}
     <h2>{{ post.title }}</h2>
@@ -85,9 +90,6 @@
 
 {% block main_contents %}
     <div class="box-1st-order">
-{#        <div class="d-flex justify-content-between align-items-baseline mb-3">#}
-{#            <h2>{{ 'post.content' | trans }}</h2>#}
-{#        </div>#}
 
         <div class="description-container">
             {{ post.content | nl2br }}

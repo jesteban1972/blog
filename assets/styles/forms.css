@@ -1,0 +1,209 @@
+/** file ~/Sites/blog/assets/styles/forms.css */
+
+/*
+ * this stylesheet contains rules for all the forms
+ * (these rules replicate the classes from the Annales app wizards).
+ */
+
+/********************************************************************************
+ * global structure
+ */
+
+.form-wrapper {
+    background-color: #ffffff !important;
+    border: 1px solid var(--purple-lavender) !important;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(49, 20, 50, 0.1);
+    overflow: hidden;
+    position: relative;
+    min-height: 400px;
+    transition: opacity 0.3s ease;
+}
+
+.form-header {
+    background-color: var(--beige);
+    padding: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--purple-periwinkle);
+    margin: 0;
+}
+
+.form-footer {
+    background-color: var(--beige);
+    border-top: 1px solid var(--purple-periwinkle);
+    padding: 1.5rem;
+}
+
+.form-badge {
+    background-color: var(--purple-eggplant) !important;
+    color: white !important;
+    border: 1px solid var(--purple-periwinkle);
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+
+/********************************************************************************
+ * form elements & inputs
+ */
+
+.form-body label,
+.col-form-label {
+    color: var(--purple-violet) !important;
+    font-weight: 700;
+}
+
+.form-body .form-control,
+.form-body .form-select {
+    background-color: #ffffff !important;
+    border: 1px solid var(--purple-heather) !important;
+    color: var(--purple-eggplant) !important;
+}
+
+.form-body .form-control:focus,
+.form-body .form-select:focus {
+    background-color: #fff !important;
+    border-color: var(--purple-violet) !important;
+    box-shadow: 0 0 0 0.25rem rgba(157, 78, 221, 0.15) !important;
+}
+
+.form-form-error {
+    background-color: rgba(220, 53, 69, 0.05);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid rgba(220, 53, 69, 0.2);
+}
+
+.form-form-error ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: #dc3545;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.form-form-error ul li::before {
+    content: "\f06a";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-right: 0.5rem;
+}
+
+
+/********************************************************************************
+ * buttons
+ */
+
+.btn-custom-primary {
+    background-color: var(--purple-violet) !important;
+    border-color: var(--purple-violet) !important;
+    color: white !important;
+}
+
+.btn-custom-primary:hover {
+    background-color: var(--purple-boysenberry) !important;
+    border-color: var(--purple-boysenberry) !important;
+}
+
+.btn-outline-custom {
+    color: var(--purple-violet) !important;
+    border-color: var(--purple-violet) !important;
+    font-weight: 600;
+}
+
+.btn-outline-custom:hover {
+    background-color: var(--purple-violet) !important;
+    border-color: var(--purple-violet) !important;
+    color: white !important;
+}
+
+.btn-form-action {
+    color: var(--purple-violet) !important;
+    background-color: var(--beige) !important;
+    border: 1px solid var(--purple-purple) !important;
+    font-weight: 700 !important;
+    padding: 0.5rem 1.5rem !important;
+    transition: all 0.2s ease;
+    z-index: 2;
+    position: relative;
+}
+
+.btn-form-action:hover {
+    background-color: var(--purple-purple) !important;
+    color: white !important;
+}
+
+
+/********************************************************************************
+ * special UI components & cards
+ */
+
+.form-prompt-area {
+    background-color: #ebd3f2 !important;
+    border-radius: 12px;
+    padding: 2rem;
+    position: relative;
+    display: block;
+    width: 100%;
+    border: none !important;
+
+    background-image:
+        linear-gradient(90deg, var(--purple-periwinkle) 50%, transparent 50%),
+        linear-gradient(90deg, var(--purple-periwinkle) 50%, transparent 50%),
+        linear-gradient(0deg, var(--purple-periwinkle) 50%, transparent 50%),
+        linear-gradient(0deg, var(--purple-periwinkle) 50%, transparent 50%);
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+    background-size: 15px 2px, 15px 2px, 2px 15px, 2px 15px;
+    background-position: 0 0, 0 100%, 0 0, 100% 0;
+
+    animation: ants 0.8s infinite linear;
+    transition: background-color 0.3s ease;
+}
+
+.form-prompt-area:hover {
+    background-color: #e3bef5 !important;
+}
+
+@keyframes ants {
+    to { background-position: 15px 0, -15px 100%, 0 -15px, 100% 15px; }
+}
+
+.form-card {
+    background-color: #fcfaff;
+    border: 1px solid var(--purple-lavender);
+    border-radius: 8px;
+    padding: 1.5rem !important;
+    margin-bottom: 1.5rem;
+}
+
+.form-card-highlight {
+    background-color: rgba(227, 159, 246, 0.08) !important;
+    border-left: 5px solid var(--purple-violet) !important;
+    border-top: 1px solid var(--purple-periwinkle) !important;
+    border-right: 1px solid var(--purple-periwinkle) !important;
+    border-bottom: 1px solid var(--purple-periwinkle) !important;
+    border-radius: 8px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.form-card-highlight:hover { transform: translateY(-2px); }
+
+
+/********************************************************************************
+ * help text
+ */
+
+.form-help-text {
+    color: #6c757d;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    margin-bottom: 0.25rem;
+}
+
+.form-help-icon {
+    color: var(--purple-iris) !important;
+    margin-right: 0.25rem;
+}

@@ -33,21 +33,21 @@ class PostsController extends AbstractController
     ) {}
 
     /**
-     * lists posts filtered by the active language.
+     * lists all posts regardless of language.
      */
     #[Route('/', name: 'app_posts', methods: ['GET'])]
     public function posts(Request $request): Response
     {
-        $language = $request->getLocale(); // e.g. 'en', 'es'
+        $language = $request->getLocale();
 
         ////////////////////////////////////////////////////////////////////////
-        /// fetch active posts for the current language using the paginator configuration
+        /// fetch active posts across all languages by passing null for language
 
         $paginationData = $this->postsRepository->getPostsPaginated(
             currentPage: 1,
             resultsPerPage: 25,
             sortOrder: 'DESC',
-            language: $language
+            language: null
         );
 
         ////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,7 @@ class PostsController extends AbstractController
         return $this->render('posts/posts.html.twig', [
             'posts' => $paginationData['paginator'],
             'language' => $language,
-            'locale' => $language, // fallback for legacy base context expecting locale
+            'locale' => $language,
         ]);
     }
 

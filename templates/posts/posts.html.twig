@@ -10,15 +10,9 @@
     <div class="posts-container">
         <header class="posts-header">
             <h1 class="page-title">{{ 'blog posts'|trans }}</h1>
-            {% if language is defined and language %}
-                <p class="locale-indicator">
-                    {{ 'showing posts in'|trans }}: <strong>{{ language|upper }}</strong>
-                </p>
-            {% else %}
-                <p class="locale-indicator">
-                    {{ 'showing posts in'|trans }}: <strong>{{ app.request.locale|upper }}</strong>
-                </p>
-            {% endif %}
+            <p class="locale-indicator">
+                {{ 'showing all posts'|trans }}
+            </p>
         </header>
 
         <hr class="section-divider" />
@@ -30,7 +24,7 @@
             </div>
         {% else %}
             <section class="empty-posts-state">
-                <p>{{ 'no posts found in this language yet.'|trans }}</p>
+                <p>{{ 'no posts found.'|trans }}</p>
             </section>
         {% endif %}
     </div>
