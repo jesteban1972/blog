@@ -116,10 +116,37 @@
     {% if is_granted('ROLE_ADMIN') %}
         <h2>{{ 'global_labels.actiones' | trans }}</h2>
         <nav>
-            <a href="{{ path('app_posts') }}" class="nav-link">
-                <i class="fas fa-list me-2"></i> {{ 'global_labels.back_to_list' | trans }}
+            {# edition link #}
+            <a
+                href="{{ path('app_admin_post_edit', { id: post.id }) }}"
+                class="nav-link"
+            >
+                <i class="fas fa-edit me-2"></i> {{ 'post.actions.edit' | trans }}
             </a>
+
+            {# deletion button as a direct child of <nav> #}
+            <button
+                type="button"
+                class="nav-link text-danger"
+                onclick="if (confirm('{{ 'post.actions.delete_confirm_message' | trans({'%title%': post.title}) | escape('js') }}')) { document.getElementById('delete-post-form-{{ post.id }}').submit(); }"
+            >
+                <i class="fas fa-trash-alt me-2"></i> {{ 'post.actions.delete' | trans }}
+            </button>
         </nav>
+
+        {# hidden form placed outside <nav> to preserve flexbox children #}
+        <form
+            id="delete-post-form-{{ post.id }}"
+            method="post"
+            action="{{ path('app_admin_post_delete', { id: post.id }) }}"
+            class="d-none"
+        >
+            <input
+                type="hidden"
+                name="_token"
+                value="{{ csrf_token('delete' ~ post.id) }}"
+            >
+        </form>
     {% endif %}
 {% endblock %}
 

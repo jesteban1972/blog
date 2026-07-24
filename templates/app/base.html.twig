@@ -47,7 +47,8 @@
                 'alia',
                 'main_contents',
                 'community_comments',
-                'actions'
+                'actions',
+                'lower_links'
             ]) %}
 
             {% for section_name in sections %}
@@ -90,8 +91,27 @@
 </div>
 
 <footer>
-    {% include 'app/_footer.html.twig' %}
+    {% block footer %}
+        {% include 'app/_footer.html.twig' %}
+    {% endblock %}
 </footer>
+
+{# capture block defaults into a variable to avoid inline double-rendering #}
+{% set _ %}
+    {% block header %}{% endblock %}
+    {% block alia %}{% endblock %}
+    {% block main_contents %}{% endblock %}
+    {% block community_comments %}{% endblock %}
+    {% block actions %}{% endblock %}
+
+    {% block lower_links %}
+        {{ include('app/_back_to_top.html.twig') }}
+
+        {% if app.request.attributes.get('_route') not in ['app_home'] %}
+            {{ include('app/_back_to_home.html.twig') }}
+        {% endif %}
+    {% endblock %}
+{% endset %}
 
 {% block javascripts %}
     {{ importmap((['app', 'language-bar', 'age-verification'])) }}
@@ -103,21 +123,21 @@
                 "@context": "https://schema.org",
                 "@type": "WebPage",
                 "name": "{% block page_name %}{{ app_domain }}{% endblock %}",
-                    "description": "{% block page_description %}{{ app_domain }}{% endblock %}",
-                    "author": {
-                        "@type": "Person",
-                        "name": "Pendoncete"
-                    },
-                    "publisher": {
-                        "@type": "Organization",
-                        "name": "blog.pendoncete.org",
-                        "url": "https://blog.pendoncete.org",
-                        "logo": {
-                            "@type": "ImageObject",
-                            "url": "{{ asset('images/artwork/chameleon.png', 'cdn') }}"
-                        }
+                "description": "{% block page_description %}{{ app_domain }}{% endblock %}",
+                "author": {
+                    "@type": "Person",
+                    "name": "Pendoncete"
+                },
+                "publisher": {
+                    "@type": "Organization",
+                    "name": "blog.pendoncete.org",
+                    "url": "https://blog.pendoncete.org",
+                    "logo": {
+                        "@type": "ImageObject",
+                        "url": "{{ asset('images/artwork/chameleon.png', 'cdn') }}"
                     }
                 }
+            }
         </script>
     {% endblock %}
 {% endblock %}

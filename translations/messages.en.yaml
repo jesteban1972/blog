@@ -3,6 +3,8 @@
 # preferred quotation style: smart quotes with curly "66-99" style. (“...”)
 
 global_labels:
+    back_to_home: "back to home"
+    back_to_top: "back to top"
     forms:
         proceed: "proceed"
     actiones: "actions"
@@ -45,6 +47,9 @@ homepage:
     welcome_visitor: "welcome!"
 
 post:
+    actions:
+        delete: "delete post"
+        edit: "edit post"
     category: "category"
     community:
         comments:

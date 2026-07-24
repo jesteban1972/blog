@@ -1,6 +1,57 @@
 /** file ~/Sites/blog/assets/styles/_components.css (boxes, buttons, arrows, etc i.e. the reusable UI building blocks) */
 
 /********************************************************************************
+ * buttons
+ */
+
+/* back-to-top button {{ */
+.btn-back-to-top {
+    color: var(--purple-boysenberry);
+    font-size: 2.6rem;
+    line-height: 1;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: inline-block;
+    text-decoration: none;
+}
+
+.btn-back-to-top:hover {
+    color: var(--purple-magenta);
+    transform: scale(1.1) translateY(-5px);
+}
+
+.btn-back-to-top i {
+    filter: drop-shadow(0 3px 5px rgba(49, 20, 50, 0.15));
+}
+/* }} back-to-top button */
+
+.btn-see-more {
+    background-color: var(--purple-violet);
+    color: var(--beige);
+    border: none;
+
+    /* Sizing & Shape */
+    font-size: 0.75rem; /* Makes it smaller than standard text */
+    padding: 2px 8px;   /* Compact padding */
+    border-radius: 4px; /* Subtle rounding */
+
+    /* Layout */
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    margin-left: 5px;   /* Space it away from the [...] */
+    vertical-align: middle;
+}
+
+.btn-see-more:hover {
+    /* Shift to a slightly lighter or darker purple on hover */
+    background-color: var(--purple-eggplant);
+    color: var(--purple-lavender);
+}
+
+.btn-see-more:active {
+    transform: translateY(1px); /* Slight click effect */
+}
+
+/********************************************************************************
  * cartouches
  */
 

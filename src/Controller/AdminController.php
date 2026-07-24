@@ -64,4 +64,40 @@ class AdminController extends AbstractController
             'form' => $form->createView(),
         ], new Response(null, Response::HTTP_UNPROCESSABLE_ENTITY));
     }
+
+    #[Route('/post/{id}/edit', name: 'app_admin_post_edit', methods: ['GET', 'POST'])]
+    public function editPost(Request $request, Post $post): Response
+    {
+        $form = $this->createForm(PostType::class, $post);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $slugger = new AsciiSlugger();
+            $post->setSlug(strtolower($slugger->slug($post->getTitle())->toString()));
+
+            $this->entityManager->flush();
+
+            $this->addFlash('success', sprintf('post "%s" updated successfully.', $post->getTitle()));
+
+            return $this->redirectToRoute('app_post_show', ['slug' => $post->getSlug()], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('admin/edit.html.twig', [
+            'post' => $post,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/post/{id}/delete', name: 'app_admin_post_delete', methods: ['POST'])]
+    public function deletePost(Request $request, Post $post): Response
+    {
+        if ($this->isCsrfTokenValid('delete' . $post->getId(), (string) $request->request->get('_token'))) {
+            $this->entityManager->remove($post);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', sprintf('post "%s" removed successfully.', $post->getTitle()));
+        }
+
+        return $this->redirectToRoute('app_posts', [], Response::HTTP_SEE_OTHER);
+    }
 }
