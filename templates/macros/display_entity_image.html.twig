@@ -3,7 +3,7 @@
 {% macro display_entity_image(entity, size) %}
 
     {% set entity_config = {
-        'post': 3
+        'post': 4
     } %}
     {% set max_count = entity_config[entity] %}
     {% set random_number = random(1, max_count) %}
