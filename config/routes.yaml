@@ -1,6 +1,6 @@
 # file ~/Sites/blog/config/routes.yaml
 
-# --- SECTION 1: INFRASTRUCTURE (Absolute Root) ---
+# --- SECTION 1: INFRASTRUCTURE (absolute Root) ---
 # these routes MUST NOT have a locale prefix to keep SSO signatures valid.
 
 app_sitemap:
@@ -8,27 +8,32 @@ app_sitemap:
     controller: App\Controller\AppController::sitemap
     defaults: { _format: xml }
 
-# SSO handshake (keep these at the absolute root)
+# SSO handshake (consolidated in SsoController)
 app_login:
     path: /login
-    controller: App\Controller\LoginController::login
+    controller: App\Controller\SsoController::login
+    methods: [GET, POST]
+
+app_signup:
+    path: /signup
+    controller: App\Controller\SsoController::signup
     methods: [GET, POST]
 
 app_login_callback:
     path: /login/callback
-    controller: App\Controller\LoginController::callback
+    controller: App\Controller\SsoController::callback
 
 app_logout:
     path: /logout
-    controller: App\Controller\LogoutController::logout
+    controller: App\Controller\SsoController::logout
 
 app_logout_local:
     path: /logout_local
-    controller: App\Controller\LogoutController::logoutLocal
+    controller: App\Controller\SsoController::logoutLocal
 
 app_logged_out:
     path: /logged_out
-    controller: App\Controller\LogoutController::loggedOut
+    controller: App\Controller\SsoController::loggedOut
 
 # admin dashboard layout loader (bypasses the localized prefix constraint)
 app_admin:

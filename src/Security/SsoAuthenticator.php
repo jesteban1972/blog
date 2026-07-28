@@ -36,7 +36,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  *   - local persistent identity (User entity)
  *   - automatic recovery (silent refresh)
  */
-class AuthBridgeAuthenticator extends AbstractAuthenticator
+class SsoAuthenticator extends AbstractAuthenticator
 {
     use TargetPathTrait;
 

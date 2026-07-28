@@ -19,9 +19,6 @@ class AppController extends AbstractController
         private LoggerInterface $mainLogger,
         private RequestStack $requestStack,
         private TranslatorInterface $translator,
-        private string $authBaseUrl,
-        private string $callbackUrl,
-        private string $appSecret,
     ) {}
 
     #[Route('/', name: 'app_home')]
@@ -39,25 +36,5 @@ class AppController extends AbstractController
     public function info(): Response
     {
         return $this->render('app/info.html.twig');
-    }
-
-    #[Route('/signup', name: 'app_signup', methods: ['GET', 'POST'])]
-    public function signup(): Response
-    {
-        ////////////////////////////////////////////////////////////////////////
-        /// generate signature to send to auth server
-
-        $authUrl = $this->authBaseUrl . '/signup';
-        $redirectUri = $this->callbackUrl;
-        $sig = hash_hmac('sha256', $redirectUri, $this->appSecret);
-
-        ////////////////////////////////////////////////////////////////////////
-        /// render template
-
-        return $this->render('auth_signup.html.twig', [
-            'authUrl' => $authUrl,
-            'redirectUri' => $redirectUri,
-            'sig' => $sig,
-        ]);
     }
 }

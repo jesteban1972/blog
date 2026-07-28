@@ -42,21 +42,11 @@ services:
             - true   # allow inline line breaks in messages
             - true   # include stack traces if available
 
-    App\Controller\AppController:
+    # unified SSO Controller configuration:
+    App\Controller\SsoController:
         arguments:
             $authBaseUrl: '%env(AUTH_BASE_URL)%'
             $callbackUrl: '%env(APP_CALLBACK_URL)%'
-            $appSecret: '%env(APP_SECRET)%'
-
-    App\Controller\LoginController:
-        arguments:
-            $authBaseUrl: '%env(AUTH_BASE_URL)%'
-            $callbackUrl: '%env(APP_CALLBACK_URL)%'
-            $appSecret: '%env(APP_SECRET)%'
-
-    App\Controller\LogoutController:
-        arguments:
-            $authBaseUrl: '%env(AUTH_BASE_URL)%'
             $appSecret: '%env(APP_SECRET)%'
 
     App\Controller\ErrorController:
@@ -70,7 +60,7 @@ services:
         arguments:
             $cookieDomain: '%env(JWT_COOKIE_DOMAIN)%'
 
-    App\Security\AuthBridgeAuthenticator:
+    App\Security\SsoAuthenticator:
         arguments:
             $cookieDomain: '%env(JWT_COOKIE_DOMAIN)%'
             # immuneRoutes: we allow these routes to proceed regardless of user status, to prevent redirection loops
@@ -80,6 +70,7 @@ services:
                 - 'app_logout_local'
                 - 'app_login'
                 - 'app_login_callback'
+                - 'app_signup'               # added app_signup to immune routes
                 - 'app_info'                # If you want public info pages to stay immune
             $authIntrospectUrl: 'http://auth-php/introspect'
             $authRefreshUrl: 'http://auth-php/refresh'

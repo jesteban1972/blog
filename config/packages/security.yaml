@@ -23,7 +23,7 @@ security:
 
             # wire up the custom authenticator:
             custom_authenticator:
-                - App\Security\AuthBridgeAuthenticator
+                - App\Security\SsoAuthenticator
 
             # ensure the firewall is stateful so the session persists locally
             stateless: false
