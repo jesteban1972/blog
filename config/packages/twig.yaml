@@ -1,7 +1,9 @@
 # file ~/Sites/blog/config/packages/twig.yaml
 
 twig:
-
+    default_path: '%kernel.project_dir%/templates'
+    paths:
+        '/var/www/shared_templates': shared
     form_themes: ['bootstrap_5_layout.html.twig']
     file_name_pattern: '*.twig'
     strict_variables: true

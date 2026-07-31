@@ -14,6 +14,7 @@ services:
         HOST_GID: ${HOST_GID:-1000}
     volumes:
       - .:/var/www/html
+      - ../shared_pendoncete_net/templates:/var/www/shared_templates:ro
     networks:
       - db_pendoncete_net    # For MariaDB connection
       - apps_pendoncete_net  # For Gateway and Auth-Mailer communication
