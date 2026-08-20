@@ -1,4 +1,4 @@
-// file ~/Sites/blog/assets/app.js
+// file ~/Sites/blog/assets/scripts/entrypoint.js
 
 /**
  * this is the app main JavaScript file, performing several tasks:
@@ -14,7 +14,7 @@ import 'bootstrap';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 // import Stimulus:
-import './stimulus_bootstrap.js';
+import '../stimulus_bootstrap.js';
 
 // import flag-icons:
 import 'flag-icons/css/flag-icons.min.css';
