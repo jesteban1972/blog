@@ -1,3 +1,5 @@
+# file ~/Sites/blog/config/packages/asset_mapper.yaml
+
 framework:
     asset_mapper:
         # The paths to make available to the asset mapper.

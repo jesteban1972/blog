@@ -23,9 +23,11 @@
     {# assets #}
     <link rel="icon" type="image/x-icon" href="{{ asset('images/icons/favicon.ico', 'cdn') }}">
     {% block stylesheets %}
+        {# common styles from CDN #}
+        <link rel="stylesheet" href="{{ asset('styles/entrypoint.css', 'cdn') }}">
+        {# 3rd party stylesheets #}
         <link rel="stylesheet" href="{{ asset('vendor/bootstrap/dist/css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('vendor/@fortawesome/fontawesome-free/css/all.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('styles/entrypoint.css') }}">
     {% endblock %}
 </head>
 

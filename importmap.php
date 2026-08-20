@@ -24,10 +24,10 @@ return [
         'path' => './assets/scripts/age-verification.js',
         'entrypoint' => true,
     ],
-    'entrypoint_css' => [
-        'path' => 'styles/entrypoint.css',
-        'type' => 'css',
-    ],
+//    'entrypoint_css' => [
+//        'path' => 'styles/entrypoint.css',
+//        'type' => 'css',
+//    ],
     '@hotwired/stimulus' => [
         'version' => '3.2.2',
     ],
