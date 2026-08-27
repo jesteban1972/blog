@@ -82,6 +82,7 @@ class SessionUserProvider implements UserProviderInterface
         return new SessionUser([
             'id' => (int) $identifier,
             'email' => $sessionData['email'] ?? null,
+            'avatarHash' => $sessionData['avatarHash'] ?? null,
             'roles' => $sessionData['roles'] ?? ['ROLE_USER'],
             'username' => $sessionData['username'] ?? null,
             'uxLanguage' => $sessionData['uxLanguage'] ?? 'en',
@@ -98,6 +99,9 @@ class SessionUserProvider implements UserProviderInterface
         }
         if (method_exists($user, 'setEmail')) {
             $user->setEmail($sessionData['email'] ?? null);
+        }
+        if (method_exists($user, 'setAvatarHash')) {
+            $user->setAvatarHash($sessionData['avatarHash'] ?? null);
         }
         if (method_exists($user, 'setRoles')) {
             $user->setRoles($sessionData['roles'] ?? ['ROLE_USER']);
@@ -122,6 +126,7 @@ class SessionUserProvider implements UserProviderInterface
                 'id' => $data->getId(),
                 'username' => $data->getUsername(),
                 'email' => $data->getEmail(),
+                'avatarHash' => $data->getAvatarHash(),
                 'roles' => $data->getRoles(),
                 'uxLanguage' => $data->getUxLanguage(),
                 'isConsented' => $data->isConsented(),
@@ -134,6 +139,7 @@ class SessionUserProvider implements UserProviderInterface
                 'id' => $data['id'] ?? $data['sub'] ?? null,
                 'username' => $data['username'] ?? null,
                 'email' => $data['email'] ?? null,
+                'avatarHash' => $data['avatarHash'] ?? null,
                 'roles' => $data['roles'] ?? ['ROLE_USER'],
                 'uxLanguage' => $data['uxLanguage'] ?? 'en',
                 'isConsented' => (bool) ($data['isConsented'] ?? false),

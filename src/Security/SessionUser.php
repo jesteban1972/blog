@@ -23,6 +23,7 @@ class SessionUser implements UserInterface, EquatableInterface
     private ?int $id;
     private ?string $username;
     private ?string $email;
+    private ?string $avatarHash;
     private array $roles;
     private string $uxLanguage = 'en';
     private bool $isConsented = false;
@@ -30,7 +31,7 @@ class SessionUser implements UserInterface, EquatableInterface
     /**
      * hydrates the DTO using the claims array sourced from the local Symfony session.
      *
-     * @param array $data the SSO claims containing 'id', 'username', 'email', 'roles', 'uxLanguage', 'isConsented'.
+     * @param array $data the SSO claims containing 'id', 'username', 'email', 'avatarHash', 'roles', 'uxLanguage', 'isConsented'.
      * @param string $defaultRole fallback role specific to the client application (e.g., 'ROLE_USER').
      */
     public function __construct(array $data, string $defaultRole = 'ROLE_USER')
@@ -38,6 +39,7 @@ class SessionUser implements UserInterface, EquatableInterface
         $this->id = isset($data['id']) ? (int) $data['id'] : null;
         $this->username = $data['username'] ?? null;
         $this->email = $data['email'] ?? null;
+        $this->avatarHash = $data['avatarHash'] ?? null;
 
         // use claims roles if available; otherwise fall back to application default
         $this->roles = !empty($data['roles']) ? $data['roles'] : [$defaultRole];
@@ -59,6 +61,11 @@ class SessionUser implements UserInterface, EquatableInterface
     public function getEmail(): ?string
     {
         return $this->email;
+    }
+
+    public function getAvatarHash(): ?string
+    {
+        return $this->avatarHash;
     }
 
     public function getRoles(): array
@@ -102,6 +109,7 @@ class SessionUser implements UserInterface, EquatableInterface
             'id' => $this->id,
             'username' => $this->username,
             'email' => $this->email,
+            'avatarHash' => $this->avatarHash,
             'roles' => $this->roles,
             'uxLanguage' => $this->uxLanguage,
             'isConsented' => $this->isConsented,

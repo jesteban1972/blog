@@ -24,9 +24,24 @@
             <div class="user-info">
 
                 <p class="user-greeting text-center">
-                    <a href="{{ app_auth_base_url }}/user-info?callback_url={{ callback_url|url_encode }}"
-                       style="text-decoration: none; color: inherit;">
-                        <i class="fa-regular fa-circle-user fa-sm me-2"></i>{{ app.user.getUsername() }}
+                    <a
+                        href="{{ app_auth_base_url }}/user-info?callback_url={{ callback_url|url_encode }}"
+                        class="d-inline-flex align-items-center gap-2"
+                        style="text-decoration: none; color: inherit;"
+                    >
+                        {% if app.user.avatarHash %}
+                            <img
+                                src="{{ app_cdn }}/images/avatars/{{ app.user.avatarHash }}.webp"
+                                alt="{{ app.user.getUsername() }}"
+                                class="rounded-circle shadow-sm"
+                                width="24"
+                                height="24"
+                                style="object-fit: cover;"
+                            >
+                        {% else %}
+                            <i class="fa-regular fa-circle-user fa-sm"></i>
+                        {% endif %}
+                        <span>{{ app.user.getUsername() }}</span>
                     </a>
                 </p>
 
@@ -76,7 +91,7 @@
 
         <div class="mt-3 text-center">
 
-            {# dynamic link that strips 'annales.' from the host #}
+            {# dynamic link that strips 'blog.' from the host #}
             {% set main_host = app.request.host | replace({'blog.': ''}) %}
 
             <a href="//{{ main_host }}" class="external-link">

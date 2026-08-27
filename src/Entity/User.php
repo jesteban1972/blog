@@ -77,6 +77,7 @@ class User implements UserInterface
      */
     private ?string $username = null;
     private ?string $email = null;
+    private ?string $avatarHash = null;
     private ?string $displayName = null;
     private ?string $bio = null;
     private array $roles = [];
@@ -138,6 +139,18 @@ class User implements UserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
+        return $this;
+    }
+
+    public function getAvatarHash(): ?string
+    {
+        return $this->avatarHash;
+    }
+
+    public function setAvatarHash(?string $avatarHash): static
+    {
+        $this->avatarHash = $avatarHash;
+
         return $this;
     }
 
