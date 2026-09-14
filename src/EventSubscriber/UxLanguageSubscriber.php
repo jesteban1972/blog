@@ -5,18 +5,24 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * UxLanguageSubscriber is the universal linguistic anchor. it ensures that every request across the pendoncete.org
  * ecosystem respects the user's language preference by synchronizing the global cookie, the local session, and the
  * Symfony request context.
- *
- * this class is a "universal blueprint" for handling UX languages in all apps within pendoncete.org domain.
  */
 class UxLanguageSubscriber implements EventSubscriberInterface
 {
+    public function __construct(
+        private TokenStorageInterface $tokenStorage,
+        private string $cookieDomain
+    ) {}
+
     public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
@@ -31,60 +37,92 @@ class UxLanguageSubscriber implements EventSubscriberInterface
         $session = $request->hasSession() ? $request->getSession() : null;
 
         ////////////////////////////////////////////////////////////////////////////////
-        /// 1. (identity) check the URL prefix first (for SEO/crawlers), then the global cookie.
-        /// if either is found, they override the session preference
+        /// 1. (identity) retrieve sources of truth
 
-        $urlLocale = $request->attributes->get('_locale');
         $cookieLocale = $request->cookies->get('pendoncete_ux_language');
+
+        /**
+         * Check the TokenStorage to see if there is an authenticated user in the current request context.
+         */
+        $token = $this->tokenStorage->getToken();
+        $user = $token?->getUser();
+
+        $userLocale = null;
+        if (is_object($user)) {
+            if (method_exists($user, 'getUxLanguage')) {
+                $userLocale = $user->getUxLanguage();
+            } elseif (method_exists($user, 'getLanguage')) {
+                $userLocale = $user->getLanguage();
+            }
+        }
 
         ////////////////////////////////////////////////////////////////////////////////
         /// 2. (context) resolution hierarchy
+        ///
+        /// Priority:
+        /// 1. Explicit UI cookie (user changed language via dropdown/UI)
+        /// 2. Authenticated user preference (DB setting or JWT claim)
+        /// 3. Session fallback
+        /// 4. Default fallback 'en'
 
-        /**
-         * the resolution hierarchy follows this priority:
-         * 1. language cookie vs URL: if the cookie exists and differs from the URL, the cookie wins.
-         * 2. URL Path (_locale): mandatory for SEO indexing and explicit user typing.
-         * 3. session (_locale): the stateful fallback.
-         * 4. 'en': the absolute fallback.
-         */
-
-        if ($cookieLocale && $cookieLocale !== $urlLocale) {
-
+        if ($cookieLocale) {
             $finalLocale = $cookieLocale;
-
-        } elseif ($urlLocale) {
-
-            $finalLocale = $urlLocale;
-
+        } elseif ($userLocale) {
+            $finalLocale = $userLocale;
         } else {
-
             $finalLocale = $session?->get('_locale') ?: 'en';
         }
 
         ////////////////////////////////////////////////////////////////////////////////
-        /// 3. (synchronization) set the locale for the current request execution (used by the translator)
+        /// 3. (synchronization) set locale for translator and router
 
         $request->setLocale($finalLocale);
-
-        // inject the locale into the request attributes (necessary for the router and UrlGenerator
-        // to produce localized paths correctly):
         $request->attributes->set('_locale', $finalLocale);
 
         ////////////////////////////////////////////////////////////////////////////////
-        /// 4. (persistence) ensure the local session matches the global preference to prevent "flickering":
+        /// 4. (persistence) ensure local session matches global preference
 
         if ($session && $session->get('_locale') !== $finalLocale) {
             $session->set('_locale', $finalLocale);
         }
     }
 
+    /**
+     * Runs before the HTML response is returned to the browser.
+     * Ensures the global 'pendoncete_ux_language' cookie matches the active locale.
+     */
+    public function onKernelResponse(ResponseEvent $event): void
+    {
+        if (!$event->isMainRequest()) {
+            return;
+        }
+
+        $request = $event->getRequest();
+        $response = $event->getResponse();
+
+        $currentLocale = $request->getLocale();
+        $cookieLocale = $request->cookies->get('pendoncete_ux_language');
+
+        // Only update the cookie on response if the active request locale is valid and non-empty
+        if ($currentLocale && $currentLocale !== $cookieLocale) {
+            $response->headers->setCookie(
+                Cookie::create('pendoncete_ux_language')
+                    ->withValue($currentLocale)
+                    ->withDomain($this->cookieDomain)
+                    ->withExpires(new \DateTime('+1 year'))
+                    ->withPath('/')
+                    ->withHttpOnly(false)
+                    ->withSecure($request->isSecure()) // Match HTTP/HTTPS
+                    ->withSameSite(Cookie::SAMESITE_LAX)
+            );
+        }
+    }
+
     public static function getSubscribedEvents(): array
     {
-        /**
-         * priority 20: this must run after the SessionListener (which starts the session) but before the LocaleListener
-         * and the Translator, so that the correct language is ready when the first translation is called.
-         */
-
-        return [KernelEvents::REQUEST => [['onKernelRequest', 20]]];
+        return [
+            KernelEvents::REQUEST => [['onKernelRequest', 20]],
+            KernelEvents::RESPONSE => 'onKernelResponse',
+        ];
     }
 }

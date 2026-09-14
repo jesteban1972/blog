@@ -17,10 +17,6 @@ return [
         'path' => './assets/scripts/entrypoint.js',
         'entrypoint' => true,
     ],
-    'language-bar' => [
-        'path' => './assets/scripts/language-bar.js',
-        'entrypoint' => true,
-    ],
     'age-verification' => [
         'path' => './assets/scripts/age-verification.js',
         'entrypoint' => true,

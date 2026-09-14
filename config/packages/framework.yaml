@@ -26,7 +26,7 @@ framework:
         cookie_samesite: lax
         cookie_path: /
         storage_factory_id: session.storage.factory.native
-        cookie_domain: '%env(JWT_COOKIE_DOMAIN)%'
+        cookie_domain: '%env(COOKIE_DOMAIN)%'
         cookie_lifetime: 86400 # 24 hours
         gc_maxlifetime: 86400
 

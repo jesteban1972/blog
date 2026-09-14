@@ -23,11 +23,13 @@
     {# assets #}
     <link rel="icon" type="image/x-icon" href="{{ asset('images/icons/favicon.ico', 'cdn') }}">
     {% block stylesheets %}
-        {# common styles from CDN #}
-        <link rel="stylesheet" href="{{ asset('styles/entrypoint.css', 'cdn') }}">
-        {# 3rd party stylesheets #}
+
+        {# 3rd party stylesheets (must preceed local assets) #}
         <link rel="stylesheet" href="{{ asset('vendor/bootstrap/dist/css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('vendor/@fortawesome/fontawesome-free/css/all.min.css') }}">
+
+        {# common styles from CDN #}
+        <link rel="stylesheet" href="{{ asset('styles/entrypoint.css', 'cdn') }}">
     {% endblock %}
 </head>
 
@@ -67,9 +69,9 @@
         {% endblock %}
     </main>
 
-    <aside>
+    <aside class="sidebar">
         {% block aside %}
-            {% include 'app/_aside.html.twig' %}
+            {% include 'app/_sidebar.html.twig' %}
         {% endblock %}
     </aside>
 
@@ -88,7 +90,7 @@
         </button>
     </div>
     <div class="offcanvas-body">
-        {% include 'app/_aside.html.twig' %}
+        {% include 'app/_sidebar.html.twig' %}
     </div>
 </div>
 
@@ -116,7 +118,12 @@
 {% endset %}
 
 {% block javascripts %}
-    {{ importmap((['entrypoint', 'language-bar', 'age-verification'])) }}
+
+    {# CDN-hosted shared components #}
+    <script src="{{ asset('scripts/language-bar.js', 'cdn') }}" defer></script>
+
+    {# local AssetMapper entries #}
+    {{ importmap((['entrypoint', 'age-verification'])) }}
 
     <!-- SEO script(s) -->
     {% block seo_script %}

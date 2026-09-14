@@ -19,6 +19,7 @@ services:
             $ssoLogger: '@monolog.logger.sso'
             $errorLogger: '@monolog.logger.error'
             $toolsLogger: '@monolog.logger.tools'
+            $cookieDomain: '%env(string:COOKIE_DOMAIN)%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -56,13 +57,8 @@ services:
         arguments:
             $publicKeyPath: '%env(resolve:JWT_PUBLIC_KEY)%'
 
-    App\Service\CookieService:
-        arguments:
-            $cookieDomain: '%env(JWT_COOKIE_DOMAIN)%'
-
     App\Security\SsoAuthenticator:
         arguments:
-            $cookieDomain: '%env(JWT_COOKIE_DOMAIN)%'
             # immuneRoutes: we allow these routes to proceed regardless of user status, to prevent redirection loops
             $immuneRoutes:
                 - 'app_profile_completion'

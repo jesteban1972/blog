@@ -11,6 +11,6 @@ twig:
     globals:
         app_name: 'blog'
         app_domain: 'pendoncete.org'
-        app_cookie_domain: '%env(resolve:JWT_COOKIE_DOMAIN)%'
+        app_cookie_domain: '%env(resolve:COOKIE_DOMAIN)%'
         app_auth_base_url: '%env(resolve:AUTH_BASE_URL)%'
         app_cdn: '%env(CDN)%'
