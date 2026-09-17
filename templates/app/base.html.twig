@@ -4,152 +4,156 @@
 
 <!DOCTYPE html>
 <html lang="{{ app.request.locale }}" {% if is_rtl %}dir="rtl"{% endif %}>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    {# SEO & social meta tags #}
-    <title>{% block title %}{{ app_domain }}{% endblock %}</title>
-    <meta name="description" content="{% block description %}{{ 'homepage.description' | trans }}{% endblock %}">
-    <meta name="keywords" content="{% block keywords %}Pendoncete, blog.pendoncete.org{% endblock %}">
-    <meta name="robots" content="index, follow">
-    <meta name="author" content="Pendoncete">
-    <link rel="publisher" href="https://blog.pendoncete.org">
-    <meta property="og:site_name" content="blog.pendoncete.org">
-    {% if app.request.attributes.get('_route') %}
-        <link rel="canonical" href="{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}">
-    {% endif %}
-
-    {# assets #}
-    <link rel="icon" type="image/x-icon" href="{{ asset('images/icons/favicon.ico', 'cdn') }}">
-    {% block stylesheets %}
-
-        {# 3rd party stylesheets (must preceed local assets) #}
-        <link rel="stylesheet" href="{{ asset('vendor/bootstrap/dist/css/bootstrap.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('vendor/@fortawesome/fontawesome-free/css/all.min.css') }}">
-
-        {# common styles from CDN #}
-        <link rel="stylesheet" href="{{ asset('styles/entrypoint.css', 'cdn') }}">
-    {% endblock %}
-</head>
-
-<body>
-
-{% include 'app/_age_verification.html.twig' %}
-
-<header>
-    {% include 'app/_header.html.twig' %}
-</header>
-
-<div class="main-wrapper">
-
-    {# main content area with section-looping engine #}
-    <main id="main-content">
-        {% block main %}
-            {% set sections = sections | default([
-                'header',
-                'alia',
-                'main_contents',
-                'community_comments',
-                'actions',
-                'lower_links'
-            ]) %}
-
-            {% for section_name in sections %}
-                {% set section_content = block(section_name) %}
-                {% if section_content | trim is not empty %}
-                    {% set section_normalized = section_name | replace({'_': '-'}) %}
-                    {% set section_class = entity is defined ? 'entity-' ~ section_normalized : section_normalized %}
-
-                    <section id="section-{{ section_normalized }}" class="{{ section_class }}">
-                        {{ section_content | raw }}
-                    </section>
-                {% endif %}
-            {% endfor %}
-        {% endblock %}
-    </main>
-
-    <aside class="sidebar">
-        {% block aside %}
-            {% include 'app/_sidebar.html.twig' %}
-        {% endblock %}
-    </aside>
-
-</div>
-
-<!-- mobile sidebar offcanvas -->
-<div class="offcanvas offcanvas-start" tabindex="-1" id="aside-mobile">
-    <div class="offcanvas-header">
-        <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="offcanvas"
-            aria-label="Close"
-            title="{{ 'sidebar.close_sidebar' | trans }}"
-        >
-        </button>
-    </div>
-    <div class="offcanvas-body">
-        {% include 'app/_sidebar.html.twig' %}
-    </div>
-</div>
-
-<footer>
-    {% block footer %}
-        {% include 'app/_footer.html.twig' %}
-    {% endblock %}
-</footer>
-
-{# capture block defaults into a variable to avoid inline double-rendering #}
-{% set _ %}
-    {% block header %}{% endblock %}
-    {% block alia %}{% endblock %}
-    {% block main_contents %}{% endblock %}
-    {% block community_comments %}{% endblock %}
-    {% block actions %}{% endblock %}
-
-    {% block lower_links %}
-        {{ include('app/_back_to_top.html.twig') }}
-
-        {% if app.request.attributes.get('_route') not in ['app_home'] %}
-            {{ include('app/_back_to_home.html.twig') }}
+        {# SEO & social meta tags #}
+        <title>
+            {%- block title -%}
+                {{ app_name ~ '.' ~ app_domain | default('blog.pendoncete.org') }}
+            {%- endblock -%}
+        </title>
+        <meta name="description" content="{% block description %}{{ 'homepage.description' | trans }}{% endblock %}">
+        <meta name="keywords" content="{% block keywords %}Pendoncete, blog.pendoncete.org{% endblock %}">
+        <meta name="robots" content="index, follow">
+        <meta name="author" content="Pendoncete">
+        <link rel="publisher" href="https://blog.pendoncete.org">
+        <meta property="og:site_name" content="blog.pendoncete.org">
+        {% if app.request.attributes.get('_route') %}
+            <link rel="canonical" href="{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}">
         {% endif %}
-    {% endblock %}
-{% endset %}
 
-{% block javascripts %}
+        {# assets #}
+        <link rel="icon" type="image/x-icon" href="{{ asset('images/icons/favicon.ico', 'cdn') }}">
+        {% block stylesheets %}
 
-    {# CDN-hosted shared components #}
-    <script src="{{ asset('scripts/language-bar.js', 'cdn') }}" defer></script>
+            {# 3rd party stylesheets (must preceed local assets) #}
+            <link rel="stylesheet" href="{{ asset('vendor/bootstrap/dist/css/bootstrap.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('vendor/@fortawesome/fontawesome-free/css/all.min.css') }}">
 
-    {# local AssetMapper entries #}
-    {{ importmap((['entrypoint', 'age-verification'])) }}
+            {# common styles from CDN #}
+            <link rel="stylesheet" href="{{ asset('styles/entrypoint.css', 'cdn') }}">
+        {% endblock %}
+    </head>
 
-    <!-- SEO script(s) -->
-    {% block seo_script %}
-        <script type="application/ld+json">
-            {
-                "@context": "https://schema.org",
-                "@type": "WebPage",
-                "name": "{% block page_name %}{{ app_domain }}{% endblock %}",
-                "description": "{% block page_description %}{{ app_domain }}{% endblock %}",
-                "author": {
-                    "@type": "Person",
-                    "name": "Pendoncete"
-                },
-                "publisher": {
-                    "@type": "Organization",
-                    "name": "blog.pendoncete.org",
-                    "url": "https://blog.pendoncete.org",
-                    "logo": {
-                        "@type": "ImageObject",
-                        "url": "{{ asset('images/artwork/chameleon.png', 'cdn') }}"
+    <body>
+
+    {% include 'app/_age_verification.html.twig' %}
+
+    <header>
+        {% include 'app/_header.html.twig' %}
+    </header>
+
+    <div class="main-wrapper">
+
+        {# main content area with section-looping engine #}
+        <main id="main-content">
+            {% block main %}
+                {% set sections = sections | default([
+                    'header',
+                    'alia',
+                    'main_contents',
+                    'community_comments',
+                    'actions',
+                    'lower_links'
+                ]) %}
+
+                {% for section_name in sections %}
+                    {% set section_content = block(section_name) %}
+                    {% if section_content | trim is not empty %}
+                        {% set section_normalized = section_name | replace({'_': '-'}) %}
+                        {% set section_class = entity is defined ? 'entity-' ~ section_normalized : section_normalized %}
+
+                        <section id="section-{{ section_normalized }}" class="{{ section_class }}">
+                            {{ section_content | raw }}
+                        </section>
+                    {% endif %}
+                {% endfor %}
+            {% endblock %}
+        </main>
+
+        <aside class="sidebar d-none d-md-block">
+            {% block aside %}
+                {% include 'app/_sidebar.html.twig' %}
+            {% endblock %}
+        </aside>
+
+    </div>
+
+    <!-- mobile sidebar offcanvas -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="aside-mobile">
+        <div class="offcanvas-header">
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"
+                title="{{ 'sidebar.close_sidebar' | trans }}"
+            >
+            </button>
+        </div>
+        <div class="offcanvas-body">
+            {% include 'app/_sidebar.html.twig' %}
+        </div>
+    </div>
+
+    <footer>
+        {% block footer %}
+            {% include 'app/_footer.html.twig' %}
+        {% endblock %}
+    </footer>
+
+    {# capture block defaults into a variable to avoid inline double-rendering #}
+    {% set _ %}
+        {% block header %}{% endblock %}
+        {% block alia %}{% endblock %}
+        {% block main_contents %}{% endblock %}
+        {% block community_comments %}{% endblock %}
+        {% block actions %}{% endblock %}
+
+        {% block lower_links %}
+            {{ include('app/_back_to_top.html.twig') }}
+
+            {% if app.request.attributes.get('_route') not in ['app_home'] %}
+                {{ include('app/_back_to_home.html.twig') }}
+            {% endif %}
+        {% endblock %}
+    {% endset %}
+
+    {% block javascripts %}
+
+        {# CDN-hosted shared components #}
+        <script src="{{ asset('scripts/language-bar.js', 'cdn') }}" defer></script>
+
+        {# local AssetMapper entries #}
+        {{ importmap((['entrypoint', 'age-verification'])) }}
+
+        <!-- SEO script(s) -->
+        {% block seo_script %}
+            <script type="application/ld+json">
+                {
+                    "@context": "https://schema.org",
+                    "@type": "WebPage",
+                    "name": "{% block page_name %}{{ app_domain }}{% endblock %}",
+                    "description": "{% block page_description %}{{ app_domain }}{% endblock %}",
+                    "author": {
+                        "@type": "Person",
+                        "name": "Pendoncete"
+                    },
+                    "publisher": {
+                        "@type": "Organization",
+                        "name": "blog.pendoncete.org",
+                        "url": "https://blog.pendoncete.org",
+                        "logo": {
+                            "@type": "ImageObject",
+                            "url": "{{ asset('images/artwork/chameleon.png', 'cdn') }}"
+                        }
                     }
                 }
-            }
-        </script>
+            </script>
+        {% endblock %}
     {% endblock %}
-{% endblock %}
 
-</body>
+    </body>
 </html>

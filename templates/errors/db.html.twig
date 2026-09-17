@@ -1,0 +1,20 @@
+{# file ~/Sites/blog/templates/errors/db.html.twig #}
+
+{% extends 'errors/error_base.html.twig' %}
+
+{% block error_title %}DB error{% endblock %}
+
+{% block error_heading %}
+    DB error
+{% endblock %}
+
+{% block error_illustration %}
+    <img
+        src="{{ asset('images/artwork/errors/db.png', 'cdn') }}"
+        alt="(DB error)"
+    >
+{% endblock %}
+
+{% block error_message %}
+    {{ 'error_messages.db' | trans }}
+{% endblock %}

@@ -1,0 +1,20 @@
+{# file ~/Sites/blog/templates/errors/403.html.twig #}
+
+{% extends 'errors/error_base.html.twig' %}
+
+{% block error_title %}403 forbidden{% endblock %}
+
+{% block error_heading %}
+    403 forbidden
+{% endblock %}
+
+{% block error_illustration %}
+    <img
+        src="{{ asset('images/artwork/errors/403.png', 'cdn') }}"
+        alt="(403 forbidden)"
+    >
+{% endblock %}
+
+{% block error_message %}
+    {{ 'error_messages.403' | trans }}
+{% endblock %}

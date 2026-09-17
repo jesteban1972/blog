@@ -1,0 +1,20 @@
+{# file ~/Sites/blog/templates/errors/404.html.twig #}
+
+{% extends 'errors/error_base.html.twig' %}
+
+{% block error_title %}page not found{% endblock %}
+
+{% block error_heading %}
+    page not found
+{% endblock %}
+
+{% block error_illustration %}
+    <img
+        src="{{ asset('images/artwork/errors/404.png', 'cdn') }}"
+        alt="(404 not found)"
+    >
+{% endblock %}
+
+{% block error_message %}
+    {{ 'error_messages.404' | trans }}
+{% endblock %}

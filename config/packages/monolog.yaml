@@ -5,6 +5,13 @@ monolog:
 
     handlers:
 
+        # direct stderr stream to catch fatal container/PHP boot errors:
+        stderr:
+            type: stream
+            path: 'php://stderr'
+            level: error
+            channels: ['php', 'console', 'request']
+
         # main application log
         main:
             type: rotating_file
@@ -38,7 +45,7 @@ monolog:
             filename_format: '{date}-error'
             date_format: 'Y-m-d'
 
-        # sso handler configures the logs managed by the whole SSO system (federated login/logout_
+        # sso handler configures the logs managed by the whole SSO system (federated login/logout)
         sso:
             type: rotating_file
             path: '%kernel.project_dir%/logs/sso.log'

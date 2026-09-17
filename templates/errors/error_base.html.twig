@@ -1,0 +1,60 @@
+{# file ~/Sites/blog/templates/errors/error_base.html.twig #}
+
+{% extends 'app/base.html.twig' %}
+
+{% set error_code = status_code | default(exception.statusCode | default(500)) %}
+
+{% block title %}
+    {% block error_title %}error {{ error_code }}{% endblock %}
+{% endblock %}
+
+{% block main %}
+    <h1 class="cartouche-header">{{ 'error_messages.an_error_has_occurred' | trans }}</h1>
+
+    {% if app.environment == 'dev' %}
+        <div class="box-error-debug">
+            {% if exception_message is defined and exception_message is not empty %}
+                <code><strong>dev_info:</strong> {{ exception_message }}</code>
+            {% elseif status_text is defined %}
+                <code><strong>dev_info:</strong> {{ status_text }}</code>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <div class="box-2nd-order container text-center mt-5">
+
+        <div class="entity-header">
+            <h2>
+                {% block error_heading %}
+                    error {{ error_code }}
+                {% endblock %}
+            </h2>
+        </div>
+
+        <div class="error-illustration my-4">
+            {% block error_illustration %}
+                {# default illustration if none is provided by child #}
+                <img
+                    src="{{ asset('images/artwork/errors/base.png', 'cdn') }}"
+                    alt="(error illustration)"
+                >
+            {% endblock %}
+        </div>
+
+        <div class="error-message mb-4">
+            {% block error_message %}
+                {{ 'error_messages.base' | trans }}
+            {% endblock %}
+        </div>
+
+        <div class="error-actions">
+            {% block error_actions %}
+                <a href="/" class="btn btn-outline-secondary text-decoration-none">
+                    {{ 'global_labels.back_to_home' | trans }}
+                </a>
+            {% endblock %}
+        </div>
+
+    </div>
+
+{% endblock %}

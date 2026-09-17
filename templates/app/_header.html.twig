@@ -13,26 +13,22 @@
 </section>
 
 <nav class="header-navbar">
-    <div id="header-links" class="container-fluid">
+    <div id="header-links">
         <div class="nav nav-pills flex-row flex-nowrap overflow-auto py-2">
             {% set currentRoute = app.request.attributes.get('_route') %}
 
-            {# post #}
             <a class="nav-link text-center {{ currentRoute == 'app_posts' ? 'active' : '' }}" href="{{ path('app_posts') }}">
                 {{ 'header.posts' | trans }}
             </a>
 
-            {# categories #}
             <a class="nav-link text-center {{ currentRoute == 'app_categories' ? 'active' : '' }}" href="">
                 {{ 'header.categories' | trans }}
             </a>
 
-            {# search #}
             <a class="nav-link text-center {{ currentRoute == 'app_search' ? 'active' : '' }}" href="">
                 {{ 'header.search' | trans }}
             </a>
 
-            {# new entry #}
             {% if is_granted('ROLE_ADMIN') %}
                 <a class="nav-link text-center {{ currentRoute == 'app_new_entry' ? 'active' : '' }}" href="">
                     {{ 'header.new_entry' | trans }}

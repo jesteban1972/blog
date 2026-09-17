@@ -1,0 +1,20 @@
+{# file ~/Sites/blog/templates/errors/500.html.twig #}
+
+{% extends 'errors/error_base.html.twig' %}
+
+{% block error_title %}internal server error{% endblock %}
+
+{% block error_heading %}
+    internal server error
+{% endblock %}
+
+{% block error_illustration %}
+    <img
+        src="{{ asset('images/artwork/errors/500.png', 'cdn') }}"
+        alt="(500 internal server error)"
+    >
+{% endblock %}
+
+{% block error_message %}
+    {{ 'error_messages.500' | trans }}
+{% endblock %}

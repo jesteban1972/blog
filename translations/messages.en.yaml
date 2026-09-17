@@ -42,7 +42,7 @@ homepage:
         h1: "blog homepage"
         keywords: "Pendoncete, blog.pendoncete.org, blog"
         page_name: "pendoncete.org blog"
-    title: "pendoncete.org blog"
+    title: "homepage"
     welcome_user: "welcome back, %username%!"
     welcome_visitor: "welcome!"
 
