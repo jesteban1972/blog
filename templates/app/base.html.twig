@@ -52,8 +52,11 @@
             {% block main %}
                 {% set sections = sections | default([
                     'header',
+                    'upper_links',
+                    'upper_pagination',
                     'alia',
                     'main_contents',
+                    'lower_pagination',
                     'community_comments',
                     'actions',
                     'lower_links'
@@ -104,11 +107,14 @@
         {% endblock %}
     </footer>
 
-    {# capture block defaults into a variable to avoid inline double-rendering #}
+    {# capture block defaults into a single variable to avoid duplicate definition errors #}
     {% set _ %}
         {% block header %}{% endblock %}
+        {% block upper_links %}{% endblock %}
+        {% block upper_pagination %}{% endblock %}
         {% block alia %}{% endblock %}
         {% block main_contents %}{% endblock %}
+        {% block lower_pagination %}{% endblock %}
         {% block community_comments %}{% endblock %}
         {% block actions %}{% endblock %}
 
@@ -123,36 +129,37 @@
 
     {% block javascripts %}
 
-        {# CDN-hosted shared components #}
+        {# CDN-hosted shared scripts #}
+        <script src="{{ asset('scripts/age-verification.js', 'cdn') }}" defer></script>
         <script src="{{ asset('scripts/language-bar.js', 'cdn') }}" defer></script>
 
         {# local AssetMapper entries #}
-        {{ importmap((['entrypoint', 'age-verification'])) }}
+        {{ importmap((['app'])) }}
 
         <!-- SEO script(s) -->
-        {% block seo_script %}
-            <script type="application/ld+json">
-                {
-                    "@context": "https://schema.org",
-                    "@type": "WebPage",
-                    "name": "{% block page_name %}{{ app_domain }}{% endblock %}",
-                    "description": "{% block page_description %}{{ app_domain }}{% endblock %}",
-                    "author": {
-                        "@type": "Person",
-                        "name": "Pendoncete"
-                    },
-                    "publisher": {
-                        "@type": "Organization",
-                        "name": "blog.pendoncete.org",
-                        "url": "https://blog.pendoncete.org",
-                        "logo": {
-                            "@type": "ImageObject",
-                            "url": "{{ asset('images/artwork/chameleon.png', 'cdn') }}"
+    {% block seo_script %}
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "WebPage",
+                "name": "{% block page_name %}{{ app_domain }}{% endblock %}",
+                        "description": "{% block page_description %}{{ app_domain }}{% endblock %}",
+                        "author": {
+                            "@type": "Person",
+                            "name": "Pendoncete"
+                        },
+                        "publisher": {
+                            "@type": "Organization",
+                            "name": "blog.pendoncete.org",
+                            "url": "https://blog.pendoncete.org",
+                            "logo": {
+                                "@type": "ImageObject",
+                                "url": "{{ asset('images/artwork/chameleon.png', 'cdn') }}"
+                            }
                         }
                     }
-                }
-            </script>
-        {% endblock %}
+        </script>
+    {% endblock %}
     {% endblock %}
 
     </body>

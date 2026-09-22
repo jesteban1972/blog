@@ -1,0 +1,19 @@
+{# file ~/Sites/blog/templates/macros/display_paginator.html.twig #}
+
+{% macro display_paginator(entity, item, total_pages, current_page, queryParams) %}
+
+    {# ensure we have a clean array for params #}
+    {% set base_params = queryParams is iterable ? queryParams : {} %}
+
+    {# merge the id only if it's a detail view #}
+    {% if item and item.id is defined %}
+        {% set base_params = base_params | merge({'id': item.id}) %}
+    {% endif %}
+
+    {{ include('app/_paginator.html.twig', {
+        'route_name': 'app_' ~ entity,
+        'current_page': current_page,
+        'total_pages': total_pages,
+        'route_params': base_params,
+    }) }}
+{% endmacro %}

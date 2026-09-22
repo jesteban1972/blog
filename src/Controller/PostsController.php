@@ -39,24 +39,41 @@ class PostsController extends AbstractController
     public function posts(Request $request): Response
     {
         $language = $request->getLocale();
+        $currentUser = $this->getUser();
+
+        $currentPage = (int) $request->get('page', 1);
+
+        // dynamic results per page from user settings or fallback:
+        $defaultLimit = ($currentUser instanceof User) ? $currentUser->getResultsPerPage() : 10;
+        $resultsPerPage = (int) $request->get('limit', $defaultLimit);
 
         ////////////////////////////////////////////////////////////////////////
         /// fetch active posts across all languages by passing null for language
 
         $paginationData = $this->postsRepository->getPostsPaginated(
-            currentPage: 1,
-            resultsPerPage: 25,
+            currentPage: $currentPage,
+            resultsPerPage: $resultsPerPage,
             sortOrder: 'DESC',
             language: null
         );
+
+        $posts = $paginationData['paginator'];
+        $totalCount = count($posts); // or $paginationData['totalCount'] if returned by repo
+        $totalPages = (int) ceil($totalCount / $resultsPerPage);
 
         ////////////////////////////////////////////////////////////////////////
         /// render list layout
 
         return $this->render('posts/posts.html.twig', [
-            'posts' => $paginationData['paginator'],
+            'posts' => $posts,
             'language' => $language,
             'locale' => $language,
+            'total_count' => $totalCount,
+            'totalPages' => $totalPages,
+            'currentPage' => $currentPage,
+            'queryParams' => [
+                'limit' => $resultsPerPage,
+            ],
         ]);
     }
 
@@ -72,6 +89,14 @@ class PostsController extends AbstractController
             'language' => $post->getLanguage(),
             'diffusio' => $post->getDiffusio(),
             'category' => $post->getCategory(),
+        ]);
+    }
+
+    #[Route('/new', name: 'app_post_new', methods: ['GET', 'POST'])]
+    public function new(): Response
+    {
+        return $this->render('posts/post_wizard.html.twig', [
+            'post' => null,
         ]);
     }
 

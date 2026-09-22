@@ -1,0 +1,91 @@
+{# file ~/Sites/blog/templates/app/_paginator.html.twig #}
+
+{# add specific point 'section-upper-pagination' in anchor href params #}
+{% set base_params = route_params | merge({'_fragment': 'section-upper-pagination'}) %}
+
+<div class="paginator-container">
+
+    <div class="paginator-group" role="group">
+
+        {# first & previous buttons #}
+        {% if current_page > 1 %}
+            {% if current_page == 2 %}
+
+                {# merged button on first page #}
+                <a
+                    href="{{ path(route_name, base_params | merge({'page': 1})) }}"
+                    class="paginator-btn"
+                    title="{{ 'navigator.first' | trans }}"
+                >
+                    <i class="fas fa-angles-left"></i>
+                </a>
+
+            {% else %}
+
+                {# first button #}
+                <a
+                    href="{{ path(route_name, base_params | merge({'page': 1})) }}"
+                    class="paginator-btn"
+                    title="{{ 'navigator.first' | trans }}"
+                >
+                    <i class="fas fa-angles-left"></i>
+                </a>
+
+                {# previous button #}
+                <a
+                    href="{{ path(route_name, base_params | merge({'page': current_page - 1})) }}"
+                    class="paginator-btn"
+                    title="{{ 'navigator.previous' | trans }}"
+                >
+                    <i class="fas fa-angle-left"></i>
+                </a>
+
+            {% endif %}
+        {% endif %}
+
+        {# page indicator #}
+        <span class="paginator-info">
+            {{ 'navigator.page' | trans({
+                '%current_page%': current_page,
+                '%total_pages%': total_pages ~ '',
+            }) }}
+        </span>
+
+        {# next & last buttons #}
+        {% if current_page < total_pages %}
+            {% if current_page == total_pages - 1 %}
+
+                {# merged button on last page #}
+                <a
+                    href="{{ path(route_name, base_params | merge({'page': total_pages})) }}"
+                    title="{{ 'navigator.last' | trans }}"
+                    class="paginator-btn"
+                >
+                    <i class="fas fa-angles-right"></i>
+                </a>
+
+            {% else %}
+
+                {# next button #}
+                <a
+                    href="{{ path(route_name, base_params | merge({'page': current_page + 1})) }}"
+                    class="paginator-btn"
+                    title="{{ 'navigator.next' | trans }}"
+                >
+                    <i class="fas fa-angle-right"></i>
+                </a>
+
+                {# last button #}
+                <a
+                    href="{{ path(route_name, base_params | merge({'page': total_pages})) }}"
+                    class="paginator-btn"
+                    title="{{ 'navigator.last' | trans }}"
+                >
+                    <i class="fas fa-angles-right"></i>
+                </a>
+
+            {% endif %}
+        {% endif %}
+
+    </div>
+</div>

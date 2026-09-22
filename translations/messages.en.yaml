@@ -3,11 +3,12 @@
 # preferred quotation style: smart quotes with curly "66-99" style. (“...”)
 
 global_labels:
+    actiones: "actions"
     back_to_home: "back to home"
     back_to_top: "back to top"
     forms:
         proceed: "proceed"
-    actiones: "actions"
+    posts: "posts"
 
 age_verification:
     exit: "exit"
@@ -46,6 +47,13 @@ homepage:
     welcome_user: "welcome back, %username%!"
     welcome_visitor: "welcome!"
 
+navigator:
+    first: "first"
+    last: "last"
+    next: "next"
+    page: "page %current_page% from %total_pages%"
+    previous: "previous"
+
 post:
     actions:
         delete: "delete post"
@@ -54,7 +62,21 @@ post:
     community:
         comments:
             commented_on: "<strong>%username%</strong> commented on %date% at %time%:"
+    seo:
     tempus: "posted on %date% at %time%."
+
+posts:
+    actions:
+        new: "new post"
+    amount_found: "<strong>%count% posts</strong> in total:"
+    no_posts_found: "no posts found."
+    seo:
+        breadcrumb: "posts"
+        description: "browse the full list of Pendoncete's blog posts: thoughts, articles, and notes at a glance."
+        h1: "post list: all Pendoncete posts at a glance"
+        keywords: "blog posts, articles, pendoncete"
+        page_name: "Pendoncete blog post list"
+    title: "blog posts"
 
 sidebar:
     #close_sidebar: "close sidebar"

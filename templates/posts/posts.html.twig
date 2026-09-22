@@ -2,30 +2,146 @@
 
 {% extends 'app/base.html.twig' %}
 
-{% block title %}
-    {{ 'blog posts' | trans }}
+{% set entity = 'posts' %}
+
+{% set sections = [
+    'header',
+    'upper_links',
+    'upper_pagination',
+    'main_contents',
+    'lower_pagination',
+    'community_comments',
+    'actions',
+    'lower_links'
+] %}
+
+{# title override #}
+{% block title %}{{ 'posts.title' | trans }} | {{ parent() }}{% endblock %}
+
+{# description override #}
+{% block description %}{{ 'posts.seo.description' | trans }}{% endblock %}
+
+{# keywords override #}
+{% block keywords %}{{ 'posts.seo.keywords' | trans }}{% endblock %}
+
+{# JSON-LD page name override #}
+{% block page_name %}{{ 'posts.seo.page_name' | trans }}{% endblock %}
+
+{# JSON-LD page description override #}
+{% block page_description %}{{ 'posts.seo.description' | trans }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/paginator.css', 'cdn') }}">
+{% endblock %}
+
+{% block header %}
+    <h1 class="cartouche-header">{{ 'posts.seo.h1' | trans | raw }}</h1>
+    {% include 'app/_flash_messages.html.twig' ignore missing %}
+    <h2>{{ 'global_labels.posts' | trans }}</h2>
+{% endblock %}
+
+{% block upper_links %}
+    <div id="posts-upper-links" class="entity-list-upper-links mt-4">
+        <nav class="nav nav-pills flex-sm-row justify-content-center">
+            <a class="flex-sm-fill text-sm-center nav-link" href="#section-main-contents">
+                <i class="fa-solid fa-list"></i>
+            </a>
+
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <a class="flex-sm-fill text-sm-center nav-link" href="#section-actions">
+                    <i class="fa-solid fa-gear"></i>
+                </a>
+            {% endif %}
+        </nav>
+    </div>
+{% endblock %}
+
+{% block upper_pagination %}
+
+    {% from "macros/display_paginator.html.twig" import display_paginator %}
+
+    {% set total_pages = totalPages | default(1) %}
+    {% set total_count = totalCount | default(posts | length) %}
+    {% set current_page = currentPage | default(1) %}
+
+    {% if total_count > 0 %}
+        <p>
+            {{ 'posts.amount_found' | trans({'%count%': total_count}) | raw }}
+        </p>
+
+        {% if total_pages > 1 %}
+            {{ display_paginator(entity, null, total_pages, current_page, queryParams | default({})) }}
+        {% endif %}
+    {% endif %}
 {% endblock %}
 
 {% block main_contents %}
-    <div class="posts-container">
-        <header class="posts-header">
-            <h1 class="page-title">{{ 'blog posts'|trans }}</h1>
-            <p class="locale-indicator">
-                {{ 'showing all posts'|trans }}
-            </p>
-        </header>
+    {% include 'posts/_posts_list.html.twig' with {
+        posts: posts,
+        entity: entity,
+    } %}
+{% endblock %}
 
-        <hr class="section-divider" />
+{% block lower_pagination %}
 
-        {# posts feed #}
-        {% if posts is defined and posts is not empty %}
-            <div class="posts-grid">
-                {{ include('posts/_posts_list.html.twig', {'posts': posts}) }}
-            </div>
-        {% else %}
-            <section class="empty-posts-state">
-                <p>{{ 'no posts found.'|trans }}</p>
-            </section>
-        {% endif %}
-    </div>
+    {% from "macros/display_paginator.html.twig" import display_paginator %}
+
+    {% set total_pages = totalPages | default(1) %}
+    {% set total_count = totalCount | default(posts | length) %}
+    {% set current_page = currentPage | default(1) %}
+
+    {% if total_count > 0 and total_pages > 1 %}
+        {{ display_paginator(entity, null, total_pages, current_page, queryParams | default({})) }}
+    {% endif %}
+{% endblock %}
+
+{% block actions %}
+    {% if is_granted('IS_AUTHENTICATED_FULLY') or not app_is_showroom | default(false) %}
+        <h2>{{ 'global_labels.actiones' | trans }}</h2>
+        <nav>
+
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                {# filtering link #}
+                {#<a
+                    href="{% if isFiltered | default(false) %}{{ path('app_posts') }}{% else %}{{ path('app_filters', { entity: entity }) }}{% endif %}"
+                    class="nav-link"
+                >
+                    {% if isFiltered | default(false) %}<i class="fas fa-filter"></i> {{ 'global_labels.remove_filters' | trans }}{% else %}<i class="fas fa-filter"></i> {{ 'global_labels.filters' | trans }}{% endif %}
+                </a>#}
+            {% endif %}
+
+            {% if is_granted('ROLE_ADMIN') %}
+                {# addition link #}
+                <a
+                    href="{{ path('app_post_new') }}"
+                    class="nav-link"
+                >
+                    <i class="far fa-plus-square me-2"></i> {{ 'posts.actions.new' | trans }}
+                </a>
+            {% endif %}
+
+        </nav>
+    {% endif %}
+{% endblock %}
+
+{% block seo_script %}
+    {{ parent() }}
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "homepage",
+            "item": "https://blog.pendoncete.org"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "{{ 'posts.seo.breadcrumb' | trans }}",
+            "item": "{{ url(app.request.attributes.get('_route')) }}"
+          }]
+        }
+    </script>
 {% endblock %}

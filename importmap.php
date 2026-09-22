@@ -1,4 +1,5 @@
 <?php
+// file ~/Sites/blog/importmap.php
 
 /**
  * Returns the importmap for this application.
@@ -12,27 +13,15 @@
  * The "importmap:require" command can be used to add new entries to this file.
  */
 return [
-    // main JS file
-    'entrypoint' => [
-        'path' => './assets/scripts/entrypoint.js',
+    'app' => [
+        'path' => './assets/app.js',
         'entrypoint' => true,
     ],
-    'age-verification' => [
-        'path' => './assets/scripts/age-verification.js',
-        'entrypoint' => true,
-    ],
-//    'entrypoint_css' => [
-//        'path' => 'styles/entrypoint.css',
-//        'type' => 'css',
-//    ],
     '@hotwired/stimulus' => [
         'version' => '3.2.2',
     ],
     '@symfony/stimulus-bundle' => [
         'path' => './vendor/symfony/stimulus-bundle/assets/dist/loader.js',
-    ],
-    '@hotwired/turbo' => [
-        'version' => '8.0.23',
     ],
     '@fortawesome/fontawesome-free' => [
         'version' => '7.1.0',

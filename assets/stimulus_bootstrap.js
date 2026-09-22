@@ -1,3 +1,4 @@
+// file ~/Sites/blog/assets/stimulus_bootstrap.js
 import { startStimulusApp } from '@symfony/stimulus-bundle';
 
 const app = startStimulusApp();
