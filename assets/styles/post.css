@@ -1,0 +1,90 @@
+/** file ~/Sites/blog/assets/styles/post.css */
+
+/*
+ * this stylesheet defines rules for the posts main contents;
+ * note that this stylesheet is implemented here (and not in the CDN) since it is a blog-specific functionality.
+*/
+
+/* file assets/styles/post.css */
+
+.entity-main-contents {
+    background-color: var(--purple-magenta);
+    border: none;
+    border-radius: 12px;
+    padding: 2.5rem 2rem;
+    color: beige;
+    font-size: 20px;
+    line-height: 2;
+}
+
+/* paragraph spacing & padding */
+.entity-main-contents p {
+    color: beige;
+    font-size: 20px;
+    line-height: 2;
+    margin-bottom: 1.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.entity-main-contents p:first-child {
+    margin-top: 0;
+}
+
+.entity-main-contents p:last-child {
+    margin-bottom: 0;
+}
+
+/* headings toolbox options */
+.entity-main-contents h2,
+.entity-main-contents h3,
+.entity-main-contents h4 {
+    color: beige;
+    font-weight: bold;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.entity-main-contents h2 {
+    font-size: 30px;
+}
+
+.entity-main-contents h3 {
+    font-size: 25px;
+}
+
+.entity-main-contents h4 {
+    font-size: 22px;
+}
+
+/* lists options */
+.entity-main-contents ul,
+.entity-main-contents ol {
+    color: beige;
+    font-size: 20px;
+    line-height: 2;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-left: 2.5rem;
+}
+
+.entity-main-contents li {
+    margin-bottom: 0.75rem;
+}
+
+/* quotes block options */
+.entity-main-contents blockquote,
+.entity-main-contents .quote {
+    border-left: 4px solid beige;
+    padding-left: 1.25rem;
+    margin: 2rem 0;
+}
+
+/* inline code option */
+.entity-main-contents code {
+    background-color: rgba(0, 0, 0, 0.25);
+    color: var(--purple-lavender, #e6d8f2);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.9em;
+}

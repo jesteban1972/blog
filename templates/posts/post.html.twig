@@ -89,12 +89,7 @@
 {% endblock %}
 
 {% block main_contents %}
-    <div class="box-1st-order">
-
-        <div class="description-container">
-            {{ post.content | nl2br }}
-        </div>
-    </div>
+    {{ post.content | raw }}
 {% endblock %}
 
 {% block community_comments %}
@@ -189,4 +184,9 @@
             }]
         }
     </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/post.css') }}">
 {% endblock %}
