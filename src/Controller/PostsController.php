@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Entity\User;
 use App\Repository\CommunityCommentsRepository;
 use App\Repository\PostsRepository;
 use App\Service\KalimaService;
@@ -36,7 +37,7 @@ class PostsController extends AbstractController
      * lists all posts regardless of language.
      */
     #[Route('/', name: 'app_posts', methods: ['GET'])]
-    public function posts(Request $request): Response
+    public function posts(Request $request, KalimaService $kalimaService): Response
     {
         $language = $request->getLocale();
         $currentUser = $this->getUser();
@@ -62,6 +63,14 @@ class PostsController extends AbstractController
         $totalPages = (int) ceil($totalCount / $resultsPerPage);
 
         ////////////////////////////////////////////////////////////////////////
+        /// attach excerpts and thumbnails dynamically to each post object
+
+        foreach ($posts as $post) {
+            $post->excerpt = $kalimaService->fetchExcerpt($post);
+            $post->thumbnails = $kalimaService->extractThumbnails($post);
+        }
+
+        ////////////////////////////////////////////////////////////////////////
         /// render list layout
 
         return $this->render('posts/posts.html.twig', [
@@ -80,12 +89,14 @@ class PostsController extends AbstractController
     #[Route('/{id}/preview', name: 'app_post_preview', methods: ['GET'])]
     public function preview(Post $post, KalimaService $kalimaService): Response
     {
+        dd('kk'); // TODO: never triggers
         return $this->render('posts/post_preview.html.twig', [
             'id' => $post->getId(),
             'title' => $post->getTitle(),
             'slug' => $post->getSlug(),
             'date' => $post->getCreatedAt()->format('d/m/Y'),
             'excerpt' => $kalimaService->fetchExcerpt($post),
+            'thumbnails' => $kalimaService->extractThumbnails($post),
             'language' => $post->getLanguage(),
             'diffusio' => $post->getDiffusio(),
             'category' => $post->getCategory(),

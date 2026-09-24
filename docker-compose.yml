@@ -13,11 +13,16 @@ services:
         HOST_UID: ${HOST_UID:-1000}
         HOST_GID: ${HOST_GID:-1000}
     volumes:
+      # 1. primary application bind mount:
       - .:/var/www/html
+      # 2. shared project dependencies (read-only):
       - ../shared_pendoncete_net/templates:/var/www/shared_templates:ro
+      # 3. persistent network storage:
+      - cdn_avatars:/var/www/cdn/images/avatars
+      - cdn_blog:/var/www/cdn/images/blog
     networks:
-      - db_pendoncete_net    # For MariaDB connection
-      - apps_pendoncete_net  # For Gateway and Auth-Mailer communication
+      - db_pendoncete_net    # for MariaDB connection
+      - apps_pendoncete_net  # for gateway and auth-mailer communication
     environment:
       APP_ENV: ${APP_ENV:-dev}
       TZ: Europe/Madrid
@@ -27,3 +32,17 @@ networks:
     external: true
   apps_pendoncete_net:
     external: true
+
+volumes:
+    cdn_avatars:
+        driver: local
+        driver_opts:
+            type: nfs
+            o: "addr=192.168.0.18,rw,nolock,hard,resvport"
+            device: ":/volume2/web/cdn/images/avatars"
+    cdn_blog:
+        driver: local
+        driver_opts:
+            type: nfs
+            o: "addr=192.168.0.18,rw,nolock,hard,resvport"
+            device: ":/volume2/web/cdn/images/blog"

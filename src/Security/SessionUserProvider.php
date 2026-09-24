@@ -69,7 +69,7 @@ class SessionUserProvider implements UserProviderInterface
             throw new UserNotFoundException(sprintf('no SSO session data for id "%s".', $identifier));
         }
 
-        // check for persistent shadow entity using numerical SSO id
+        // check for persistent shadow entity using numerical SSO id:
         $user = $this->entityManager->getRepository(User::class)->find($identifier);
 
         if ($user) {
@@ -81,12 +81,13 @@ class SessionUserProvider implements UserProviderInterface
 
         return new SessionUser([
             'id' => (int) $identifier,
-            'email' => $sessionData['email'] ?? null,
-            'avatarHash' => $sessionData['avatarHash'] ?? null,
-            'roles' => $sessionData['roles'] ?? ['ROLE_USER'],
             'username' => $sessionData['username'] ?? null,
-            'uxLanguage' => $sessionData['uxLanguage'] ?? 'en',
+            'email' => $sessionData['email'] ?? null,
+            'roles' => $sessionData['roles'] ?? ['ROLE_USER'],
             'isConsented' => $sessionData['isConsented'] ?? false,
+            'uxLanguage' => $sessionData['uxLanguage'] ?? 'en',
+            'resultsPerPage' => $sessionData['resultsPerPage'] ?? null,
+            'avatarHash' => $sessionData['avatarHash'] ?? null,
         ]);
     }
 
@@ -100,17 +101,20 @@ class SessionUserProvider implements UserProviderInterface
         if (method_exists($user, 'setEmail')) {
             $user->setEmail($sessionData['email'] ?? null);
         }
-        if (method_exists($user, 'setAvatarHash')) {
-            $user->setAvatarHash($sessionData['avatarHash'] ?? null);
-        }
         if (method_exists($user, 'setRoles')) {
             $user->setRoles($sessionData['roles'] ?? ['ROLE_USER']);
+        }
+        if (method_exists($user, 'setIsConsented')) {
+            $user->setIsConsented($sessionData['isConsented'] ?? false);
         }
         if (method_exists($user, 'setUxLanguage')) {
             $user->setUxLanguage($sessionData['uxLanguage'] ?? 'en');
         }
-        if (method_exists($user, 'setIsConsented')) {
-            $user->setIsConsented($sessionData['isConsented'] ?? false);
+        if (method_exists($user, 'setResultsPerPage')) {
+            $user->setResultsPerPage($sessionData['resultsPerPage'] ?? null);
+        }
+        if (method_exists($user, 'setAvatarHash')) {
+            $user->setAvatarHash($sessionData['avatarHash'] ?? null);
         }
 
         return $user;
@@ -126,10 +130,11 @@ class SessionUserProvider implements UserProviderInterface
                 'id' => $data->getId(),
                 'username' => $data->getUsername(),
                 'email' => $data->getEmail(),
-                'avatarHash' => $data->getAvatarHash(),
                 'roles' => $data->getRoles(),
-                'uxLanguage' => $data->getUxLanguage(),
                 'isConsented' => $data->isConsented(),
+                'uxLanguage' => $data->getUxLanguage(),
+                'resultsPerPage' => $data->getResultsPerPage(),
+                'avatarHash' => $data->getAvatarHash(),
             ];
         }
 
@@ -139,10 +144,11 @@ class SessionUserProvider implements UserProviderInterface
                 'id' => $data['id'] ?? $data['sub'] ?? null,
                 'username' => $data['username'] ?? null,
                 'email' => $data['email'] ?? null,
-                'avatarHash' => $data['avatarHash'] ?? null,
                 'roles' => $data['roles'] ?? ['ROLE_USER'],
-                'uxLanguage' => $data['uxLanguage'] ?? 'en',
                 'isConsented' => (bool) ($data['isConsented'] ?? false),
+                'uxLanguage' => $data['uxLanguage'] ?? 'en',
+                'resultsPerPage' => isset($data['resultsPerPage']) ? (int) $data['resultsPerPage'] : null,
+                'avatarHash' => $data['avatarHash'] ?? null,
             ];
         }
 

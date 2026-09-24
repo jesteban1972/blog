@@ -23,10 +23,12 @@ class SessionUser implements UserInterface, EquatableInterface
     private ?int $id;
     private ?string $username;
     private ?string $email;
-    private ?string $avatarHash;
     private array $roles;
-    private string $uxLanguage = 'en';
     private bool $isConsented = false;
+    private string $uxLanguage = 'en';
+    private ?int $resultsPerPage = null;
+
+    private ?string $avatarHash;
 
     /**
      * hydrates the DTO using the claims array sourced from the local Symfony session.
@@ -39,13 +41,10 @@ class SessionUser implements UserInterface, EquatableInterface
         $this->id = isset($data['id']) ? (int) $data['id'] : null;
         $this->username = $data['username'] ?? null;
         $this->email = $data['email'] ?? null;
-        $this->avatarHash = $data['avatarHash'] ?? null;
-
-        // use claims roles if available; otherwise fall back to application default
         $this->roles = !empty($data['roles']) ? $data['roles'] : [$defaultRole];
-
         $this->uxLanguage = $data['uxLanguage'] ?? 'en';
-        $this->isConsented = (bool) ($data['isConsented'] ?? false);
+        $this->resultsPerPage = isset($data['resultsPerPage']) ? (int) $data['resultsPerPage'] : null;
+        $this->avatarHash = $data['avatarHash'] ?? null;
     }
 
     public function getId(): ?int
@@ -73,9 +72,9 @@ class SessionUser implements UserInterface, EquatableInterface
         return $this->roles;
     }
 
-    public function getUxLanguage(): string
+    public function getPassword(): ?string
     {
-        return $this->uxLanguage;
+        return null;
     }
 
     public function isConsented(): bool
@@ -83,9 +82,14 @@ class SessionUser implements UserInterface, EquatableInterface
         return $this->isConsented;
     }
 
-    public function getPassword(): ?string
+    public function getUxLanguage(): string
     {
-        return null;
+        return $this->uxLanguage;
+    }
+
+    public function getResultsPerPage(): ?int
+    {
+        return $this->resultsPerPage;
     }
 
     public function getSalt(): ?string
@@ -109,10 +113,11 @@ class SessionUser implements UserInterface, EquatableInterface
             'id' => $this->id,
             'username' => $this->username,
             'email' => $this->email,
-            'avatarHash' => $this->avatarHash,
             'roles' => $this->roles,
-            'uxLanguage' => $this->uxLanguage,
             'isConsented' => $this->isConsented,
+            'uxLanguage' => $this->uxLanguage,
+            'resultsPerPage' => $this->resultsPerPage,
+            'avatarHash' => $this->avatarHash,
         ];
     }
 

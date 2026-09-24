@@ -5,7 +5,13 @@
  * note that this stylesheet is implemented here (and not in the CDN) since it is a blog-specific functionality.
 */
 
-/* file assets/styles/post.css */
+/*
+alpha / bravo / charlie classification system where:
+- alpha: clean, standard baseline (clean line bottom, body text with left inset, simple rounded image frame).
+- bravo: callout/highlight variants (darker background contrast pill or accent border, lead font weight/size, shadow card effect for images).
+- charlie: structural/decorative variants (dashed separators, indented quote or framed box style, polaroid frame with caption footer).
+- delta: centered horizontally
+ */
 
 .entity-main-contents {
     background-color: var(--purple-magenta);
@@ -17,25 +23,10 @@
     line-height: 2;
 }
 
-/* paragraph spacing & padding */
-.entity-main-contents p {
-    color: beige;
-    font-size: 20px;
-    line-height: 2;
-    margin-bottom: 1.5rem;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-}
+/* ==========================================================================
+   1. headings (alpha, bravo, charlie)
+   ========================================================================== */
 
-.entity-main-contents p:first-child {
-    margin-top: 0;
-}
-
-.entity-main-contents p:last-child {
-    margin-bottom: 0;
-}
-
-/* headings toolbox options */
 .entity-main-contents h2,
 .entity-main-contents h3,
 .entity-main-contents h4 {
@@ -45,19 +36,149 @@
     margin-bottom: 1rem;
 }
 
-.entity-main-contents h2 {
-    font-size: 30px;
+.entity-main-contents h2 { font-size: 30px; }
+.entity-main-contents h3 { font-size: 25px; }
+.entity-main-contents h4 { font-size: 22px; }
+
+/* alpha: standard clean heading with solid bottom line */
+.entity-main-contents h2.h2-alpha,
+.entity-main-contents h3.h3-alpha {
+    border-bottom: 2px solid beige;
+    padding-bottom: 6px;
 }
 
-.entity-main-contents h3 {
-    font-size: 25px;
+/* bravo: highlighted pill badge container (boysenberry background) */
+.entity-main-contents h2.h2-bravo,
+.entity-main-contents h3.h3-bravo {
+    background-color: var(--purple-boysenberry);
+    display: inline-block;
+    padding: 4px 18px;
+    border-radius: 8px;
+    border: 1px solid beige;
 }
 
-.entity-main-contents h4 {
-    font-size: 22px;
+/* charlie: dashed separator line with uppercase letter spacing */
+.entity-main-contents h2.h2-charlie,
+.entity-main-contents h3.h3-charlie {
+    border-bottom: 2px dashed beige;
+    letter-spacing: 0.05em;
+    padding-bottom: 8px;
 }
 
-/* lists options */
+/* delta: centered horizontally */
+.entity-main-contents h2.h2-delta,
+.entity-main-contents h3.h3-delta,
+.entity-main-contents h4.h4-delta {
+    text-align: center;
+}
+
+/* ==========================================================================
+   2. paragraphs
+   ========================================================================== */
+
+.entity-main-contents p {
+    color: beige;
+    font-size: 20px;
+    line-height: 2;
+    margin-bottom: 1.5rem;
+}
+
+.entity-main-contents p:first-child { margin-top: 0; }
+.entity-main-contents p:last-child { margin-bottom: 0; }
+
+/* alpha: standard paragraph with subtle left padding */
+.entity-main-contents p.p-alpha {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+/* bravo: lead/intro paragraph with higher font size & bold emphasis */
+.entity-main-contents p.p-bravo {
+    font-size: 23px;
+    font-weight: 600;
+    line-height: 1.9;
+    margin-top: 2rem;
+    padding-left: 0.5rem;
+}
+
+/* charlie: callout box paragraph with boysenberry background and left border */
+.entity-main-contents p.p-charlie {
+    background-color: var(--purple-boysenberry);
+    border-left: 5px solid beige;
+    padding: 12px 20px;
+    border-radius: 0 8px 8px 0;
+}
+
+/* delta: centered horizontally */
+.entity-main-contents p.p-delta {
+    text-align: center;
+}
+
+/* ==========================================================================
+   3. images & figures
+   ========================================================================== */
+
+.entity-main-contents img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* alpha: standard beige border frame */
+.entity-main-contents img.img-alpha {
+    border: 3px solid beige;
+    border-radius: 10px;
+    margin: 1.5rem 0;
+}
+
+/* bravo: dark boysenberry frame with soft outer shadow */
+.entity-main-contents img.img-bravo {
+    border: 2px solid var(--purple-boysenberry);
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    margin: 1.5rem 0;
+}
+
+/* charlie: polaroid card layout with figure & figcaption */
+.entity-main-contents figure.fig-charlie {
+    background-color: beige;
+    padding: 12px 12px 16px 12px;
+    border-radius: 8px;
+    display: inline-block;
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.entity-main-contents figure.fig-charlie img {
+    border-radius: 4px;
+    max-width: 100%;
+}
+
+.entity-main-contents figure.fig-charlie figcaption {
+    color: var(--purple-boysenberry);
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+    line-height: 1.4;
+}
+
+/* delta: centered horizontally */
+.entity-main-contents img.img-delta {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.entity-main-contents figure.fig-delta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* ==========================================================================
+   4. lists & utilities
+   ========================================================================== */
+
 .entity-main-contents ul,
 .entity-main-contents ol {
     color: beige;
@@ -72,7 +193,6 @@
     margin-bottom: 0.75rem;
 }
 
-/* quotes block options */
 .entity-main-contents blockquote,
 .entity-main-contents .quote {
     border-left: 4px solid beige;
@@ -80,7 +200,6 @@
     margin: 2rem 0;
 }
 
-/* inline code option */
 .entity-main-contents code {
     background-color: rgba(0, 0, 0, 0.25);
     color: var(--purple-lavender, #e6d8f2);

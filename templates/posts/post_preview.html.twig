@@ -65,13 +65,22 @@
             <b>CATEGORY</b> {{ category.name }}
         {% endif %}
 
-        <b>WHAT</b> {{ excerpt | raw }}
+        <b>WHAT</b> {{ excerpt }}
         <input
             type="button"
             value="see more..."
             onclick="window.location.href='{{ path('app_post', { 'slug': slug }) }}'"
             class="btn-see-more"
+            style="display: inline-block; margin-left: 0.25rem;"
         >
+
+        {% if thumbnails is defined and thumbnails is iterable and thumbnails|length > 0 %}
+            <div class="preview-thumbnails">
+                {% for thumb in thumbnails %}
+                    <img src="{{ thumb }}" alt="thumbnail" class="preview-thumb-img" />
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 
     <div class="preview-footer">

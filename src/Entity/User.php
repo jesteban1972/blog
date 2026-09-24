@@ -27,26 +27,23 @@ class User implements UserInterface
      */
     public const PENDONCETE = 1;
 
+    public const DEFAULT_RESULTS_PER_PAGE = 25;
+
     /**
-     * the primary Key, sourced from the Authorization Center. it is NOT autoincremented.
+     * the primary key, sourced from the Authorization Center. it is NOT autoincremented.
      */
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-
     /**
-     * PERSISTED CLUSTER I: UI preferences
+     * PERSISTED CLUSTER I: blog-specific UI preferences
      */
-    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
-    private ?int $resultsPerPage = 25;
-
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     private ?int $listsOrder = 1;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
     private bool $preferMarkdown = true;
-
 
     /**
      * PERSISTED CLUSTER II: lifecycle & auditing
@@ -60,7 +57,6 @@ class User implements UserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private \DateTimeInterface $updatedAt;
 
-
     /**
      * PERSISTED CLUSTER III: relationships
      */
@@ -70,22 +66,19 @@ class User implements UserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: CommunityComment::class, cascade: ['remove'])]
     private Collection $comments;
 
-
     /**
-     * these volatile properties are NOT persisted in the local users table. they are populated in memory
-     * from the session/auth database data.
+     * volatile in-memory properties hydrated from SSO data.
+     * ordered to align with auth.users database schema.
      */
     private ?string $username = null;
     private ?string $email = null;
+    private array $roles = [];
+    private bool $isConsented = false;
+    private string $uxLanguage = 'en';
+    private ?int $resultsPerPage = null;
     private ?string $avatarHash = null;
     private ?string $displayName = null;
     private ?string $bio = null;
-    private array $roles = [];
-
-    private string $uxLanguage = 'en';
-
-    private bool $isConsented = false;
-
 
     public function __construct()
     {
@@ -95,7 +88,7 @@ class User implements UserInterface
         $this->comments = new ArrayCollection();
     }
 
-    // --- Identity Methods ---
+    // --- identity methods ---
 
     public function getId(): ?int
     {
@@ -105,19 +98,16 @@ class User implements UserInterface
     public function setId(int $id): static
     {
         $this->id = $id;
+
         return $this;
     }
 
-    /**
-     * this method is required by UserInterface. it returns the unique identity string. in this ecosystem, we prioritize
-     * the email if hydrated, falling back to the integer ID provided by the SSO server.
-     */
     public function getUserIdentifier(): string
     {
         return (string) ($this->email ?? $this->id);
     }
 
-    // --- Shadow Properties (Non-Persisted / Hydrated from Auth DB) ---
+    // --- volatile in-memory setters/getters (sso hydrated) ---
 
     public function getUsername(): ?string
     {
@@ -136,9 +126,66 @@ class User implements UserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(?string $email): static
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function isConsented(): bool
+    {
+        return $this->isConsented;
+    }
+
+    public function getIsConsented(): bool
+    {
+        return $this->isConsented;
+    }
+
+    public function setIsConsented(bool $isConsented): self
+    {
+        $this->isConsented = $isConsented;
+
+        return $this;
+    }
+
+    public function getUxLanguage(): string
+    {
+        return $this->uxLanguage;
+    }
+
+    public function setUxLanguage(string $uxLanguage): static
+    {
+        $this->uxLanguage = $uxLanguage;
+
+        return $this;
+    }
+
+    public function getResultsPerPage(): int
+    {
+        return $this->resultsPerPage ?? self::DEFAULT_RESULTS_PER_PAGE;
+    }
+
+    public function setResultsPerPage(?int $resultsPerPage): static
+    {
+        $this->resultsPerPage = $resultsPerPage;
+
         return $this;
     }
 
@@ -162,6 +209,7 @@ class User implements UserInterface
     public function setDisplayName(?string $displayName): self
     {
         $this->displayName = $displayName;
+
         return $this;
     }
 
@@ -173,84 +221,73 @@ class User implements UserInterface
     public function setBio(?string $bio): self
     {
         $this->bio = $bio;
-        return $this;
-    }
-
-    /**
-     * this method returns the roles granted to the user, merging volatile SSO roles with the mandatory local ROLE_USER.
-     */
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-    public function setRoles(array $roles): static
-    {
-        $this->roles = $roles;
-        return $this;
-    }
-
-    /**
-     * Non-persisted getter for the language string (e.g., 'el', 'en')
-     */
-    public function getUxLanguage(): string
-    {
-        return $this->uxLanguage;
-    }
-
-    /**
-     * Non-persisted setter for the language string
-     */
-    public function setUxLanguage(string $uxLanguage): static
-    {
-        $this->uxLanguage = $uxLanguage;
-        return $this;
-    }
-
-    public function getIsConsented(): bool
-    {
-        return $this->isConsented;
-    }
-
-    /**
-     * this acts as an alias (Symfony's authenticator and twig often look for "is[PropertyName]" for boolean values.
-     */
-    public function isConsented(): bool
-    {
-        return $this->getIsConsented();
-    }
-
-    public function setIsConsented(bool $isConsented): self
-    {
-        $this->isConsented = $isConsented;
 
         return $this;
     }
 
-    // --- Persisted Local Fields accessors ---
+    // --- persisted local fields accessors ---
 
-    public function getResultsPerPage(): ?int { return $this->resultsPerPage; }
-    public function setResultsPerPage(?int $resultsPerPage): self { $this->resultsPerPage = $resultsPerPage; return $this; }
+    public function getListsOrder(): ?int
+    {
+        return $this->listsOrder;
+    }
 
-    public function getListsOrder(): ?int { return $this->listsOrder; }
-    public function setListsOrder(?int $listsOrder): self { $this->listsOrder = $listsOrder; return $this; }
+    public function setListsOrder(?int $listsOrder): self
+    {
+        $this->listsOrder = $listsOrder;
 
-    public function preferMarkdown(): bool { return $this->preferMarkdown; }
-    public function setPreferMarkdown(bool $preferMarkdown): self { $this->preferMarkdown = $preferMarkdown; return $this; }
+        return $this;
+    }
 
-    public function getLastLogin(): ?\DateTimeInterface { return $this->lastLogin; }
-    public function setLastLogin(?\DateTimeInterface $lastLogin): static { $this->lastLogin = $lastLogin; return $this; }
+    public function preferMarkdown(): bool
+    {
+        return $this->preferMarkdown;
+    }
 
-    public function getCreatedAt(): \DateTimeInterface { return $this->createdAt; }
-    public function setCreatedAt(\DateTimeInterface $createdAt): static { $this->createdAt = $createdAt; return $this; }
+    public function setPreferMarkdown(bool $preferMarkdown): self
+    {
+        $this->preferMarkdown = $preferMarkdown;
 
-    public function getUpdatedAt(): \DateTimeInterface { return $this->updatedAt; }
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): static { $this->updatedAt = $updatedAt; return $this; }
+        return $this;
+    }
 
-    // --- Relationship Accessors ---
+    public function getLastLogin(): ?\DateTimeInterface
+    {
+        return $this->lastLogin;
+    }
+
+    public function setLastLogin(?\DateTimeInterface $lastLogin): static
+    {
+        $this->lastLogin = $lastLogin;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): \DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    // --- relationship accessors ---
 
     /**
      * @return Collection<int, Post>
@@ -310,7 +347,7 @@ class User implements UserInterface
         return $this;
     }
 
-    // --- Lifecycle Callbacks ---
+    // --- lifecycle callbacks ---
 
     #[ORM\PreUpdate]
     public function onPreUpdate(): void
@@ -318,10 +355,9 @@ class User implements UserInterface
         $this->updatedAt = new \DateTime();
     }
 
-    #[\Deprecated]
     public function eraseCredentials(): void
     {
-        // No local credentials stored.
+        // no local credentials stored
     }
 
     public function __toString(): string
