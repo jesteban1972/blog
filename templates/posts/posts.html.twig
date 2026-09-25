@@ -59,12 +59,11 @@
 {% endblock %}
 
 {% block upper_pagination %}
+    {% from "@shared/macros/page_utilities.html.twig" import display_paginator %}
 
-    {% from "macros/display_paginator.html.twig" import display_paginator %}
-
-    {% set total_pages = totalPages | default(1) %}
-    {% set total_count = totalCount | default(posts | length) %}
-    {% set current_page = currentPage | default(1) %}
+    {% set total_pages = total_pages | default(1) %}
+    {% set total_count = total_count | default(posts | length) %}
+    {% set current_page = current_page | default(1) %}
 
     {% if total_count > 0 %}
         <p>
@@ -72,7 +71,7 @@
         </p>
 
         {% if total_pages > 1 %}
-            {{ display_paginator(entity, null, total_pages, current_page, queryParams | default({})) }}
+            {{ display_paginator(entity, null, total_pages, current_page, query_params | default({}), 'section-upper-pagination') }}
         {% endif %}
     {% endif %}
 {% endblock %}
@@ -85,15 +84,14 @@
 {% endblock %}
 
 {% block lower_pagination %}
+    {% from "@shared/macros/page_utilities.html.twig" import display_paginator %}
 
-    {% from "macros/display_paginator.html.twig" import display_paginator %}
-
-    {% set total_pages = totalPages | default(1) %}
-    {% set total_count = totalCount | default(posts | length) %}
-    {% set current_page = currentPage | default(1) %}
+    {% set total_pages = total_pages | default(1) %}
+    {% set total_count = total_count | default(posts | length) %}
+    {% set current_page = current_page | default(1) %}
 
     {% if total_count > 0 and total_pages > 1 %}
-        {{ display_paginator(entity, null, total_pages, current_page, queryParams | default({})) }}
+        {{ display_paginator(entity, null, total_pages, current_page, query_params | default({}), 'section-lower-pagination') }}
     {% endif %}
 {% endblock %}
 

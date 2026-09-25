@@ -3,11 +3,88 @@
 # preferred quotation style: comillas castellanas («...»)
 
 global_labels:
+    actiones: "acciones"
+    back_to_home: "volver al inicio"
+    back_to_top: "volver arriba"
     forms:
-        proceed: "proceder"
+        proceed: "continuar"
+    posts: "publicaciones"
 
 age_verification:
     exit: "salir"
-    legal_disclaimer: "este sitio cumple con la normativa de protección de menores (Ley Orgánica 8/2021) y el Reglamento de Servicios Digitales (DSA) de la UE. al acceder, declaras bajo tu responsabilidad ser mayor de edad."
-    message: "este sitio contiene contenido dirigido a adultos. al continuar, confirmas que eres mayor de 18 años."
+    legal_disclaimer: "este sitio cumple con la ley de servicios digitales de la UE (DSA) y la legislación española de protección de menores (LOPIVI). al entrar, declaras bajo tu propia responsabilidad que eres mayor de edad."
+    message: "este sitio contiene contenido destinado a adultos. al continuar, confirmas que tienes 18 años o más."
     title: "público adulto"
+
+error_messages:
+    base: "¡vaya! algo se ha torcido en mi lógica. actualmente estoy intentando negociar un tratado de paz con el servidor :)"
+    db: "¡vaya! mi base de datos ha decidido tomarse un descanso no programado para el café. volverá en cuanto termine su expreso :)"
+    401: "¡vaya! mi servidor tiene un caso grave de amnesia y ha olvidado quién eres. vamos a la página de inicio de sesión para refrescarle la memoria :)"
+    403: "¡vaya! parece que te has adentrado en los archivos restringidos. hasta los exploradores necesitan un saludo secreto para entrar aquí, y aún no se lo he enseñado a todo el mundo :)"
+    404: "¡vaya! parece que la página que buscas se ha desvanecido en el vacío digital. ni siquiera mi equipo de búsqueda consigue encontrarla :)"
+    500: "¡vaya! algo dentro de mi sala de máquinas acaba de hacer 'clonc'. mis mecánicos digitales ya están en ello :)"
+
+footer:
+    cookie_policy: "política de cookies"
+    legal_notice: "aviso legal"
+    privacy_policy: "política de privacidad"
+    terms_and_conditions: "términos y condiciones"
+
+header:
+    categories: "categorías"
+    new_entry: "nueva entrada"
+    posts: "publicaciones"
+    search: "buscar"
+
+homepage:
+    intro: "estás en el blog de pendoncete.org, un espacio concebido para aportar ideas y entretenimiento a tu lúbrica existencia. ¡que lo disfrutes!"
+    seo:
+        description: "explora el ecosistema digital de Pendoncete: herramientas innovadoras y crónicas picantes nacidas de la carne y la lascivia. únete a la comunidad y comienza tus propios anales hoy mismo."
+        h1: "inicio del blog"
+        keywords: "Pendoncete, blog.pendoncete.org, blog"
+        page_name: "blog de pendoncete.org"
+    title: "inicio"
+    welcome_user: "¡hola de nuevo, %username%!"
+    welcome_visitor: "¡bienvenido!"
+
+navigator:
+    first: "primera"
+    last: "última"
+    next: "siguiente"
+    page: "página %current_page% de %total_pages%"
+    previous: "anterior"
+
+post:
+    actions:
+        delete: "eliminar publicación"
+        edit: "editar publicación"
+    category: "categoría"
+    community:
+        comments:
+            commented_on: "<strong>%username%</strong> comentó el %date% a las %time%:"
+    seo:
+    tempus: "publicado el %date% a las %time%."
+
+posts:
+    actions:
+        new: "nueva publicación"
+    amount_found: "<strong>%count% publicaciones</strong> en total:"
+    no_posts_found: "no se encontraron publicaciones."
+    seo:
+        breadcrumb: "publicaciones"
+        description: "explora la lista completa de publicaciones del blog de Pendoncete: reflexiones, artículos y notas de un vistazo."
+        h1: "lista de publicaciones: todas las publicaciones de Pendoncete de un vistazo"
+        keywords: "publicaciones del blog, artículos, pendoncete"
+        page_name: "lista de publicaciones del blog de Pendoncete"
+    title: "publicaciones del blog"
+
+sidebar:
+    #close_sidebar: "cerrar barra lateral"
+    create_account: "crear cuenta"
+    homepage: "inicio"
+    info: "información"
+    log_in: "iniciar sesión"
+    log_out: "cerrar sesión"
+    not_logged_in: "no has iniciado sesión"
+    pendoncete_org: "pendoncete.org >"
+    ux_language: "idioma de la interfaz"

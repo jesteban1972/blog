@@ -78,9 +78,9 @@ class PostsController extends AbstractController
             'language' => $language,
             'locale' => $language,
             'total_count' => $totalCount,
-            'totalPages' => $totalPages,
-            'currentPage' => $currentPage,
-            'queryParams' => [
+            'total_pages' => $totalPages,
+            'current_page' => $currentPage,
+            'query_params' => [
                 'limit' => $resultsPerPage,
             ],
         ]);

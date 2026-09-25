@@ -15,7 +15,7 @@ services:
     volumes:
       # 1. primary application bind mount:
       - .:/var/www/html
-      # 2. shared project dependencies (read-only):
+      # 2. shared project dependencies:
       - ../shared_pendoncete_net/templates:/var/www/shared_templates:ro
       # 3. persistent network storage:
       - cdn_avatars:/var/www/cdn/images/avatars
