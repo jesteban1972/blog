@@ -19,8 +19,9 @@ use Doctrine\ORM\Mapping as ORM;
 class Category
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'string', length: 10)]
-    private ?string $id = null;
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER, options: ['unsigned' => true])]
+    private ?int $id = null;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
     private ?string $name = null;
@@ -31,13 +32,19 @@ class Category
     /**
      * PERSISTED CLUSTER: relationships
      */
+    /**
+     * @var Collection<int, Post>
+     */
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Post::class)]
     private Collection $posts;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
-    #[ORM\JoinColumn(name: 'parent_code', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     private ?self $parent = null;
 
+    /**
+     * @var Collection<int, self>
+     */
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
     private Collection $children;
 
@@ -47,16 +54,9 @@ class Category
         $this->children = new ArrayCollection();
     }
 
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function setId(string $id): self
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     public function getName(): ?string
@@ -67,6 +67,7 @@ class Category
     public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -78,6 +79,7 @@ class Category
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
         return $this;
     }
 

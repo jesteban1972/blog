@@ -1,0 +1,56 @@
+{# file ~/Sites/blog/templates/categories/category_preview.html.twig #}
+
+{% from "@shared/macros/image_utilities.html.twig" import display_entity_image %}
+
+<div class="preview-card">
+    <div class="preview-header">
+
+        <div class="preview-header-icons">
+            <div class="preview-image">
+                {{ display_entity_image('category', 'small') }}
+            </div>
+        </div>
+
+        <div class="preview-title">
+            <a href="{{ path('app_category', { 'slug': slug }) }}">{{ name }}</a>
+        </div>
+
+        <div class="preview-metrics">
+            {% if language is defined and language %}
+                <div class="preview-metrics-tl">
+                    {% if language == 'es' %}
+                        <span class="fi fi-es" title="español">&nbsp;</span>
+                    {% elseif language == 'el' %}
+                        <span class="fi fi-gr" title="ἑλληνικά">&nbsp;</span>
+                    {% else %}
+                        <span class="fi fi-gb" title="english">&nbsp;</span>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <div class="preview-metrics-tq" title="id">
+                <span class="registrum-icon">{{ id }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="preview-body">
+        {% if description is defined and description %}
+            <b>WHAT</b> {{ description }}
+        {% endif %}
+
+        <b>POSTS</b> {{ postsCount }}
+
+        <input
+            type="button"
+            value="see posts..."
+            onclick="window.location.href='{{ path('app_category', { 'slug': slug }) }}'"
+            class="btn-see-more"
+            style="display: inline-block; margin-left: 0.25rem;"
+        >
+    </div>
+
+    <div class="preview-footer">
+        {# future metadata hooks #}
+    </div>
+</div>

@@ -107,25 +107,23 @@
         {% endblock %}
     </footer>
 
-    {# capture block defaults into a single variable to avoid duplicate definition errors #}
-    {% set _ %}
-        {% block header %}{% endblock %}
-        {% block upper_links %}{% endblock %}
-        {% block upper_pagination %}{% endblock %}
-        {% block alia %}{% endblock %}
-        {% block main_contents %}{% endblock %}
-        {% block lower_pagination %}{% endblock %}
-        {% block community_comments %}{% endblock %}
-        {% block actions %}{% endblock %}
+    {# default section blocks for the section-looping engine #}
+    {% block header %}{% endblock %}
+    {% block upper_links %}{% endblock %}
+    {% block upper_pagination %}{% endblock %}
+    {% block alia %}{% endblock %}
+    {% block main_contents %}{% endblock %}
+    {% block lower_pagination %}{% endblock %}
+    {% block community_comments %}{% endblock %}
+    {% block actions %}{% endblock %}
 
-        {% block lower_links %}
-            {{ include('app/_back_to_top.html.twig') }}
+    {% block lower_links %}
+        {{ include('app/_back_to_top.html.twig') }}
 
-            {% if app.request.attributes.get('_route') not in ['app_home'] %}
-                {{ include('app/_back_to_home.html.twig') }}
-            {% endif %}
-        {% endblock %}
-    {% endset %}
+        {% if app.request.attributes.get('_route') not in ['app_home'] %}
+            {{ include('app/_back_to_home.html.twig') }}
+        {% endif %}
+    {% endblock %}
 
     {% block javascripts %}
 
@@ -137,29 +135,29 @@
         {{ importmap((['app'])) }}
 
         <!-- SEO script(s) -->
-    {% block seo_script %}
-        <script type="application/ld+json">
-            {
-                "@context": "https://schema.org",
-                "@type": "WebPage",
-                "name": "{% block page_name %}{{ app_domain }}{% endblock %}",
-                        "description": "{% block page_description %}{{ app_domain }}{% endblock %}",
-                        "author": {
-                            "@type": "Person",
-                            "name": "Pendoncete"
-                        },
-                        "publisher": {
-                            "@type": "Organization",
-                            "name": "blog.pendoncete.org",
-                            "url": "https://blog.pendoncete.org",
-                            "logo": {
-                                "@type": "ImageObject",
-                                "url": "{{ asset('images/artwork/chameleon.png', 'cdn') }}"
+        {% block seo_script %}
+            <script type="application/ld+json">
+                {
+                    "@context": "https://schema.org",
+                    "@type": "WebPage",
+                    "name": "{% block page_name %}{{ app_domain }}{% endblock %}",
+                            "description": "{% block page_description %}{{ app_domain }}{% endblock %}",
+                            "author": {
+                                "@type": "Person",
+                                "name": "Pendoncete"
+                            },
+                            "publisher": {
+                                "@type": "Organization",
+                                "name": "blog.pendoncete.org",
+                                "url": "https://blog.pendoncete.org",
+                                "logo": {
+                                    "@type": "ImageObject",
+                                    "url": "{{ asset('images/artwork/chameleon.png', 'cdn') }}"
+                                }
                             }
                         }
-                    }
-        </script>
-    {% endblock %}
+            </script>
+        {% endblock %}
     {% endblock %}
 
     </body>

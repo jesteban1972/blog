@@ -75,6 +75,9 @@ class Post
     /**
      * PERSISTED CLUSTER: relationships
      */
+    /**
+     * @var Collection<int, CommunityComment>
+     */
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: CommunityComment::class, cascade: ['remove'])]
     private Collection $comments;
 
@@ -100,6 +103,7 @@ class Post
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
         return $this;
     }
 
@@ -111,6 +115,7 @@ class Post
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
         return $this;
     }
 
@@ -122,6 +127,7 @@ class Post
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -145,6 +151,7 @@ class Post
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
         return $this;
     }
 
@@ -160,6 +167,7 @@ class Post
         }
 
         $this->rating = $rating;
+
         return $this;
     }
 
@@ -171,6 +179,7 @@ class Post
     public function setIsFavorite(bool $isFavorite): self
     {
         $this->isFavorite = $isFavorite;
+
         return $this;
     }
 
@@ -187,6 +196,7 @@ class Post
     public function setContent(string $content): self
     {
         $this->content = $content;
+
         return $this;
     }
 
@@ -198,6 +208,7 @@ class Post
     public function setLanguage(string $language): self
     {
         $this->language = $language;
+
         return $this;
     }
 
@@ -209,6 +220,7 @@ class Post
     public function setDiffusio(?PostDiffusio $diffusio): self
     {
         $this->diffusio = $diffusio;
+
         return $this;
     }
 
@@ -220,6 +232,7 @@ class Post
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -231,6 +244,7 @@ class Post
     public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
         return $this;
     }
 
@@ -242,6 +256,7 @@ class Post
     public function setPublishedAt(?\DateTimeInterface $publishedAt): self
     {
         $this->publishedAt = $publishedAt;
+
         return $this;
     }
 

@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -39,6 +40,48 @@ class CategoriesRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /**
+     * fetches categories with pagination, order, and optional language filtering.
+     */
+    public function getCategoriesPaginated(
+        int $currentPage = 1,
+        int $resultsPerPage = 25,
+        string $sortOrder = 'ASC',
+        ?string $language = null
+    ): array {
+        $queryBuilder = $this->createQueryBuilder('c');
+
+        if (strtoupper($sortOrder) === 'DESC') {
+            $queryBuilder->orderBy('c.name', 'DESC');
+        } else {
+            $queryBuilder->orderBy('c.name', 'ASC');
+        }
+
+        if ($language !== null) {
+            $queryBuilder->andWhere('c.language = :language')
+                ->setParameter('language', $language);
+        }
+
+        $query = $queryBuilder->getQuery();
+        $paginator = $this->paginate($query, $currentPage, $resultsPerPage);
+
+        return [
+            'paginator' => $paginator,
+            'query' => $query,
+        ];
+    }
+
+    public function paginate($dql, int $page = 1, int $limit = 25): Paginator
+    {
+        $paginator = new Paginator($dql);
+
+        $paginator->getQuery()
+            ->setFirstResult($limit * ($page - 1)) // offset
+            ->setMaxResults($limit); // limit
+
+        return $paginator;
     }
 
     /**

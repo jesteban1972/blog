@@ -17,11 +17,17 @@
         <div class="nav nav-pills flex-row flex-nowrap overflow-auto py-2">
             {% set currentRoute = app.request.attributes.get('_route') %}
 
-            <a class="nav-link text-center {{ currentRoute == 'app_posts' ? 'active' : '' }}" href="{{ path('app_posts') }}">
+            <a
+                href="{{ path('app_posts') }}"
+                class="nav-link text-center {{ currentRoute == 'app_posts' ? 'active' : '' }}"
+            >
                 {{ 'header.posts' | trans }}
             </a>
 
-            <a class="nav-link text-center {{ currentRoute == 'app_categories' ? 'active' : '' }}" href="">
+            <a
+                href="{{ path('app_categories') }}"
+                class="nav-link text-center {{ currentRoute == 'app_categories' ? 'active' : '' }}"
+            >
                 {{ 'header.categories' | trans }}
             </a>
 

@@ -1,0 +1,133 @@
+{# file ~/Sites/blog/templates/categories/categories.html.twig #}
+
+{% extends 'app/base.html.twig' %}
+
+{% set entity = 'categories' %}
+
+{% set sections = [
+    'header',
+    'upper_links',
+    'upper_pagination',
+    'main_contents',
+    'lower_pagination',
+    'community_comments',
+    'actions',
+    'lower_links'
+] %}
+
+{# title override #}
+{% block title %}{{ 'categories.title' | trans }} | {{ parent() }}{% endblock %}
+
+{# description override #}
+{% block description %}{{ 'categories.seo.description' | trans }}{% endblock %}
+
+{# keywords override #}
+{% block keywords %}{{ 'categories.seo.keywords' | trans }}{% endblock %}
+
+{# JSON-LD page name override #}
+{% block page_name %}{{ 'categories.seo.page_name' | trans }}{% endblock %}
+
+{# JSON-LD page description override #}
+{% block page_description %}{{ 'categories.seo.description' | trans }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/paginator.css', 'cdn') }}">
+    <link rel="stylesheet" href="{{ asset('styles/categories.css') }}">
+{% endblock %}
+
+{% block header %}
+    <h1 class="cartouche-header">{{ 'categories.seo.h1' | trans | raw }}</h1>
+    {% include 'app/_flash_messages.html.twig' ignore missing %}
+    <h2>{{ 'global_labels.categories' | trans }}</h2>
+{% endblock %}
+
+{% block upper_links %}
+    <div id="categories-upper-links" class="entity-list-upper-links mt-4">
+        <nav class="nav nav-pills flex-sm-row justify-content-center">
+            <a class="flex-sm-fill text-sm-center nav-link" href="#section-main-contents">
+                <i class="fa-solid fa-list"></i>
+            </a>
+
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <a class="flex-sm-fill text-sm-center nav-link" href="#section-actions">
+                    <i class="fa-solid fa-gear"></i>
+                </a>
+            {% endif %}
+        </nav>
+    </div>
+{% endblock %}
+
+{% block upper_pagination %}
+    {% from "@shared/macros/page_utilities.html.twig" import display_paginator %}
+
+    {% set total_pages = total_pages | default(1) %}
+    {% set total_count = total_count | default(categories | length) %}
+    {% set current_page = current_page | default(1) %}
+
+    {% if total_count > 0 %}
+        <p>
+            {{ 'categories.amount_found' | trans({'%count%': total_count}) | raw }}
+        </p>
+
+        {% if total_pages > 1 %}
+            {{ display_paginator(entity, null, total_pages, current_page, query_params | default({}), 'section-upper-pagination') }}
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block main_contents %}
+    {% include 'categories/_categories_list.html.twig' with {
+        categories: categories,
+        entity: entity,
+    } %}
+{% endblock %}
+
+{% block lower_pagination %}
+    {% from "@shared/macros/page_utilities.html.twig" import display_paginator %}
+
+    {% set total_pages = total_pages | default(1) %}
+    {% set total_count = total_count | default(categories | length) %}
+    {% set current_page = current_page | default(1) %}
+
+    {% if total_count > 0 and total_pages > 1 %}
+        {{ display_paginator(entity, null, total_pages, current_page, query_params | default({}), 'section-lower-pagination') }}
+    {% endif %}
+{% endblock %}
+
+{% block actions %}
+    {% if is_granted('IS_AUTHENTICATED_FULLY') or not app_is_showroom | default(false) %}
+        <h2>{{ 'global_labels.actiones' | trans }}</h2>
+        <nav>
+            {% if is_granted('ROLE_ADMIN') %}
+                <a
+                    href="{{ path('app_category_new') }}"
+                    class="nav-link"
+                >
+                    <i class="far fa-plus-square me-2"></i> {{ 'categories.actions.new' | trans }}
+                </a>
+            {% endif %}
+        </nav>
+    {% endif %}
+{% endblock %}
+
+{% block seo_script %}
+    {{ parent() }}
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "homepage",
+            "item": "https://blog.pendoncete.org"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "{{ 'categories.seo.breadcrumb' | trans }}",
+            "item": "{{ url(app.request.attributes.get('_route')) }}"
+          }]
+        }
+    </script>
+{% endblock %}

@@ -86,23 +86,6 @@ class PostsController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/preview', name: 'app_post_preview', methods: ['GET'])]
-    public function preview(Post $post, KalimaService $kalimaService): Response
-    {
-        dd('kk'); // TODO: never triggers
-        return $this->render('posts/post_preview.html.twig', [
-            'id' => $post->getId(),
-            'title' => $post->getTitle(),
-            'slug' => $post->getSlug(),
-            'date' => $post->getCreatedAt()->format('d/m/Y'),
-            'excerpt' => $kalimaService->fetchExcerpt($post),
-            'thumbnails' => $kalimaService->extractThumbnails($post),
-            'language' => $post->getLanguage(),
-            'diffusio' => $post->getDiffusio(),
-            'category' => $post->getCategory(),
-        ]);
-    }
-
     #[Route('/new', name: 'app_post_new', methods: ['GET', 'POST'])]
     public function new(): Response
     {

@@ -1,0 +1,18 @@
+{# file ~/Sites/blog/templates/categories/_categories_list.html.twig #}
+
+<div id="categories-list">
+    {% for category in categories %}
+        <article>
+            {{ include('categories/category_preview.html.twig', {
+                'id': category.id,
+                'name': category.name,
+                'slug': category.slug,
+                'description': category.description | default(null),
+                'language': category.language | default(null),
+                'postsCount': category.posts | length,
+            }) }}
+        </article>
+    {% else %}
+        <p class="text-muted">no categories found.</p>
+    {% endfor %}
+</div>
