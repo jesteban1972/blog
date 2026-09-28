@@ -3,21 +3,18 @@
 doctrine:
     dbal:
         connections:
-            # your primary application connection:
+            # primary application connection:
             default:
                 url: '%env(resolve:DATABASE_URL)%'
                 server_version: 'mariadb-10.5.29'
-                profiling_collect_backtrace: '%kernel.debug%'
-                use_savepoints: true
-
+                # ignore auth_users_virtual during schema introspection/migrations
+                schema_filter: '~^(?!auth_users_virtual)~'
             # the cross-app read connection to the auth database:
             auth_db:
                 url: '%env(resolve:AUTH_DATABASE_URL)%'
                 server_version: 'mariadb-10.5.29'
 
     orm:
-        auto_generate_proxy_classes: true
-        enable_lazy_ghost_objects: true
         default_entity_manager: default
         entity_managers:
             default:
@@ -25,17 +22,16 @@ doctrine:
                 naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
                 mappings:
                     App:
-                        type: attribute
                         is_bundle: false
                         dir: '%kernel.project_dir%/src/Entity'
                         prefix: 'App\Entity'
                         alias: App
-
-when@test:
-    doctrine:
-        dbal:
-            connections:
-                default:
-                    dbname_suffix: '_test%env(default::TEST_TOKEN)%'
-                auth_db:
-                    dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+            auth:
+                connection: auth_db
+                naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+                mappings:
+                    AuthApp:
+                        is_bundle: false
+                        dir: '%kernel.project_dir%/src/Entity'
+                        prefix: 'App\Entity'
+                        alias: AuthApp

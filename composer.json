@@ -4,15 +4,15 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "doctrine/doctrine-bundle": "^2.18",
-        "doctrine/doctrine-migrations-bundle": "^3.7",
-        "doctrine/orm": "^3.6",
-        "firebase/php-jwt": "*",
+        "doctrine/doctrine-bundle": "^3.0",
+        "doctrine/doctrine-migrations-bundle": "^4.0",
+        "doctrine/orm": "^3.7.2",
+        "firebase/php-jwt": ">=7.2",
         "phpdocumentor/reflection-docblock": "^6.0",
-        "phpstan/phpdoc-parser": "^2.3",
+        "phpstan/phpdoc-parser": "^2.3.5",
         "symfony/apache-pack": "*",
         "symfony/asset": "7.4.*",
         "symfony/asset-mapper": "7.4.*",
@@ -27,7 +27,7 @@
         "symfony/intl": "7.4.*",
         "symfony/mailer": "7.4.*",
         "symfony/mime": "7.4.*",
-        "symfony/monolog-bundle": "^3.0|^4.0",
+        "symfony/monolog-bundle": "^3.0|^4.1",
         "symfony/notifier": "7.4.*",
         "symfony/process": "7.4.*",
         "symfony/property-access": "7.4.*",
@@ -42,10 +42,10 @@
         "symfony/validator": "7.4.*",
         "symfony/web-link": "7.4.*",
         "symfony/yaml": "7.4.*",
-        "twig/extra-bundle": "^2.12|^3.0",
-        "twig/intl-extra": "*",
+        "twig/extra-bundle": "^2.12|^3.29",
+        "twig/intl-extra": ">=3.30",
         "twig/string-extra": "^3.24",
-        "twig/twig": "^2.12|^3.0"
+        "twig/twig": "^2.12|^3.30"
     },
     "config": {
         "allow-plugins": {
@@ -104,7 +104,7 @@
         "symfony/browser-kit": "7.4.*",
         "symfony/css-selector": "7.4.*",
         "symfony/debug-bundle": "7.4.*",
-        "symfony/maker-bundle": "^1.0",
+        "symfony/maker-bundle": "^1.68",
         "symfony/stopwatch": "7.4.*",
         "symfony/web-profiler-bundle": "7.4.*"
     }

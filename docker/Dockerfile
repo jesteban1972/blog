@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.4-apache
 
 # install required dependencies:
 RUN apt-get update && apt-get install -y \
@@ -26,12 +26,11 @@ COPY vhost.conf /etc/apache2/sites-available/000-default.conf
 
 # install Composer:
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer --version
 
 # set PHP default timezone:
 RUN echo "date.timezone=Europe/Madrid" > /usr/local/etc/php/conf.d/timezone.ini
 
-# match host user permissions (optional, for file permission compatibility):
+# match host user permissions:
 ARG HOST_UID=1000
 ARG HOST_GID=1000
 

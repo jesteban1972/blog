@@ -16,14 +16,14 @@ class CommunityComment
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: Types::INTEGER, options: ['unsigned' => true])]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: AuthUser::class)]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
-    private ?AuthUser $authUser = null;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'comments')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
+    private ?User $user = null;
 
-    #[ORM\ManyToOne(targetEntity: Post::class)]
+    #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'comments')]
     #[ORM\JoinColumn(name: 'post_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     #[Assert\NotNull]
     private ?Post $post = null;
@@ -46,17 +46,17 @@ class CommunityComment
 
     public function getId(): ?int { return $this->id; }
 
-    public function getAuthUser(): ?AuthUser { return $this->authUser; }
+    public function getUser(): ?User { return $this->user; }
 
-    public function setAuthUser(?AuthUser $authUser): self
+    public function setUser(?User $user): self
     {
-        $this->authUser = $authUser;
+        $this->user = $user;
         return $this;
     }
 
     public function getUserId(): ?int
     {
-        return $this->authUser ? $this->authUser->getId() : null;
+        return $this->user ? $this->user->getId() : null;
     }
 
     public function getPost(): ?Post { return $this->post; }

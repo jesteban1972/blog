@@ -39,8 +39,17 @@ class Post
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $title = null;
 
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private ?string $subtitle = null;
+
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $slug = null;
+
+    #[ORM\Column(type: Types::SMALLINT, options: ['unsigned' => true, 'default' => 0])]
+    private int $rating = 0;
+
+    #[ORM\Column(name: 'is_favorite', type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $isFavorite = false;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
@@ -74,6 +83,8 @@ class Post
         $this->createdAt = new \DateTime();
         $this->updatedAt = new \DateTime();
         $this->comments = new ArrayCollection();
+        $this->rating = 0;
+        $this->isFavorite = false;
     }
 
     public function getId(): ?int
@@ -114,6 +125,18 @@ class Post
         return $this;
     }
 
+    public function getSubtitle(): ?string
+    {
+        return $this->subtitle;
+    }
+
+    public function setSubtitle(?string $subtitle): static
+    {
+        $this->subtitle = $subtitle;
+
+        return $this;
+    }
+
     public function getSlug(): ?string
     {
         return $this->slug;
@@ -123,6 +146,37 @@ class Post
     {
         $this->slug = $slug;
         return $this;
+    }
+
+    public function getRating(): int
+    {
+        return $this->rating;
+    }
+
+    public function setRating(int $rating): self
+    {
+        if ($rating < 0 || $rating > 5) {
+            throw new \InvalidArgumentException('rating must be an integer between 0 and 5.');
+        }
+
+        $this->rating = $rating;
+        return $this;
+    }
+
+    public function getIsFavorite(): bool
+    {
+        return $this->isFavorite;
+    }
+
+    public function setIsFavorite(bool $isFavorite): self
+    {
+        $this->isFavorite = $isFavorite;
+        return $this;
+    }
+
+    public function isFavorite(): bool
+    {
+        return $this->isFavorite;
     }
 
     public function getContent(): ?string

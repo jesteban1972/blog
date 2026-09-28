@@ -33,7 +33,7 @@ class User implements UserInterface
      * the primary key, sourced from the Authorization Center. it is NOT autoincremented.
      */
     #[ORM\Id]
-    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER, options: ['unsigned' => true])]
     private ?int $id = null;
 
     /**
