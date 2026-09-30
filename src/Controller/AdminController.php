@@ -79,7 +79,7 @@ class AdminController extends AbstractController
 
             $this->addFlash('success', sprintf('post "%s" updated successfully.', $post->getTitle()));
 
-            return $this->redirectToRoute('app_post_show', ['slug' => $post->getSlug()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_post', ['slug' => $post->getSlug()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('admin/edit.html.twig', [

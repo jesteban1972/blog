@@ -56,6 +56,7 @@
                     'upper_pagination',
                     'alia',
                     'main_contents',
+                    'copulata',
                     'lower_pagination',
                     'community_comments',
                     'actions',
@@ -73,6 +74,20 @@
                         </section>
                     {% endif %}
                 {% endfor %}
+
+                {# declare block placeholders inside main block so twig registers them without outputting extra html #}
+                {% if false %}
+                    {% block header %}{% endblock %}
+                    {% block upper_links %}{% endblock %}
+                    {% block upper_pagination %}{% endblock %}
+                    {% block alia %}{% endblock %}
+                    {% block main_contents %}{% endblock %}
+                    {% block copulata %}{% endblock %}
+                    {% block lower_pagination %}{% endblock %}
+                    {% block community_comments %}{% endblock %}
+                    {% block actions %}{% endblock %}
+                    {% block lower_links %}{% endblock %}
+                {% endif %}
             {% endblock %}
         </main>
 
@@ -106,24 +121,6 @@
             {% include 'app/_footer.html.twig' %}
         {% endblock %}
     </footer>
-
-    {# default section blocks for the section-looping engine #}
-    {% block header %}{% endblock %}
-    {% block upper_links %}{% endblock %}
-    {% block upper_pagination %}{% endblock %}
-    {% block alia %}{% endblock %}
-    {% block main_contents %}{% endblock %}
-    {% block lower_pagination %}{% endblock %}
-    {% block community_comments %}{% endblock %}
-    {% block actions %}{% endblock %}
-
-    {% block lower_links %}
-        {{ include('app/_back_to_top.html.twig') }}
-
-        {% if app.request.attributes.get('_route') not in ['app_home'] %}
-            {{ include('app/_back_to_home.html.twig') }}
-        {% endif %}
-    {% endblock %}
 
     {% block javascripts %}
 

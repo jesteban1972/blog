@@ -12,6 +12,14 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * representing a category for grouping blog posts.
+ *
+ * architectural translation suggestion: explicit Locale Entity / one-to-many translation:
+ * create a separate CategoryTranslation entity:
+ * - Category: id, slug, parent_id
+ * - CategoryTranslation: id, category_id, locale (e.g., 'en', 'es'), name, description
+ * this pattern scales infinitely to new languages (Arabic, French, German, Catalan, etc.)
+ * without table schema alterations.
+ * (Libraries like Gedmo Translatable or KnpLabs DoctrineBehaviors automate this pattern).
  */
 #[ORM\Entity(repositoryClass: CategoriesRepository::class)]
 #[ORM\Table(name: 'categories')]
@@ -28,6 +36,9 @@ class Category
 
     #[ORM\Column(type: Types::STRING, length: 100)]
     private ?string $slug = null;
+
+    #[ORM\Column(type: Types::STRING, length: 510, nullable: true)]
+    private ?string $description = null;
 
     /**
      * PERSISTED CLUSTER: relationships
@@ -79,6 +90,18 @@ class Category
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

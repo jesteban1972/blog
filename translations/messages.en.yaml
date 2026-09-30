@@ -5,7 +5,9 @@
 global_labels:
     actiones: "actions"
     back_to_home: "back to home"
+    back_to_list: "back to list"
     back_to_top: "back to top"
+    categories: "categories"
     forms:
         proceed: "proceed"
     posts: "posts"
@@ -15,6 +17,23 @@ age_verification:
     legal_disclaimer: "this site complies with EU Digital Services Act (DSA) regulations and Spanish minor protection laws (LOPIVI). by entering, you declare under your own responsibility that you are of legal age."
     message: "this site contains content intended for adults. by proceeding, you confirm that you are 18 years of age or older."
     title: "adult audience"
+
+categories:
+    actions:
+        new: "new category"
+    amount_found: "<strong>%count% categories</strong> in total:"
+    seo:
+        breadcrumb: "categories"
+        description: "explore the directory of topic archives on Pendoncete, spanning linguistics, technology, history, and culture."
+        h1: "category directory: explore topics on Pendoncete"
+        keywords: "blog categories, topics, archives, pendoncete"
+        page_name: "Pendoncete blog topic directory"
+
+category:
+    actions:
+        edit: "edit category"
+    description: "description"
+    posts_found: "<strong>%count% posts</strong> in total:"
 
 error_messages:
     base: "oops! something went sideways in our logic. we’re currently trying to negotiate a peace treaty with the server :)"

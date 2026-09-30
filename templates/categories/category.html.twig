@@ -1,0 +1,181 @@
+{# file ~/Sites/blog/templates/categories/category.html.twig #}
+
+{% from "@shared/macros/image_utilities.html.twig" import display_entity_image %}
+
+{# prepare excerpt for meta descriptions #}
+{% set raw_description = category.description ? category.description | striptags : '' %}
+{% set max_desc_length = 155 %}
+{% set excerpt_safe = raw_description ? raw_description | u.truncate(max_desc_length, '...', false) : category.name %}
+
+{% extends 'app/base.html.twig' %}
+
+{% set entity = 'category' %}
+
+{# title override #}
+{% block title -%}
+    {{ category.name | u.truncate(36, '...', false) }} | {{ parent() }}
+{%- endblock %}
+
+{# description override #}
+{% block description -%}
+    {{ excerpt_safe }}
+{%- endblock %}
+
+{# keywords override #}
+{% block keywords %}{{ category.name }}, category, blog{% endblock %}
+
+{# JSON-LD page overrides #}
+{% block page_name %}{{ category.name }}{% endblock %}
+
+{% block page_description -%}
+    {{ excerpt_safe }}
+{%- endblock %}
+
+{% set sections = [
+    'header',
+    'upper_links',
+    'alia',
+    'upper_pagination',
+    'copulata',
+    'lower_pagination',
+    'actions'
+] %}
+
+{% block header %}
+    {# 1. top small entity type cartouche #}
+    <h1 class="cartouche-header">
+        {{ 'category.detail_title' | trans({'%name%': category.name}) | default('category detail: ' ~ category.name) }}
+    </h1>
+
+    {# 2. main entity header container #}
+    <div id="section-header" class="entity-header mb-4">
+        {# category image/illustration #}
+        <div class="entity-image my-4">
+            {{ display_entity_image('category', 'medium') }}
+        </div>
+
+        {# category main label under image #}
+        <h2 class="entity-title mb-3">{{ category.name }}</h2>
+    </div>
+{% endblock %}
+
+{% block upper_links %}
+    {% if entity is defined %}
+        <div id="{{ entity }}-upper-links" class="entity-list-upper-links mt-4">
+            <nav class="nav nav-pills flex-sm-row justify-content-center">
+                <a class="flex-sm-fill text-sm-center nav-link" href="#section-alia" title="{{ 'generalities' | trans | default('generalities') }}">
+                    <i class="fa-solid fa-circle-info"></i>
+                </a>
+                <a class="flex-sm-fill text-sm-center nav-link" href="#section-copulata" title="{{ 'posts' | trans | default('posts') }}">
+                    <i class="fa-solid fa-list"></i>
+                </a>
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <a class="flex-sm-fill text-sm-center nav-link" href="#section-actions" title="{{ 'global_labels.actiones' | trans | default('actiones') }}">
+                        <i class="fa-solid fa-gear"></i>
+                    </a>
+                {% endif %}
+            </nav>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block alia %}
+    <h2>{{ 'category.description' | trans | default('description') }}</h2>
+    {% if category.description is not empty %}
+        <p>{{ category.description | replace({'\\n': "\n", "\\'": "'"}) | nl2br }}</p>
+    {% endif %}
+{% endblock %}
+
+{% block upper_pagination %}
+    <h2>{{ 'posts' | trans | default('posts') }}</h2>
+
+    {% set total_count = total_count | default(posts | length) %}
+    {% set total_pages = total_pages | default(1) %}
+    {% set current_page = current_page | default(1) %}
+    {% set pagination_params = (query_params | default({})) | merge({'slug': category.slug}) %}
+
+    <p>
+        {{ 'category.posts_found' | trans({'%count%': total_count}) | default('<strong>' ~ total_count ~ ' posts</strong> in total:') | raw }}
+    </p>
+
+    {% if total_pages > 1 %}
+        {% from "@shared/macros/page_utilities.html.twig" import display_paginator %}
+        {{ display_paginator('category', category, total_pages, current_page, pagination_params, 'section-upper-pagination') }}
+    {% endif %}
+{% endblock %}
+
+{% block copulata %}
+    {% include 'posts/_posts_list.html.twig' with {
+        posts: posts,
+        entity: 'posts'
+    } %}
+{% endblock %}
+
+{% block lower_pagination %}
+    {% set total_count = total_count | default(posts | length) %}
+    {% set total_pages = total_pages | default(1) %}
+    {% set current_page = current_page | default(1) %}
+    {% set pagination_params = (query_params | default({})) | merge({'slug': category.slug}) %}
+
+    {% if total_count > 0 and total_pages > 1 %}
+        {% from "@shared/macros/page_utilities.html.twig" import display_paginator %}
+        {{ display_paginator('category', category, total_pages, current_page, pagination_params, 'section-lower-pagination') }}
+    {% endif %}
+{% endblock %}
+
+{% block actions %}
+    <h2>{{ 'global_labels.actiones' | trans | default('actiones') }}</h2>
+
+    <nav>
+        {% if is_granted('ROLE_ADMIN') or is_granted('IS_AUTHENTICATED_FULLY') %}
+            <a href="{{ path('app_category_edit', {'slug': category.slug}) }}" class="nav-link">
+                <i class="fas fa-edit me-2"></i> {{ 'category.actions.edit' | trans | default('edit category') }}
+            </a>
+        {% endif %}
+
+        <a href="{{ path('app_categories') }}" class="nav-link">
+            <i class="fas fa-list me-2"></i> {{ 'global_labels.back_to_list' | trans | default('back to list') }}
+        </a>
+    </nav>
+{% endblock %}
+
+{% block seo_script %}
+    {# Schema.org Item #}
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "{{ category.name | escape('js') }}",
+            "description": "{{ excerpt_safe | escape('js') }}",
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}"
+            }
+        }
+    </script>
+
+    {# Breadcrumbs #}
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [{
+                "@type": "ListItem",
+                "position": 1,
+                "name": "blog",
+                "item": "{{ url('app_categories') }}"
+            },{
+                "@type": "ListItem",
+                "position": 2,
+                "name": "{{ category.name | escape('js') }}",
+                "item": "{{ url(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}"
+            }]
+        }
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/paginator.css', 'cdn') }}">
+    <link rel="stylesheet" href="{{ asset('styles/posts.css') }}">
+{% endblock %}

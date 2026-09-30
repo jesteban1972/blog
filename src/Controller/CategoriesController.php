@@ -4,16 +4,20 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Categories;
+use App\Entity\Category;
 use App\Entity\User;
+use App\Form\CategoryType;
 use App\Repository\CategoriesRepository;
 use App\Repository\PostsRepository;
+use App\Service\EikonService;
 use App\Service\KalimaService;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  * this controller manages everything related to viewing blog categories,
@@ -22,34 +26,27 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/categories')]
 class CategoriesController extends AbstractController
 {
-    /**
-     * @param CategoriesRepository $categoriesRepository repository managing category entities.
-     * @param PostsRepository $postsRepository repository managing post entities.
-     * @param LoggerInterface $mainLogger standard logger.
-     */
     public function __construct(
-        private CategoriesRepository $categoriesRepository,
-        private PostsRepository      $postsRepository,
-        private LoggerInterface      $mainLogger,
+        private readonly CategoriesRepository $categoriesRepository,
+        private readonly PostsRepository $postsRepository,
+        private readonly KalimaService $kalimaService,
+        private readonly EikonService $eikonService,
+        private readonly LoggerInterface $mainLogger,
     ) {}
 
     /**
      * lists all categories regardless of language.
      */
     #[Route('/', name: 'app_categories', methods: ['GET'])]
-    public function categories(Request $request, KalimaService $kalimaService): Response
+    public function categories(Request $request): Response
     {
         $language = $request->getLocale();
         $currentUser = $this->getUser();
 
         $currentPage = (int) $request->get('page', 1);
 
-        // dynamic results per page from user settings or fallback:
         $defaultLimit = ($currentUser instanceof User) ? $currentUser->getResultsPerPage() : 10;
         $resultsPerPage = (int) $request->get('limit', $defaultLimit);
-
-        ////////////////////////////////////////////////////////////////////////
-        /// fetch active categories across all languages by passing null for language
 
         $paginationData = $this->categoriesRepository->getCategoriesPaginated(
             currentPage: $currentPage,
@@ -61,9 +58,6 @@ class CategoriesController extends AbstractController
         $categories = $paginationData['paginator'];
         $totalCount = count($categories);
         $totalPages = (int) ceil($totalCount / $resultsPerPage);
-
-        ////////////////////////////////////////////////////////////////////////
-        /// render list layout
 
         return $this->render('categories/categories.html.twig', [
             'categories' => $categories,
@@ -78,35 +72,118 @@ class CategoriesController extends AbstractController
         ]);
     }
 
+    /**
+     * admin action: handles creating a new category.
+     */
     #[Route('/new', name: 'app_category_new', methods: ['GET', 'POST'])]
-    public function new(): Response
+    #[IsGranted('ROLE_ADMIN')]
+    public function new(Request $request, EntityManagerInterface $em, KalimaService $kalimaService): Response
     {
-        return $this->render('categories/category_wizard.html.twig', [
-            'category' => null,
+        $category = new Category();
+        $form = $this->createForm(CategoryType::class, $category);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (empty($category->getSlug()) && $category->getName()) {
+                $category->setSlug($kalimaService->slugificate($category->getName()));
+            } else {
+                $category->setSlug($kalimaService->slugificate((string) $category->getSlug()));
+            }
+
+            $em->persist($category);
+            $em->flush();
+
+            $this->addFlash('success', 'categories.flash.created_successfully');
+
+            return $this->redirectToRoute('app_categories');
+        }
+
+        return $this->render('categories/category_form.html.twig', [
+            'category' => $category,
+            'form' => $form->createView(),
         ]);
     }
 
     /**
-     * shows a single category based on its unique slug, along with its associated posts.
+     * admin action: handles editing category details.
      */
-    #[Route('/{slug}', name: 'app_category', methods: ['GET'])]
-    public function category(string $slug, Request $request): Response
+    #[Route('/{slug}/edit', name: 'app_category_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function edit(string $slug, Request $request, EntityManagerInterface $em, KalimaService $kalimaService): Response
     {
-        ////////////////////////////////////////////////////////////////////////
-        /// 1. fetch category entity metadata matching target slug
-
         $category = $this->categoriesRepository->findOneBy(['slug' => $slug]);
 
         if (!$category) {
             throw $this->createNotFoundException('the requested category does not exist.');
         }
 
-        ////////////////////////////////////////////////////////////////////////
-        /// 2. render layout
+        $form = $this->createForm(CategoryType::class, $category);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (empty($category->getSlug()) && $category->getName()) {
+                $category->setSlug($kalimaService->slugificate($category->getName()));
+            } else {
+                $category->setSlug($kalimaService->slugificate((string) $category->getSlug()));
+            }
+
+            $em->flush();
+
+            $this->addFlash('success', 'categories.flash.updated_successfully');
+
+            return $this->redirectToRoute('app_categories');
+        }
+
+        return $this->render('categories/category_form.html.twig', [
+            'category' => $category,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * public detail page: displays category info & associated posts.
+     */
+    #[Route('/{slug}', name: 'app_category', methods: ['GET'])]
+    public function category(string $slug, Request $request): Response
+    {
+        $category = $this->categoriesRepository->findOneBy(['slug' => $slug]);
+
+        if (!$category) {
+            throw $this->createNotFoundException('the requested category does not exist.');
+        }
+
+        $currentUser = $this->getUser();
+        $currentPage = max(1, $request->query->getInt('page', 1));
+        $defaultLimit = ($currentUser instanceof User) ? $currentUser->getResultsPerPage() : 10;
+        $resultsPerPage = (int) $request->get('limit', $defaultLimit);
+
+        // count total posts for this category
+        $totalCount = $this->postsRepository->count(['category' => $category]);
+        $totalPages = (int) ceil($totalCount / $resultsPerPage);
+
+        // fetch current page slice
+        $posts = $this->postsRepository->findBy(
+            ['category' => $category],
+            ['createdAt' => 'DESC'],
+            $resultsPerPage,
+            ($currentPage - 1) * $resultsPerPage
+        );
+
+        foreach ($posts as $post) {
+            $post->excerpt = $this->kalimaService->fetchExcerpt($post);
+            $post->thumbnails = $this->eikonService->extractThumbnails($post);
+        }
 
         return $this->render('categories/category.html.twig', [
             'category' => $category,
-            'language' => $category->getLanguage(),
+            'posts' => $posts,
+            'total_count' => $totalCount,
+            'total_pages' => $totalPages,
+            'current_page' => $currentPage,
+            'query_params' => [
+                'limit' => $resultsPerPage,
+            ],
+            'language' => $request->getLocale(),
         ]);
     }
 }

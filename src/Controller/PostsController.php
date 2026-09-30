@@ -8,6 +8,7 @@ use App\Entity\Post;
 use App\Entity\User;
 use App\Repository\CommunityCommentsRepository;
 use App\Repository\PostsRepository;
+use App\Service\EikonService;
 use App\Service\KalimaService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,16 +29,18 @@ class PostsController extends AbstractController
      * @param LoggerInterface $mainLogger standard logger.
      */
     public function __construct(
-        private PostsRepository             $postsRepository,
-        private CommunityCommentsRepository $commentsRepository,
-        private LoggerInterface             $mainLogger,
+        private readonly PostsRepository $postsRepository,
+        private readonly CommunityCommentsRepository $commentsRepository,
+        private readonly KalimaService $kalimaService,
+        private readonly EikonService $eikonService,
+        private readonly LoggerInterface $mainLogger,
     ) {}
 
     /**
      * lists all posts regardless of language.
      */
     #[Route('/', name: 'app_posts', methods: ['GET'])]
-    public function posts(Request $request, KalimaService $kalimaService): Response
+    public function posts(Request $request): Response
     {
         $language = $request->getLocale();
         $currentUser = $this->getUser();
@@ -66,8 +69,8 @@ class PostsController extends AbstractController
         /// attach excerpts and thumbnails dynamically to each post object
 
         foreach ($posts as $post) {
-            $post->excerpt = $kalimaService->fetchExcerpt($post);
-            $post->thumbnails = $kalimaService->extractThumbnails($post);
+            $post->excerpt = $this->kalimaService->fetchExcerpt($post);
+            $post->thumbnails = $this->eikonService->extractThumbnails($post);
         }
 
         ////////////////////////////////////////////////////////////////////////

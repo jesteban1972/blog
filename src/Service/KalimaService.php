@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Post;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 class KalimaService
 {
@@ -47,38 +48,54 @@ class KalimaService
     }
 
     /**
-     * extracts embedded image URLs from post content for thumbnail rendering.
-     *
-     * @return string[] list of image src paths found in post content
+     * generates a clean, URL-safe ASCII slug handling special scripts (Arabic, Greek, etc.).
      */
-    public function extractThumbnails(Post $post): array
+    public function slugificate(string $text): string
     {
-        $content = $post->getContent() ?? '';
+        $language = $this->detectLanguageOrScript($text);
 
-        if (trim($content) === '') {
-            return [];
+        // handle specific polytonic / script transliterations
+        $text = $this->transliterateText($text, $language);
+
+        // leverage symfony's ASCII slugger for general unicode cleanup
+        $slugger = new AsciiSlugger();
+
+        return $slugger->slug($text)->lower()->toString();
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /// helpers
+
+    private function detectLanguageOrScript(string $text): ?string
+    {
+        if (preg_match('/\p{Arabic}/u', $text)) {
+            return 'ar';
         }
 
-        // decode entities
-        $content = htmlspecialchars_decode($content, ENT_QUOTES);
-        $content = htmlspecialchars_decode($content, ENT_QUOTES);
-        $content = html_entity_decode($content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-
-        $images = [];
-
-        // 1. match markdown images: ![alt](url)
-        if (preg_match_all('/!\[.*?\]\(([^\s\)]+)\)/i', $content, $matches)) {
-            $images = array_merge($images, $matches[1]);
+        if (preg_match('/\p{Greek}/u', $text)) {
+            return 'el';
         }
 
-        // 2. match HTML <img ... src="..." > tags without DOMDocument
-        if (preg_match_all('/<img[^>]+src=["\']([^"\']+)["\']/i', $content, $matches)) {
-            $images = array_merge($images, $matches[1]);
+        return null;
+    }
+
+    private function transliterateText(string $text, ?string $language = null): string
+    {
+        if ($language === 'ar') {
+            $text = str_replace('اَ', 'ا', $text);
         }
 
-        // filter empty paths
-        $images = array_filter($images, static fn($url) => !empty(trim($url)));
+        $roughBreathingMap = [
+            'Ἡ' => 'i', 'Ἁ' => 'a', 'Ἑ' => 'e', 'Ἱ' => 'i', 'Ὁ' => 'o', 'Ὑ' => 'y', 'Ὡ' => 'o',
+            'ἡ' => 'i', 'ἁ' => 'a', 'ἑ' => 'e', 'ἱ' => 'i', 'ὁ' => 'o', 'ὑ' => 'y', 'ὡ' => 'o',
+        ];
+        $text = strtr($text, $roughBreathingMap);
 
-        return array_values(array_unique($images));
+        if (function_exists('transliterator_transliterate')) {
+            $text = transliterator_transliterate('Any-Latin; Latin-ASCII', $text) ?: $text;
+        }
+
+        return $text;
     }
 }
