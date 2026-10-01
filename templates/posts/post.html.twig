@@ -21,6 +21,11 @@
     {{ excerpt_safe }}
 {%- endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/post.css') }}">
+{% endblock %}
+
 {% block header %}
 
     {# 1. main cartouche header #}
@@ -184,9 +189,4 @@
             }]
         }
     </script>
-{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('styles/post.css') }}">
 {% endblock %}

@@ -28,12 +28,12 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('images/icons/favicon.ico', 'cdn') }}">
         {% block stylesheets %}
 
-            {# 3rd party stylesheets (must preceed local assets) #}
-            <link rel="stylesheet" href="{{ asset('vendor/bootstrap/dist/css/bootstrap.min.css') }}">
-            <link rel="stylesheet" href="{{ asset('vendor/@fortawesome/fontawesome-free/css/all.min.css') }}">
-
             {# common styles from CDN #}
             <link rel="stylesheet" href="{{ asset('styles/entrypoint.css', 'cdn') }}">
+
+            {# assetmapper bundle styles & script map #}
+            {{ importmap('app') }}
+
         {% endblock %}
     </head>
 
@@ -75,18 +75,24 @@
                     {% endif %}
                 {% endfor %}
 
-                {# declare block placeholders inside main block so twig registers them without outputting extra html #}
+                {# register block anchors so child templates can override them, while providing defaults #}
                 {% if false %}
                     {% block header %}{% endblock %}
                     {% block upper_links %}{% endblock %}
                     {% block upper_pagination %}{% endblock %}
                     {% block alia %}{% endblock %}
                     {% block main_contents %}{% endblock %}
-                    {% block copulata %}{% endblock %}
                     {% block lower_pagination %}{% endblock %}
                     {% block community_comments %}{% endblock %}
                     {% block actions %}{% endblock %}
-                    {% block lower_links %}{% endblock %}
+
+                    {% block lower_links %}
+                        {{ include('app/_back_to_top.html.twig', ignore_missing = true) }}
+
+                        {% if app.request.attributes.get('_route') not in ['app_home'] %}
+                            {{ include('app/_back_to_home.html.twig', ignore_missing = true) }}
+                        {% endif %}
+                    {% endblock %}
                 {% endif %}
             {% endblock %}
         </main>
