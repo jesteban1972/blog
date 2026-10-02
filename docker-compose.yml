@@ -24,7 +24,6 @@ services:
       - db_pendoncete_net    # for MariaDB connection
       - apps_pendoncete_net  # for gateway and auth-mailer communication
     environment:
-      APP_ENV: ${APP_ENV:-dev}
       TZ: Europe/Madrid
 
 networks:
