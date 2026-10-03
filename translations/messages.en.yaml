@@ -57,12 +57,15 @@ header:
 
 homepage:
     categories:
-        abstract: "explore all my categories"
+        abstract: "browse topics organized by subject and personal perspective. explore how technical work, linguistics, history, and queer culture are mapped into structured archives with objective descriptions and subjective notes."
         link_label: "go to the categories"
         title: "categories"
-    intro: "a blog with my personal thoughts, guides and updates. have fun!"
+    intro: |
+        <p>the blog application within <strong>pendoncete.org</strong> serves as an open workspace for my technical endeavors, philological notes, and ongoing projects. it aims to bring together detailed guides, architectural updates, and personal thoughts on software design, language studies, and historical texts under one unified roof.</p>
+        <p>beyond documenting technical steps or code structures, this blog reflects a personal view of seeing life and expressing myself—an enduring notebook where intellectual curiosities, cultural references, and everyday reflections intersect naturally with my digital craft.</p>
+        <p>have fun exploring!</p>
     posts:
-        abstract: "explore all my posts"
+        abstract: "dive into the complete collection of articles, essays, and technical notes. from step-by-step code walkthroughs to reflections on history and language, discover posts filtered by date, language, or status."
         link_label: "go to the posts"
         title: "posts"
     seo:

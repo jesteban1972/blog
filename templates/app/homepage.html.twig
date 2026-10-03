@@ -26,22 +26,22 @@
 
     {% include '_flash_messages.html.twig' ignore missing %}
 
-    {# card 0: welcome card (full width) #}
+    {# card 0: welcome card #}
     <div class="pendoncete-card mb-4">
         <h2>Pendoncete's blog app</h2>
-        <p>{{ 'homepage.intro' | trans }}</p>
+        {{ 'homepage.intro' | trans | raw }}
     </div>
 
     {# 2-column grid for navigation cards #}
     <section class="homepage-grid">
 
         {# card 1: posts #}
-        <div class="pendoncete-card">
+        <div class="pendoncete-card d-flex flex-column justify-content-between">
             <div>
                 <h2>{{ 'homepage.posts.title' | trans }}</h2>
                 <p>{{ 'homepage.posts.abstract' | trans }}</p>
             </div>
-            <div class="d-flex align-items-center gap-2 mt-3">
+            <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
                 <a
                     href="{{ path('app_posts') }}"
                     title="{{ 'homepage.posts.link_label' | trans }}"
@@ -54,12 +54,12 @@
         </div>
 
         {# card 2: categories #}
-        <div class="pendoncete-card">
+        <div class="pendoncete-card d-flex flex-column justify-content-between">
             <div>
                 <h2>{{ 'homepage.categories.title' | trans }}</h2>
                 <p>{{ 'homepage.categories.abstract' | trans }}</p>
             </div>
-            <div class="d-flex align-items-center gap-2 mt-3">
+            <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
                 <a
                     href="{{ path('app_categories') }}"
                     title="{{ 'homepage.categories.link_label' | trans }}"
