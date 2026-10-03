@@ -57,12 +57,12 @@ header:
 
 homepage:
     categories:
-        intro: "explore all my categories"
+        abstract: "explore all my categories"
         link_label: "go to the categories"
         title: "categories"
     intro: "a blog with my personal thoughts, guides and updates. have fun!"
     posts:
-        intro: "explore all my posts"
+        abstract: "explore all my posts"
         link_label: "go to the posts"
         title: "posts"
     seo:
