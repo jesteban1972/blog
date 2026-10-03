@@ -36,6 +36,9 @@ class CommunityComment
     #[Assert\NotBlank(message: 'your comment cannot be empty.')]
     private ?string $content = null;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $isApproved = false;
+
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $createdAt;
 
@@ -80,6 +83,18 @@ class CommunityComment
     public function setContent(string $content): self
     {
         $this->content = $content;
+        return $this;
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->isApproved;
+    }
+
+    public function setIsApproved(bool $isApproved): self
+    {
+        $this->isApproved = $isApproved;
+
         return $this;
     }
 

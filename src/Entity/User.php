@@ -60,9 +60,6 @@ class User implements UserInterface
     /**
      * PERSISTED CLUSTER III: relationships
      */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Post::class, cascade: ['remove'])]
-    private Collection $posts;
-
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: CommunityComment::class, cascade: ['remove'])]
     private Collection $comments;
 
@@ -84,7 +81,6 @@ class User implements UserInterface
     {
         $this->createdAt = new \DateTime();
         $this->updatedAt = new \DateTime();
-        $this->posts = new ArrayCollection();
         $this->comments = new ArrayCollection();
     }
 
@@ -288,35 +284,6 @@ class User implements UserInterface
     }
 
     // --- relationship accessors ---
-
-    /**
-     * @return Collection<int, Post>
-     */
-    public function getPosts(): Collection
-    {
-        return $this->posts;
-    }
-
-    public function addPost(Post $post): self
-    {
-        if (!$this->posts->contains($post)) {
-            $this->posts->add($post);
-            $post->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removePost(Post $post): self
-    {
-        if ($this->posts->removeElement($post)) {
-            if ($post->getUser() === $this) {
-                $post->setUser(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, CommunityComment>

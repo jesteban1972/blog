@@ -40,14 +40,17 @@ class Category
     #[ORM\Column(type: Types::STRING, length: 510, nullable: true)]
     private ?string $description = null;
 
+    #[ORM\Column(name: 'self_meaning', type: Types::TEXT, nullable: true)]
+    private ?string $selfMeaning = null;
+
     /**
      * PERSISTED CLUSTER: relationships
      */
     /**
-     * @var Collection<int, Post>
+     * @var Collection<int, Copulatio>
      */
-    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Post::class)]
-    private Collection $posts;
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Copulatio::class)]
+    private Collection $copulationes;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
@@ -61,7 +64,7 @@ class Category
 
     public function __construct()
     {
-        $this->posts = new ArrayCollection();
+        $this->copulationes = new ArrayCollection();
         $this->children = new ArrayCollection();
     }
 
@@ -106,29 +109,41 @@ class Category
         return $this;
     }
 
-    /**
-     * @return Collection<int, Post>
-     */
-    public function getPosts(): Collection
+    public function getSelfMeaning(): ?string
     {
-        return $this->posts;
+        return $this->selfMeaning;
     }
 
-    public function addPost(Post $post): self
+    public function setSelfMeaning(?string $selfMeaning): static
     {
-        if (!$this->posts->contains($post)) {
-            $this->posts->add($post);
-            $post->setCategory($this);
+        $this->selfMeaning = $selfMeaning;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Copulatio>
+     */
+    public function getCopulationes(): Collection
+    {
+        return $this->copulationes;
+    }
+
+    public function addCopulatio(Copulatio $copulatio): self
+    {
+        if (!$this->copulationes->contains($copulatio)) {
+            $this->copulationes->add($copulatio);
+            $copulatio->setCategory($this);
         }
 
         return $this;
     }
 
-    public function removePost(Post $post): self
+    public function removeCopulatio(Copulatio $copulatio): self
     {
-        if ($this->posts->removeElement($post)) {
-            if ($post->getCategory() === $this) {
-                $post->setCategory(null);
+        if ($this->copulationes->removeElement($copulatio)) {
+            if ($copulatio->getCategory() === $this) {
+                $copulatio->setCategory(null);
             }
         }
 

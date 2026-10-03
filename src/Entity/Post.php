@@ -28,14 +28,6 @@ class Post
     #[ORM\Column(type: Types::INTEGER, options: ['unsigned' => true])]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'posts')]
-    #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    private ?Category $category = null;
-
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'posts')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    private ?User $user = null;
-
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $title = null;
 
@@ -81,11 +73,22 @@ class Post
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: CommunityComment::class, cascade: ['remove'])]
     private Collection $comments;
 
+    /**
+     * @var Collection<int, Copulatio>
+     */
+    #[ORM\OneToMany(
+        mappedBy: 'post',
+        targetEntity: Copulatio::class,
+        cascade: ['persist']
+    )]
+    private Collection $copulationes;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
         $this->updatedAt = new \DateTime();
         $this->comments = new ArrayCollection();
+        $this->copulationes = new ArrayCollection();
         $this->rating = 0;
         $this->isFavorite = false;
     }
@@ -93,30 +96,6 @@ class Post
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    public function setCategory(?Category $category): self
-    {
-        $this->category = $category;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
     }
 
     public function getTitle(): ?string
@@ -296,6 +275,48 @@ class Post
         if ($this->comments->removeElement($comment)) {
             if ($comment->getPost() === $this) {
                 $comment->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Copulatio>
+     */
+    public function getCopulationes(): Collection
+    {
+        return $this->copulationes;
+    }
+
+    public function setCopulationes(Collection $copulationes): self
+    {
+        $this->copulationes = $copulationes;
+
+        return $this;
+    }
+
+    public function addCopulatio(Copulatio $copulatio): self
+    {
+        foreach ($this->copulationes as $existing) {
+            if ($existing->getCategory() === $copulatio->getCategory() && null !== $copulatio->getCategory()) {
+                return $this;
+            }
+        }
+
+        if (!$this->copulationes->contains($copulatio)) {
+            $this->copulationes->add($copulatio);
+            $copulatio->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCopulatio(Copulatio $copulatio): self
+    {
+        if ($this->copulationes->removeElement($copulatio)) {
+            if ($copulatio->getPost() === $this) {
+                $copulatio->setPost(null);
             }
         }
 

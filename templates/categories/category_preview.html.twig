@@ -35,19 +35,29 @@
     </div>
 
     <div class="preview-body">
-        {% if description is defined and description %}
-            <b>WHAT</b> {{ description }}
+        {% if category.description is defined and category.description %}
+            <div class="preview-description">
+                {{ category.description }}
+            </div>
         {% endif %}
 
-        <b>POSTS</b> {{ postsCount }}
+        {% if category.selfMeaning is defined and category.selfMeaning %}
+            <div class="preview-self-meaning">
+                {{ category.selfMeaning }}
+            </div>
+        {% endif %}
 
-        <input
-            type="button"
-            value="see posts..."
-            onclick="window.location.href='{{ path('app_category', { 'slug': slug }) }}'"
-            class="btn-see-more"
-            style="display: inline-block; margin-left: 0.25rem;"
-        >
+        <div class="preview-posts-count">
+            <b>POSTS</b> {{ postsCount }}
+
+            <input
+                type="button"
+                value="see posts..."
+                onclick="window.location.href='{{ path('app_category', { 'slug': slug }) }}'"
+                class="btn-see-more"
+                style="display: inline-block; margin-left: 0.25rem;"
+            >
+        </div>
     </div>
 
     <div class="preview-footer">

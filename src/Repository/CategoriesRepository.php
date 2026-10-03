@@ -51,7 +51,9 @@ class CategoriesRepository extends ServiceEntityRepository
         string $sortOrder = 'ASC',
         ?string $language = null
     ): array {
-        $queryBuilder = $this->createQueryBuilder('c');
+        $queryBuilder = $this->createQueryBuilder('c')
+            ->leftJoin('c.copulationes', 'cop')
+            ->addSelect('cop');
 
         if (strtoupper($sortOrder) === 'DESC') {
             $queryBuilder->orderBy('c.name', 'DESC');

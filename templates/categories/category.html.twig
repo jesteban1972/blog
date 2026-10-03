@@ -84,6 +84,10 @@
     {% if category.description is not empty %}
         <p>{{ category.description | replace({'\\n': "\n", "\\'": "'"}) | nl2br }}</p>
     {% endif %}
+
+    {% if category.selfMeaning is not empty %}
+        <p class="category-self-meaning">{{ category.selfMeaning | replace({'\\n': "\n", "\\'": "'"}) | nl2br }}</p>
+    {% endif %}
 {% endblock %}
 
 {% block upper_pagination %}

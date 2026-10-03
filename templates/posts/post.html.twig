@@ -59,11 +59,15 @@
             </div>
         {% endif %}
 
-        {% if post.category is defined and post.category %}
-            <div class="preview-metrics-tq" title="{{ post.category.name }}">
-                <span class="registrum-icon">{{ post.category.id | slice(0, 2) }}</span>
-            </div>
-        {% endif %}
+        {% for copulatio in post.copulationes %}
+            {% if copulatio.category is defined and copulatio.category %}
+                <div class="preview-metrics-tq" title="{{ copulatio.category.name }}">
+                    <a href="{{ path('app_category', { 'slug': copulatio.category.slug }) }}" style="color: inherit; text-decoration: none; cursor: pointer;">
+                        <span class="registrum-icon">{{ copulatio.category.id | slice(0, 2) }}</span>
+                    </a>
+                </div>
+            {% endif %}
+        {% endfor %}
 
         {# status metric using virtual enum #}
         {% if post.status is defined and post.status %}
@@ -79,16 +83,24 @@
     {% if post.createdAt is defined and post.createdAt %}
         <p>
             {{ 'post.tempus' | trans({
-                    '%date%': post.createdAt | date('d/m/Y'),
-                    '%time%': post.createdAt | date('H:i')
+                '%date%': post.createdAt | date('d/m/Y'),
+                '%time%': post.createdAt | date('H:i')
             }) }}
         </p>
     {% endif %}
 
-    {% if post.category is defined and post.category %}
+    {% if post.copulationes is defined and post.copulationes is not empty %}
+        {% set cop_count = post.copulationes | length %}
+        {% set label_key = cop_count > 1 ? 'post.categories' : 'post.category' %}
         <div class="d-flex align-items-baseline gap-2 mb-2">
-            <b class="me-1">{{ 'post.category' | trans }}:</b>
-            <span>{{ post.category.name }}</span>
+            <b class="me-1">{{ label_key | trans }}:</b>
+            <span>
+                {% for copulatio in post.copulationes %}
+                    {% if copulatio.category is defined and copulatio.category %}
+                        <a href="{{ path('app_category', { 'slug': copulatio.category.slug }) }}" class="category-link" style="color: inherit; text-decoration: none; cursor: pointer;">{{ copulatio.category.name }}</a>{% if not loop.last %}, {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </span>
         </div>
     {% endif %}
 {% endblock %}
@@ -162,7 +174,7 @@
             "inLanguage": "{{ post.language | default('en') }}",
             "author": {
                 "@type": "Person",
-                "name": "{{ (post.user ? post.user.username : 'pendoncete') | escape('js') }}"
+                "name": "Pendoncete"
             },
             "mainEntityOfPage": {
                 "@type": "WebPage",

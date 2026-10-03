@@ -103,23 +103,13 @@ class PostsController extends AbstractController
     #[Route('/{slug}', name: 'app_post', methods: ['GET'])]
     public function post(string $slug, Request $request): Response
     {
-        ////////////////////////////////////////////////////////////////////////
-        /// 1. fetch post entity metadata matching target slug
-
         $post = $this->postsRepository->findOneBySlugWithCategory($slug);
 
         if (!$post) {
             throw $this->createNotFoundException('the requested post does not exist.');
         }
 
-        ////////////////////////////////////////////////////////////////////////
-        /// 2. fetch community comment objects to allow proxy auto-initialization
-
         $comments = $this->commentsRepository->findCommentsByPostId((int) $post->getId());
-
-
-        ////////////////////////////////////////////////////////////////////////
-        /// 3. render layout
 
         return $this->render('posts/post.html.twig', [
             'post' => $post,

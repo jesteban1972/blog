@@ -157,17 +157,12 @@ class CategoriesController extends AbstractController
         $defaultLimit = ($currentUser instanceof User) ? $currentUser->getResultsPerPage() : 10;
         $resultsPerPage = (int) $request->get('limit', $defaultLimit);
 
-        // count total posts for this category
-        $totalCount = $this->postsRepository->count(['category' => $category]);
+        // count total posts for this category via copulationes
+        $totalCount = $this->postsRepository->countByCategory($category);
         $totalPages = (int) ceil($totalCount / $resultsPerPage);
 
         // fetch current page slice
-        $posts = $this->postsRepository->findBy(
-            ['category' => $category],
-            ['createdAt' => 'DESC'],
-            $resultsPerPage,
-            ($currentPage - 1) * $resultsPerPage
-        );
+        $posts = $this->postsRepository->findByCategoryPaginated($category, $currentPage, $resultsPerPage);
 
         foreach ($posts as $post) {
             $post->excerpt = $this->kalimaService->fetchExcerpt($post);

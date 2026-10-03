@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Entity\Category;
 use App\Entity\Post;
 use App\Enum\PostDiffusio;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -40,7 +41,7 @@ class PostsRepository extends ServiceEntityRepository
 
     /**
      * fetches posts with pagination, order, language, and diffusio level filtering.
-     * includes category and user joins to prevent n+1 queries.
+     * includes copulationes and category joins to prevent n+1 queries.
      */
     public function getPostsPaginated(
         int $currentPage = 1,
@@ -51,9 +52,9 @@ class PostsRepository extends ServiceEntityRepository
         ?string $categoryId = null
     ): array {
         $queryBuilder = $this->createQueryBuilder('p')
-            ->leftJoin('p.category', 'c')
-            ->leftJoin('p.user', 'u')
-            ->addSelect('c', 'u');
+            ->leftJoin('p.copulationes', 'cop')
+            ->leftJoin('cop.category', 'c')
+            ->addSelect('cop', 'c');
 
         if (strtoupper($sortOrder) === 'ASC') {
             $queryBuilder->orderBy('p.createdAt', 'ASC');
@@ -72,7 +73,7 @@ class PostsRepository extends ServiceEntityRepository
         }
 
         if ($categoryId !== null) {
-            $queryBuilder->andWhere('p.category = :categoryId')
+            $queryBuilder->andWhere('c.id = :categoryId')
                 ->setParameter('categoryId', $categoryId);
         }
 
@@ -97,16 +98,50 @@ class PostsRepository extends ServiceEntityRepository
     }
 
     /**
-     * fetches a single post by its slug along with its category metadata.
+     * fetches a single post by its slug along with its copulationes and category metadata.
      */
     public function findOneBySlugWithCategory(string $slug): ?Post
     {
         return $this->createQueryBuilder('p')
-            ->leftJoin('p.category', 'c')
-            ->addSelect('c')
-            ->andWhere('p.slug = :slug')
+            ->leftJoin('p.copulationes', 'cop')
+            ->leftJoin('cop.category', 'c')
+            ->addSelect('cop', 'c')
+            ->where('p.slug = :slug')
             ->setParameter('slug', $slug)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * counts total posts assigned to a given category via copulationes.
+     */
+    public function countByCategory(Category $category): int
+    {
+        return (int) $this->createQueryBuilder('p')
+            ->select('COUNT(DISTINCT p.id)')
+            ->innerJoin('p.copulationes', 'cop')
+            ->where('cop.category = :category')
+            ->setParameter('category', $category)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * fetches paginated posts assigned to a given category along with copulationes.
+     */
+    public function findByCategoryPaginated(Category $category, int $page = 1, int $limit = 10): array
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.copulationes', 'cop')
+            ->leftJoin('p.copulationes', 'all_cop')
+            ->leftJoin('all_cop.category', 'c')
+            ->addSelect('all_cop', 'c')
+            ->where('cop.category = :category')
+            ->setParameter('category', $category)
+            ->orderBy('p.createdAt', 'DESC')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
     }
 }

@@ -44,10 +44,16 @@
                 </div>
             {% endif %}
 
-            {% if category is defined and category %}
-                <div class="preview-metrics-tq" title="{{ category.name }}">
-                    <span class="registrum-icon">{{ category.id | slice(0, 2) }}</span>
-                </div>
+            {% if copulationes is defined and copulationes is not empty %}
+                {% for copulatio in copulationes %}
+                    {% if copulatio.category is defined and copulatio.category %}
+                        <div class="preview-metrics-tq" title="{{ copulatio.category.name }}">
+                            <a href="{{ path('app_category', { 'slug': copulatio.category.slug }) }}" style="color: inherit; text-decoration: none; cursor: pointer;">
+                                <span class="registrum-icon">{{ copulatio.category.id | slice(0, 2) }}</span>
+                            </a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
             {% endif %}
 
             {% if status is defined and status %}
@@ -61,8 +67,15 @@
     <div class="preview-body">
         <b>WHEN</b> {{ date }}
 
-        {% if category is defined and category %}
-            <b>CATEGORY</b> {{ category.name }}
+        {% if copulationes is defined and copulationes is not empty %}
+            {% set cop_count = copulationes | length %}
+            {% set label_key = cop_count > 1 ? 'post.categories' : 'post.category' %}
+            <b>{{ label_key | trans | upper }}</b>
+            {% for copulatio in copulationes %}
+                {% if copulatio.category is defined and copulatio.category %}
+                    <a href="{{ path('app_category', { 'slug': copulatio.category.slug }) }}" class="category-link" style="color: inherit; text-decoration: none; cursor: pointer;">{{ copulatio.category.name }}</a>{% if not loop.last %}, {% endif %}
+                {% endif %}
+            {% endfor %}
         {% endif %}
 
         <b>WHAT</b> {{ excerpt }}

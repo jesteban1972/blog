@@ -9,7 +9,7 @@
                 'slug': category.slug,
                 'description': category.description | default(null),
                 'language': category.language | default(null),
-                'postsCount': category.posts | length,
+                'postsCount': category.copulationes | length,
             }) }}
         </article>
     {% else %}
