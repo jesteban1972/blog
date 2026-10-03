@@ -29,7 +29,7 @@ class AppController extends AbstractController
 
         //dd($user);
 
-        return $this->render('app/index.html.twig');
+        return $this->render('app/homepage.html.twig');
     }
 
     #[Route('/info', name: 'app_info')]

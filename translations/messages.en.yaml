@@ -56,7 +56,15 @@ header:
     search: "search"
 
 homepage:
-    intro: "you are in the blog of pendoncete.org, a space conceived to provide ideas and amusement to your lechery existence. have fun!"
+    categories:
+        intro: "explore all my categories"
+        link_label: "go to the categories"
+        title: "categories"
+    intro: "a blog with my personal thoughts, guides and updates. have fun!"
+    posts:
+        intro: "explore all my posts"
+        link_label: "go to the posts"
+        title: "posts"
     seo:
         description: "explore Pendoncete's digital ecosystem: innovative tools and spicy chronicles built from flesh and lechery. Join the community and start your own annales today."
         h1: "blog homepage"

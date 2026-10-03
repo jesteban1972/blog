@@ -1,0 +1,18 @@
+/** file ~/Sites/blog/assets/styles/homepage.css */
+
+/*
+ * this stylesheet defines rules for app_home;
+ * note that this stylesheet is implemented here (and not in the CDN) since it is an opac-specific functionality.
+*/
+
+.homepage-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.homepage-grid .pendoncete-card {
+    flex: 1 1 calc(50% - 0.75rem);
+    min-width: 280px; /* lowers min-width threshold so 2 cards fit side-by-side */
+}
