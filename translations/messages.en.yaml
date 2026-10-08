@@ -61,9 +61,7 @@ homepage:
         link_label: "go to the categories"
         title: "categories"
     intro: |
-        <p>the blog application within <strong>pendoncete.org</strong> serves as an open workspace for my technical endeavors, philological notes, and ongoing projects. it aims to bring together detailed guides, architectural updates, and personal thoughts on software design, language studies, and historical texts under one unified roof.</p>
-        <p>beyond documenting technical steps or code structures, this blog reflects a personal view of seeing life and expressing myself—an enduring notebook where intellectual curiosities, cultural references, and everyday reflections intersect naturally with my digital craft.</p>
-        <p>have fun exploring!</p>
+        <p>the <i>blog</i> app, a member of the <strong>pendoncete.org</strong> ecosystem, serves as an open workspace for my technical projects, philological notes, and ongoing developments. its goal is to bring together under one roof detailed guides, architectural updates, and personal reflections on a wide range of topics.</p>
     posts:
         abstract: "dive into the complete collection of articles, essays, and technical notes. from step-by-step code walkthroughs to reflections on history and language, discover posts filtered by date, language, or status."
         link_label: "go to the posts"

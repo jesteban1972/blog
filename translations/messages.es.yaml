@@ -37,7 +37,10 @@ header:
     search: "buscar"
 
 homepage:
-    intro: "estás en el blog de pendoncete.org, un espacio concebido para aportar ideas y entretenimiento a tu lúbrica existencia. ¡que lo disfrutes!"
+    intro: |
+        <p>la aplicación <i>blog</i>, miembro del ecosistema <strong>pendoncete.org</strong>, sirve como un espacio de trabajo abierto para mis proyectos técnicos, notas filológicas y desarrollos en curso. su objetivo es reunir bajo un mismo techo guías detalladas, novedades de arquitectura y reflexiones personales sobre un ámplio abanico de temas.</p>
+        <p>más allá de documentar pasos técnicos o estructuras de código, este blog refleja una forma personal de ver la vida y expresarme: un cuaderno de notas duradero donde las inquietudes intelectuales, las referencias culturales y las reflexiones cotidianas se cruzan de manera natural con mi oficio digital.</p>
+        <p>si eres un usuario logueado en <strong>pendoncete.org</strong>, podrás colaborar al proyecto con comentarios o réplicas a comentarios, lo que hace de la aplicación <i>blog</i> una plataforma interactiva. ¡que disfrutes explorando!</p>
     seo:
         description: "explora el ecosistema digital de Pendoncete: herramientas innovadoras y crónicas picantes nacidas de la carne y la lascivia. únete a la comunidad y comienza tus propios anales hoy mismo."
         h1: "inicio del blog"
