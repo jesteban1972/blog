@@ -4,7 +4,11 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col d-flex justify-content-center align-items-center py-3">
-                <a href="{{ path('app_home') }}" class="app-name-link">
+                <a
+                    id="link-to-home"
+                    href="{{ path('app_home') }}"
+                    class="app-name-link"
+                >
                     <span class="app-name">{{ app_name ~ '.' ~ app_domain }}</span>
                 </a>
             </div>
@@ -14,29 +18,38 @@
 
 <nav class="header-navbar">
     <div id="header-links">
+        {% set currentRoute = app.request.attributes.get('_route') %}
         <div class="nav nav-pills flex-row flex-nowrap overflow-auto py-2">
-            {% set currentRoute = app.request.attributes.get('_route') %}
-
             <a
                 href="{{ path('app_posts') }}"
-                class="nav-link text-center {{ currentRoute == 'app_posts' ? 'active' : '' }}"
+                class="nav-link text-center {% if currentRoute == 'app_posts' %}active{% endif %}"
+                {% if currentRoute == 'app_posts' %}aria-current="page"{% endif %}
             >
                 {{ 'header.posts' | trans }}
             </a>
 
             <a
                 href="{{ path('app_categories') }}"
-                class="nav-link text-center {{ currentRoute == 'app_categories' ? 'active' : '' }}"
+                class="nav-link text-center {% if currentRoute == 'app_categories' %}active{% endif %}"
+                {% if currentRoute == 'app_categories' %}aria-current="page"{% endif %}
             >
                 {{ 'header.categories' | trans }}
             </a>
 
-            <a class="nav-link text-center {{ currentRoute == 'app_search' ? 'active' : '' }}" href="">
+            <a
+                class="nav-link text-center {% if currentRoute == 'app_search' %}active{% endif %}"
+                href=""
+                {% if currentRoute == 'app_search' %}aria-current="page"{% endif %}
+            >
                 {{ 'header.search' | trans }}
             </a>
 
             {% if is_granted('ROLE_ADMIN') %}
-                <a class="nav-link text-center {{ currentRoute == 'app_new_entry' ? 'active' : '' }}" href="">
+                <a
+                    class="nav-link text-center {% if currentRoute == 'app_new_entry' %}active{% endif %}"
+                    href=""
+                    {% if currentRoute == 'app_new_entry' %}aria-current="page"{% endif %}
+                >
                     {{ 'header.new_entry' | trans }}
                 </a>
             {% endif %}
