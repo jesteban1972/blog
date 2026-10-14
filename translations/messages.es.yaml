@@ -50,6 +50,22 @@ homepage:
     welcome_user: "¡hola de nuevo, %username%!"
     welcome_visitor: "¡bienvenido!"
 
+info:
+    markup: |
+        <h2>información sobre la aplicación <i><strong>blog</strong></i></h2>
+        <p>bienvenido a <i><strong>blog</strong></i>, un espacio web que reúne mis pensamientos personales, guías y novedades. lo que encontrarás aquí es un cuaderno abierto de reflexiones, ensayos y notas técnicas escritas directamente desde mi propia experiencia y perspectiva en constante evolución.</p>
+        <p>me considero una persona infinitamente curiosa, con un amplio espectro de pasiones que se resisten a encajar en moldes rígidos. mis intereses abarcan desde las dimensiones estrictamente carnales y sensoriales de la vida humana —celebrando la pasión, el placer corporal y la memoria íntima— hasta inquietudes profundamente culturales, intelectuales y técnicas. puedes encontrar una entrada que analice la historia clásica, las crónicas medievales, las lenguas politónicas o la arquitectura web compleja, junto a reflexiones sobre la libertad personal, la estética, la vida cotidiana y los descubrimientos del día a día. para mí, la experiencia humana es un mosaico rico donde lo intelectual y lo corpóreo se enriquecen mutuamente de forma constante, sin fingimientos ni fronteras artificiales. este blog es el punto de encuentro de esos mundos diversos, documentados con franqueza, humor y un riguroso cuidado por los detalles.</p>
+        <p>publico con orgullo este blog dentro del ecosistema de aplicaciones de <i><strong>pendoncete.org</strong></i>, poniendo sus publicaciones a libre disposición de cualquier lector interesado. sin embargo, para participar activamente en el blog con la posibilidad de dejar comentarios y unirte a los debates, es necesario ser un usuario registrado (o seguidor) en la red de aplicaciones de <i><strong>pendoncete.org</strong></i>.</p>
+        <p>¡explora las entradas, quédate con aquello que resuene contigo y disfruta de la lectura!</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pendoncete</p>
+    seo:
+        breadcrumb: "info"
+        description: "información sobre la aplicación blog."
+        h1: "página de información de <i>blog</i>"
+        keywords: "información"
+        page_name: "información"
+    title: "información"
+
 navigator:
     first: "primera"
     last: "última"

@@ -17,21 +17,21 @@
 {# JSON-LD page description override #}
 {% block page_description %}{{ 'info.seo.description' | trans }}{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/info.css', 'cdn') }}">
+{% endblock %}
+
 {% block main %}
-    <h1 class="cartouche-header">{{ 'info.seo.h1' | trans }}</h1>
+    <h1 class="cartouche-header">{{ 'info.seo.h1' | trans | raw }}</h1>
 
     <div class="info-text">
-        {{ 'info.text' | trans | raw }}
+        {{ 'info.markup' | trans | raw }}
     </div>
 
     <div class="text-center mt-4">
         <a href="{{ path('app_home') }}" class="text-decoration-none small text-secondary">
-            <i class="bi bi-arrow-left me-1"></i>{{ 'contact.back_to_home' | trans }}
+            <i class="bi bi-arrow-left me-1"></i>{{ 'global_labels.back_to_home' | trans }}
         </a>
     </div>
-{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('styles/info.css') }}">
 {% endblock %}
