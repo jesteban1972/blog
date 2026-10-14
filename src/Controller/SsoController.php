@@ -61,7 +61,7 @@ class SsoController extends AbstractController
         ////////////////////////////////////////////////////////////////////////
         /// render template
 
-        return $this->render('auth_signup.html.twig', [
+        return $this->render('app/auth_signup.html.twig', [
             'authUrl' => $authUrl,
             'redirectUri' => $redirectUri,
             'sig' => $sig,

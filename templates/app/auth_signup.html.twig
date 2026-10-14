@@ -1,0 +1,35 @@
+{# file: ~/Sites/blog/templates/app/auth_signup.html.twig #}
+
+{% extends 'app/base.html.twig' %}
+
+{% block title %}redirecting…{% endblock %}
+
+{% block header %}
+    <h1>blog.pendoncete.org</h1>
+{% endblock %}
+
+{% block main %}
+    <form
+        id="auth-signup-form"
+        action="{{ authUrl }}"
+        method="post"
+    >
+        <input type="hidden" name="redirect_uri" value="{{ redirectUri }}">
+        <input type="hidden" name="sig" value="{{ sig }}">
+
+        <noscript>
+            <button type="submit">continue to sign up</button>
+        </noscript>
+    </form>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('auth-signup-form');
+            if (form) {
+                form.submit();
+            }
+        });
+    </script>
+{% endblock %}
