@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y \
     git \
     unzip \
     curl \
+    nano \
     libicu-dev \
     libonig-dev \
     libzip-dev \
