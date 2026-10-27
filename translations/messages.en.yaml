@@ -22,6 +22,7 @@ categories:
     actions:
         new: "new category"
     amount_found: "<strong>%count% categories</strong> in total:"
+    no_categories_found: "no categories found"
     seo:
         breadcrumb: "categories"
         description: "explore the directory of topic archives on Pendoncete, spanning linguistics, technology, history, and culture."
@@ -107,6 +108,7 @@ post:
     community:
         comments:
             commented_on: "<strong>%username%</strong> commented on %date% at %time%:"
+    no_posts_found: "no posts found"
     seo:
     tempus: "posted on %date% at %time%."
 

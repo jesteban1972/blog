@@ -89,11 +89,17 @@
 
     <div class="mt-3 text-center">
 
-        {# dynamic link that strips 'blog.' from the host #}
-        {% set main_host = app.request.host | replace({'blog.': ''}) %}
+        {# dynamic link that strips any subdomain prefix to point to the central hub #}
+        {% set main_host = app.request.host | replace({
+            'community.': '',
+            'annales.': '',
+            'opac.': '',
+            'blog.': ''
+        }) %}
 
         <a href="//{{ main_host }}" class="external-link">
             {{ 'sidebar.pendoncete_org' | trans }}
+        </a>
         </a>
     </div>
 
