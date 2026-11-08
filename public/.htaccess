@@ -1,3 +1,16 @@
+# file: ~/Sites/blog/public/.htaccess
+
+# ----------------------------------------------------------------------
+# character encoding: eenforce UTF-8 for plain text files to guarantee special characters
+# (Spanish accents, Polytonic Greek) render correctly without mojibakes.
+# ----------------------------------------------------------------------
+AddDefaultCharset UTF-8
+AddType "text/plain; charset=UTF-8" .txt
+
+<IfModule mod_mime.c>
+    AddCharset UTF-8 .txt
+</IfModule>
+
 # Use the front controller as index file. It serves as a fallback solution when
 # every other rewrite/redirect fails (e.g. in an aliased environment without
 # mod_rewrite). Additionally, this reduces the matching process for the
