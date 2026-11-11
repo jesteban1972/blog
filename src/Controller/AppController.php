@@ -77,8 +77,11 @@ class AppController extends AbstractController
             ];
         }
 
-        return $this->render('app/sitemap.xml.twig', [
-            'groupedUrls' => $groupedUrls
-        ], new Response('', 200, ['Content-Type' => 'application/xml']));
+        return $this->render(
+            view:'app/sitemap.xml.twig',
+            parameters:[
+                'grouped_urls' => $groupedUrls
+            ],
+            response: new Response('', 200, ['Content-Type' => 'application/xml']));
     }
 }
