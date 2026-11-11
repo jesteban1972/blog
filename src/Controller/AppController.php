@@ -8,6 +8,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -36,5 +37,48 @@ class AppController extends AbstractController
     public function info(): Response
     {
         return $this->render('app/info.html.twig');
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /// sitemap
+
+    // NOTE: route explicitly defined in config/routes.yaml to ensure it bypasses locale prefixes.
+    // #[Route('/sitemap.xml', name: 'app_sitemap', defaults: ['_format' => 'xml'])]
+    public function sitemap(): Response
+    {
+        $locales = ['en', 'es', 'el'];
+
+        $staticRoutes = [
+            'app_home',
+            'app_info',
+            'app_posts',
+            'app_categories',
+        ];
+
+        $groupedUrls = [];
+
+        foreach ($staticRoutes as $routeName) {
+            $translations = [];
+            foreach ($locales as $locale) {
+                // generates localized absolute URLs automatically
+                $translations[$locale] = $this->generateUrl(
+                    $routeName,
+                    ['_locale' => $locale],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            }
+
+            $groupedUrls[] = [
+                'loc' => $translations['en'], // canonical (English/No-prefix)
+                'translations' => $translations,
+                'priority' => '0.8',
+                'lastmod' => date('Y-m-d'),
+            ];
+        }
+
+        return $this->render('app/sitemap.xml.twig', [
+            'groupedUrls' => $groupedUrls
+        ], new Response('', 200, ['Content-Type' => 'application/xml']));
     }
 }

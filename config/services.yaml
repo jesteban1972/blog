@@ -61,6 +61,7 @@ services:
         arguments:
             # immuneRoutes: we allow these routes to proceed regardless of user status, to prevent redirection loops
             $immuneRoutes:
+                - 'app_sitemap'
                 - 'app_profile_completion'
                 - 'app_logout'
                 - 'app_logout_local'
