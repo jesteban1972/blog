@@ -107,6 +107,7 @@ class AppController extends AbstractController
             content: $this->renderView(
                 view: sprintf('docs/%s/llms.txt.twig', $_locale),
                 parameters: [
+                    '_locale' => $_locale,
                     'generated_at' => $now->format('Y-m-d H:i:s P'),
                     // 'metrics' => $metrics,
                 ]
@@ -131,8 +132,9 @@ class AppController extends AbstractController
 
         return new Response(
             content: $this->renderView(
-                view: sprintf('docs/%s/llms.txt.twig', $_locale),
+                view: sprintf('docs/%s/llms-full.txt.twig', $_locale),
                 parameters: [
+                    '_locale' => $_locale,
                     'generated_at' => $now->format('Y-m-d H:i:s P'),
                     //'metrics' => $metrics,
                 ],

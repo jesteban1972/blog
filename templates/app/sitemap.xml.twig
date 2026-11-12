@@ -13,4 +13,49 @@
             <priority>{{ group.priority }}</priority>
         </url>
     {% endfor %}
+
+    <!-- AI specification endpoints (root default + localized variants) -->
+    {% set locales = ['en', 'es', 'el'] %}
+
+    <url>
+        <loc>{{ absolute_url(path('app_llms_txt')) }}</loc>
+        {% for lang in locales %}
+            <xhtml:link rel="alternate" hreflang="{{ lang }}" href="{{ absolute_url(path('app_llms_txt_localized', {'_locale': lang})) }}"/>
+        {% endfor %}
+        <xhtml:link rel="alternate" hreflang="x-default" href="{{ absolute_url(path('app_llms_txt')) }}"/>
+        <changefreq>weekly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    {% for lang in locales %}
+        <url>
+            <loc>{{ absolute_url(path('app_llms_txt_localized', {'_locale': lang})) }}</loc>
+            {% for alt_lang in locales %}
+                <xhtml:link rel="alternate" hreflang="{{ alt_lang }}" href="{{ absolute_url(path('app_llms_txt_localized', {'_locale': alt_lang})) }}"/>
+            {% endfor %}
+            <xhtml:link rel="alternate" hreflang="x-default" href="{{ absolute_url(path('app_llms_txt')) }}"/>
+            <changefreq>weekly</changefreq>
+            <priority>0.5</priority>
+        </url>
+    {% endfor %}
+
+    <url>
+        <loc>{{ absolute_url(path('app_llms_full_txt')) }}</loc>
+        {% for lang in locales %}
+            <xhtml:link rel="alternate" hreflang="{{ lang }}" href="{{ absolute_url(path('app_llms_full_txt_localized', {'_locale': lang})) }}"/>
+        {% endfor %}
+        <xhtml:link rel="alternate" hreflang="x-default" href="{{ absolute_url(path('app_llms_full_txt')) }}"/>
+        <changefreq>weekly</changefreq>
+        <priority>0.3</priority>
+    </url>
+    {% for lang in locales %}
+        <url>
+            <loc>{{ absolute_url(path('app_llms_full_txt_localized', {'_locale': lang})) }}</loc>
+            {% for alt_lang in locales %}
+                <xhtml:link rel="alternate" hreflang="{{ alt_lang }}" href="{{ absolute_url(path('app_llms_full_txt_localized', {'_locale': alt_lang})) }}"/>
+            {% endfor %}
+            <xhtml:link rel="alternate" hreflang="x-default" href="{{ absolute_url(path('app_llms_full_txt')) }}"/>
+            <changefreq>weekly</changefreq>
+            <priority>0.3</priority>
+        </url>
+    {% endfor %}
 </urlset>
