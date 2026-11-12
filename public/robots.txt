@@ -1,0 +1,15 @@
+# file ~/Sites/blog/public/robots.txt
+
+# allow all search engines to crawl the site:
+User-agent: *
+Allow: /
+
+# block sensitive or private areas:
+Disallow: */login
+Disallow: */signup
+Disallow: /_profiler/
+Disallow: /_wdt/
+Disallow: /api/
+
+# point to your sitemap:
+Sitemap: https://robots.pendoncete.org/sitemap.xml

@@ -36,6 +36,9 @@ security:
         - { path: ^/(_wdt|_profiler), roles: PUBLIC_ACCESS }
         - { path: ^/sitemap\.xml$, roles: PUBLIC_ACCESS }
 
+        # allow public access to all crawlers and automated AI agents:
+        - { path: '^/([a-z]{2})?/?llms(-full)?\.txt$', roles: PUBLIC_ACCESS }
+
         # SSO handshake infrastructure paths:
         - { path: '^/([a-z]{2})?/?(signup|login|login/callback|logout|logout_local|logged_out|log-jump|profile/completion)', roles: PUBLIC_ACCESS }
 

@@ -40,6 +40,31 @@ app_admin:
     resource: ../src/Controller/AdminController.php
     type: attribute
 
+# AI text standard endpoints (served as raw plain text templates):
+app_llms_txt:
+    path: /llms.txt
+    controller: App\Controller\AppController::llmsTxt
+    defaults:
+        _locale: en
+
+app_llms_txt_localized:
+    path: /{_locale}/llms.txt
+    controller: App\Controller\AppController::llmsTxt
+    requirements:
+        _locale: en|es|el
+
+app_llms_full_txt:
+    path: /llms-full.txt
+    controller: App\Controller\AppController::llmsFullTxt
+    defaults:
+        _locale: en
+
+app_llms_full_txt_localized:
+    path: /{_locale}/llms-full.txt
+    controller: App\Controller\AppController::llmsFullTxt
+    requirements:
+        _locale: en|es|el
+
 # --- SECTION 2: LOCALIZED CONTENT ---
 # this imports everything else and wraps it in /{_locale}
 app_localized:

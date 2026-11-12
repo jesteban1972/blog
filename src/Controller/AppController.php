@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Community\User as CommunityUser;
+use App\Entity\User;
+use App\Repository\UsersRepository;
 use App\Service\CookieService;
 use App\Service\JwtDecoderService;
 use Psr\Log\LoggerInterface;
@@ -77,11 +80,65 @@ class AppController extends AbstractController
             ];
         }
 
-        return $this->render(
-            view:'app/sitemap.xml.twig',
-            parameters:[
-                'grouped_urls' => $groupedUrls
-            ],
-            response: new Response('', 200, ['Content-Type' => 'application/xml']));
+        return new Response(
+            content: $this->renderView(
+                view: 'app/sitemap.xml.twig',
+                parameters: [
+                    'grouped_urls' => $groupedUrls,
+                ]
+            ),
+            status: Response::HTTP_OK,
+            headers: ['Content-Type' => 'text/xml; charset=UTF-8']
+        );
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /// llms.txt & llms-full.txt for AI crawlers
+
+    public function llmsTxt(string $_locale = 'en'): Response // $_locale matches Symfony's reserved '_locale' request attribute for automatic argument injection
+    {
+        $now = new \DateTimeImmutable('now', new \DateTimeZone('Europe/Madrid'));
+
+        // fetch dynamic metrics from your repository or service here if needed
+        // $metrics = $this->annalesRepository->getLiveMetrics();
+
+        return new Response(
+            content: $this->renderView(
+                view: sprintf('docs/%s/llms.txt.twig', $_locale),
+                parameters: [
+                    'generated_at' => $now->format('Y-m-d H:i:s P'),
+                    // 'metrics' => $metrics,
+                ]
+            ),
+            status: Response::HTTP_OK,
+            headers: ['Content-Type' => 'text/plain; charset=UTF-8']
+        );
+    }
+
+    public function llmsFullTxt(
+        UsersRepository $usersRepository,
+        //MetricsService $metricsService,
+        string $_locale = 'en'  // $_locale matches Symfony's reserved '_locale' request attribute for automatic argument injection
+    ): Response {
+        $now = new \DateTimeImmutable('now', new \DateTimeZone('Europe/Madrid'));
+
+        $pendoncete = $usersRepository->find(User::PENDONCETE);
+//        $metrics = $pendoncete ? $metricsService->getUserMetrics($pendoncete) : [
+//            'practica_amount' => 0,
+//            'amores_amount' => 0,
+//        ];
+
+        return new Response(
+            content: $this->renderView(
+                view: sprintf('docs/%s/llms.txt.twig', $_locale),
+                parameters: [
+                    'generated_at' => $now->format('Y-m-d H:i:s P'),
+                    //'metrics' => $metrics,
+                ],
+            ),
+            status: Response::HTTP_OK,
+            headers: ['Content-Type' => 'text/plain; charset=UTF-8']
+        );
     }
 }
